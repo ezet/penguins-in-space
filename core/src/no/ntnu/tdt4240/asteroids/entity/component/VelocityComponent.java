@@ -9,6 +9,9 @@ public class VelocityComponent implements Component, Pool.Poolable {
 
     private float y;
 
+    public VelocityComponent() {
+    }
+
     public VelocityComponent(int x, int y) {
         this.setX(x);
         this.setY(y);

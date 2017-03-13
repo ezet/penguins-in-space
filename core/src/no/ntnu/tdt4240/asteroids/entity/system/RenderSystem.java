@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -16,12 +17,13 @@ public class RenderSystem extends IteratingSystem {
 
     private static final String TAG = RenderSystem.class.getSimpleName();
     private final Camera camera;
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    public RenderSystem(Camera camera) {
+    public RenderSystem(SpriteBatch batch) {
         super(Family.all(PositionComponent.class, DrawableComponent.class).get());
-        this.camera = camera;
-        batch = new SpriteBatch();
+        // TODO: camera config
+        this.camera = new OrthographicCamera();
+        this.batch = batch;
     }
 
     @Override

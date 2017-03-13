@@ -8,6 +8,9 @@ public class PositionComponent implements Component, Pool.Poolable {
     private float x;
     private float y;
 
+    public PositionComponent() {
+    }
+
     public PositionComponent(int x, int y) {
         this.setX(x);
         this.setY(y);

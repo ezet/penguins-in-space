@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids;
+package no.ntnu.tdt4240.asteroids.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+
+import no.ntnu.tdt4240.asteroids.Asteroids;
 
 public class MainScreen extends ScreenAdapter {
 
@@ -31,9 +33,9 @@ public class MainScreen extends ScreenAdapter {
     }
 
     private void update() {
+        game.setScreen(new GameScreen(game));
         if (Gdx.input.justTouched()) {
             guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            game.setScreen(new GameScreen(game));
             // TODO: handle input and process events
         }
     }
