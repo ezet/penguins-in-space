@@ -3,7 +3,7 @@ package no.ntnu.tdt4240.asteroids.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -15,10 +15,10 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMap
 public class RenderSystem extends IteratingSystem {
 
     private static final String TAG = RenderSystem.class.getSimpleName();
-    private final OrthographicCamera camera;
+    private final Camera camera;
     private SpriteBatch batch;
 
-    public RenderSystem(OrthographicCamera camera) {
+    public RenderSystem(Camera camera) {
         super(Family.all(PositionComponent.class, DrawableComponent.class).get());
         this.camera = camera;
         batch = new SpriteBatch();
