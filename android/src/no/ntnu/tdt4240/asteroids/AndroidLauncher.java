@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.example.games.basegameutils.GameHelper;
 
 public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener {
@@ -21,10 +20,9 @@ public class AndroidLauncher extends AndroidApplication implements GameHelper.Ga
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useCompass = false;
         config.useAccelerometer = false;
-        config.useImmersiveMode = false;
+        config.useImmersiveMode = true;
         config.useWakelock = true;
         playService = new PlayService(this, this);
-        GoogleApiClient apiClient = playService.getGameHelper().getApiClient();
         initialize(new Asteroids(playService), config);
     }
 
