@@ -22,15 +22,17 @@ public class AndroidLauncher extends AndroidApplication {
         GameHelper.GameHelperListener gameHelperListener = new GameHelper.GameHelperListener() {
             @Override
             public void onSignInFailed() {
+                playService.getGameHelper().showFailureDialog();
 
             }
 
             @Override
             public void onSignInSucceeded() {
-
+                playService.getGameHelper().showFailureDialog();
             }
         };
         playService = new PlayService(this, gameHelperListener);
+        playService.getGameHelper().setShowErrorDialogs(true);
         initialize(new Asteroids(playService), config);
     }
 
@@ -43,7 +45,9 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onStop() {
         super.onStop();
+        playService.signOut();
         playService.getGameHelper().onStop();
+
     }
 
     @Override
