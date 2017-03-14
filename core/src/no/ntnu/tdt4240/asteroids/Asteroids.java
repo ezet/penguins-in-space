@@ -11,11 +11,15 @@ import no.ntnu.tdt4240.asteroids.screen.MainScreen;
 
 public class Asteroids extends Game {
 
-    public final IMultiplayerService playService;
+    private static IMultiplayerService multiplayerService;
     private SpriteBatch batch;
 
-    public Asteroids(IMultiplayerService playService) {
-        this.playService = playService;
+    Asteroids(IMultiplayerService multiplayerService) {
+        Asteroids.multiplayerService = multiplayerService;
+    }
+
+    public static IMultiplayerService getMultiplayerService() {
+        return multiplayerService;
     }
 
     @Override
