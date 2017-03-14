@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
@@ -68,6 +69,7 @@ public class InputHandler {
         bullet.add(bulletMovement);
         DrawableComponent bulletDrawable = drawableComponentFactory.getBullet();
         bullet.add(bulletDrawable);
+        bullet.add(new BoundsComponent());
         engine.addEntity(bullet);
         for (InputListener listener : listeners) {
             listener.onFire();

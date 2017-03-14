@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleComponent;
@@ -75,6 +76,7 @@ public class ObstacleSystem extends EntitySystem {
         obstacle.add(movement);
         obstacle.add(obstacleDrawable);
         obstacle.add(new ObstacleComponent());
+        obstacle.add(new BoundsComponent());
         getEngine().addEntity(obstacle);
     }
 }
