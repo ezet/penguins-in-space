@@ -26,8 +26,9 @@ import no.ntnu.tdt4240.asteroids.input.GamepadJoystickListener;
 import no.ntnu.tdt4240.asteroids.input.InputHandler;
 import no.ntnu.tdt4240.asteroids.input.VirtualGamepad;
 
-public class GameScreen extends ScreenAdapter {
+class GameScreen extends ScreenAdapter {
 
+    @SuppressWarnings("unused")
     private static final String TAG = GameScreen.class.getSimpleName();
 
     private final Asteroids game;
@@ -39,7 +40,7 @@ public class GameScreen extends ScreenAdapter {
     private Entity player;
     private IDrawableComponentFactory drawableComponentFactory;
 
-    public GameScreen(Asteroids game) {
+    GameScreen(Asteroids game) {
         this.game = game;
         engine = new PooledEngine();
         // TODO: get factory from config

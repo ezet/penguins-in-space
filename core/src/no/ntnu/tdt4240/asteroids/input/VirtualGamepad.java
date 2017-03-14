@@ -10,8 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class VirtualGamepad extends Group {
 
-    public static final int BUTTON_SIZE = 100;
-    public static final int BUTTON_MARGIN = 100;
+    private static final int BUTTON_SIZE = 100;
+    private static final int BUTTON_MARGIN = 100;
+    @SuppressWarnings("unused")
     private static final String TAG = VirtualGamepad.class.getSimpleName();
     private Touchpad touchPad;
     private TouchpadButton button;
