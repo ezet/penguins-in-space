@@ -8,8 +8,7 @@ public class DrawableComponent implements Component, Pool.Poolable {
 
     private TextureRegion region;
 
-    public DrawableComponent(TextureRegion region) {
-        this.setRegion(region);
+    public DrawableComponent() {
     }
 
     @Override

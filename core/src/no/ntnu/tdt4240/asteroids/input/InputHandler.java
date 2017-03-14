@@ -4,8 +4,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.VelocityComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 
 public class InputHandler {
@@ -21,28 +21,26 @@ public class InputHandler {
         this.drawableComponentFactory = drawableComponentFactory;
     }
 
-    public void move(float velocityX, float velocityY) {
-        // TODO: implement proper player speed and direction
-        VelocityComponent velocityComponent = ComponentMappers.velocityMapper.get(player);
-        velocityComponent.setX(velocityX * MAX_VELOCITY);
-        velocityComponent.setY(velocityY * MAX_VELOCITY);
+    public void move(float inputX, float inputY) {
+        // TODO: implement proper player velocity and acceleration
+        MovementComponent movementComponent = ComponentMappers.movementMapper.get(player);
+        movementComponent.acceleration.set(inputX, inputY).scl(500);
+//        movementComponent.velocity.set(inputX * MAX_VELOCITY, inputY * MAX_VELOCITY);
     }
 
     public void fire() {
         // TODO: implement proper bullet speed and direction
         PositionComponent playerPosition = ComponentMappers.positionMapper.get(player);
         PositionComponent bulletPosition = engine.createComponent(PositionComponent.class);
-        bulletPosition.setX(playerPosition.getX());
-        bulletPosition.setY(playerPosition.getY());
+        bulletPosition.position.set(playerPosition.position);
 
-        VelocityComponent playerVelocity = ComponentMappers.velocityMapper.get(player);
-        VelocityComponent bulletVelocity = engine.createComponent(VelocityComponent.class);
-        bulletVelocity.setX(playerVelocity.getX() * 10);
-        bulletVelocity.setY(playerVelocity.getY() * 10);
+        MovementComponent playerMovement = ComponentMappers.movementMapper.get(player);
+        MovementComponent bulletMovement = engine.createComponent(MovementComponent.class);
+        bulletMovement.velocity.set(playerMovement.velocity.x * 10, playerMovement.velocity.y * 10);
 
         Entity bullet = engine.createEntity();
         bullet.add(bulletPosition);
-        bullet.add(bulletVelocity);
+        bullet.add(bulletMovement);
         bullet.add(drawableComponentFactory.getBullet());
         engine.addEntity(bullet);
     }

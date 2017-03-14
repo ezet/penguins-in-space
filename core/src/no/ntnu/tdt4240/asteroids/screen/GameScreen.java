@@ -15,8 +15,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.VelocityComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.input.GamepadButtonListener;
@@ -27,7 +27,6 @@ import no.ntnu.tdt4240.asteroids.input.VirtualGamepad;
 public class GameScreen extends ScreenAdapter {
 
     private static final String TAG = GameScreen.class.getSimpleName();
-    private static final int MAX_VELOCITY = 500;
 
     private final Asteroids game;
     private final Camera guiCam;
@@ -40,24 +39,23 @@ public class GameScreen extends ScreenAdapter {
 
     public GameScreen(Asteroids game) {
         this.game = game;
+        engine = new PooledEngine();
         // TODO: get factory from config
-        drawableComponentFactory = new DefaultDrawableComponentFactory();
+        drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
 
         // TODO: figure out camera/viewport/stage stuff
         batch = game.getBatch();
 
         guiCam = new OrthographicCamera();
-        Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), guiCam);
         guiStage = new Stage(guiViewport, batch);
         Gdx.input.setInputProcessor(guiStage);
 
-
-
-        engine = new PooledEngine();
         initEngine(engine, batch);
 
         initGamepad(guiStage);
         running = true;
+
     }
 
     @Override
@@ -93,7 +91,7 @@ public class GameScreen extends ScreenAdapter {
         // TODO: player should be local var, change it when touch listener is refactored
         player = engine.createEntity();
         player.add(new PositionComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2));
-        player.add(new VelocityComponent(0, 0));
+        player.add(new MovementComponent());
         player.add(drawableComponentFactory.getPlayer());
         engine.addEntity(player);
     }
