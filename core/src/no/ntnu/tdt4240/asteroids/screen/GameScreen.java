@@ -47,6 +47,8 @@ class GameScreen extends ScreenAdapter {
     private final SpriteBatch batch;
     private final Stage guiStage;
     private final PooledEngine engine;
+    Entity player;
+    IDrawableComponentFactory drawableComponentFactory;
     private boolean running;
     private Entity player;
     private IDrawableComponentFactory drawableComponentFactory;

@@ -2,14 +2,17 @@ package no.ntnu.tdt4240.asteroids;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.example.games.basegameutils.GameHelper;
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements GameHelper.GameHelperListener {
 
 
+    private static final String TAG = AndroidLauncher.class.getSimpleName();
     private PlayService playService;
 
     @Override
@@ -18,21 +21,10 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useCompass = false;
         config.useAccelerometer = false;
-        config.useImmersiveMode = true;
-        GameHelper.GameHelperListener gameHelperListener = new GameHelper.GameHelperListener() {
-            @Override
-            public void onSignInFailed() {
-                playService.getGameHelper().showFailureDialog();
-
-            }
-
-            @Override
-            public void onSignInSucceeded() {
-                playService.getGameHelper().showFailureDialog();
-            }
-        };
-        playService = new PlayService(this, gameHelperListener);
-        playService.getGameHelper().setShowErrorDialogs(true);
+        config.useImmersiveMode = false;
+        config.useWakelock = true;
+        playService = new PlayService(this, this);
+        GoogleApiClient apiClient = playService.getGameHelper().getApiClient();
         initialize(new Asteroids(playService), config);
     }
 
@@ -45,15 +37,12 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onStop() {
         super.onStop();
-        playService.signOut();
         playService.getGameHelper().onStop();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        playService.signOut();
     }
 
     @Override
@@ -62,6 +51,13 @@ public class AndroidLauncher extends AndroidApplication {
         playService.getGameHelper().onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onSignInFailed() {
+        Log.d(TAG, "onSignInFailed: ");
+    }
 
-
+    @Override
+    public void onSignInSucceeded() {
+        Log.d(TAG, "onSignInSucceeded: ");
+    }
 }

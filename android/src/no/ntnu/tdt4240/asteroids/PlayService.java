@@ -7,10 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.GameHelper;
 
-import no.ntnu.tdt4240.asteroids.multiplayer.IMultiplayerService;
+import no.ntnu.tdt4240.asteroids.network.INetworkService;
 
 
-public class PlayService implements IMultiplayerService {
+public class PlayService implements INetworkService {
 
     private static final int requestCode = 1;
     private final AndroidLauncher activity;
@@ -20,7 +20,7 @@ public class PlayService implements IMultiplayerService {
         this.activity = activity;
         gameHelper = new GameHelper(activity, GameHelper.CLIENT_GAMES);
         gameHelper.enableDebugLog(true);
-
+        gameHelper.setShowErrorDialogs(true);
         gameHelper.setup(listener);
     }
 
@@ -96,7 +96,18 @@ public class PlayService implements IMultiplayerService {
     }
 
     @Override
+    public void sendUnreliableMessageToOthers(byte[] messageData) {
+        Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, "roomId");
+    }
+
+    @Override
+    public void setMessageReceivedListener(NetworkMessageReceivedListener listener) {
+        // TODO: create adapter between NetworkMessageReceivedListener and RealTimeMessageReceivedListener
+    }
+
+    @Override
     public boolean isSignedIn() {
         return gameHelper.isSignedIn();
     }
+
 }

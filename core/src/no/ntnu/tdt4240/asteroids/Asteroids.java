@@ -6,20 +6,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.asteroids.multiplayer.IMultiplayerService;
+import no.ntnu.tdt4240.asteroids.network.INetworkService;
 import no.ntnu.tdt4240.asteroids.screen.MainScreen;
 
 public class Asteroids extends Game {
 
-    private static IMultiplayerService multiplayerService;
+    private static INetworkService networkService;
     private SpriteBatch batch;
 
-    Asteroids(IMultiplayerService multiplayerService) {
-        Asteroids.multiplayerService = multiplayerService;
+    Asteroids(INetworkService networkService) {
+        Asteroids.networkService = networkService;
     }
 
-    public static IMultiplayerService getMultiplayerService() {
-        return multiplayerService;
+    public static INetworkService getNetworkService() {
+        return networkService;
     }
 
     @Override
