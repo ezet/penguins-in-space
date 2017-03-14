@@ -14,6 +14,8 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMap
 
 public class BoundsSystem extends IteratingSystem {
 
+    public static final int MARGIN = 10;
+
     public BoundsSystem() {
         //noinspection unchecked
         super(Family.all(BoundsComponent.class, PositionComponent.class, DrawableComponent.class).get());
@@ -25,11 +27,13 @@ public class BoundsSystem extends IteratingSystem {
         PositionComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         if (bounds.bounds.width == 0) {
-            bounds.bounds.width = drawable.getRegion().getRegionWidth();
+            bounds.bounds.width = drawable.getRegion().getRegionWidth() - MARGIN * 2;
         }
         if (bounds.bounds.height == 0) {
-            bounds.bounds.height = drawable.getRegion().getRegionHeight();
+            bounds.bounds.height = drawable.getRegion().getRegionHeight() - MARGIN * 2;
         }
-        bounds.bounds.setPosition(position.position);
+
+        bounds.bounds.setPosition(position.position.x + MARGIN, position.position.y + MARGIN);
+
     }
 }

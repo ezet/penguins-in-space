@@ -3,7 +3,6 @@ package no.ntnu.tdt4240.asteroids.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -72,7 +71,6 @@ public class BoundarySystem extends IteratingSystem {
     }
 
     private void deleteEntity(Entity entity) {
-        Gdx.app.debug(TAG, "deleteEntity: " + entity);
         getEngine().removeEntity(entity);
     }
 }

@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.input;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
@@ -8,6 +9,8 @@ import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.BulletComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
@@ -18,15 +21,18 @@ public class InputHandler {
     // TODO: read config from settings
     private static final int BULLET_SPEED = 800;
     private static final int ACCELERATION_SCALAR = 500;
-    private final Entity player;
     private final PooledEngine engine;
     private final IDrawableComponentFactory drawableComponentFactory;
     private final List<InputListener> listeners = new ArrayList<InputListener>();
+    private Entity player;
 
-    public InputHandler(Entity player, PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
-        this.player = player;
+    public InputHandler(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
         this.engine = engine;
         this.drawableComponentFactory = drawableComponentFactory;
+    }
+
+    public void setControlledEntity(Entity player) {
+        this.player = player;
     }
 
     public void addListener(InputListener listener) {
@@ -68,8 +74,19 @@ public class InputHandler {
         bullet.add(bulletPosition);
         bullet.add(bulletMovement);
         DrawableComponent bulletDrawable = drawableComponentFactory.getBullet();
+        bullet.add(new BulletComponent());
         bullet.add(bulletDrawable);
         bullet.add(new BoundsComponent());
+
+        bullet.add(new CollisionComponent(new CollisionComponent.ICollisionHandler() {
+            @Override
+            public void onCollision(Entity source, Entity target, Engine engine) {
+                if (ComponentMappers.obstacleMapper.has(target)) {
+                    // TODO: we hit an obstacle, MISSION ACCOMPLISHED!
+                    engine.removeEntity(source);
+                }
+            }
+        }));
         engine.addEntity(bullet);
         for (InputListener listener : listeners) {
             listener.onFire();
