@@ -10,6 +10,8 @@ import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 
 public class InputHandler {
 
+    public static final int BULLET_SPEED = 800;
+    public static final int ACCELERATION_SCALAR = 500;
     private final Entity player;
     private final PooledEngine engine;
     private final IDrawableComponentFactory drawableComponentFactory;
@@ -21,8 +23,12 @@ public class InputHandler {
     }
 
     void move(float inputX, float inputY) {
-        MovementComponent movementComponent = ComponentMappers.movementMapper.get(player);
-        movementComponent.acceleration.set(inputX, inputY).scl(500);
+        MovementComponent movement = ComponentMappers.movementMapper.get(player);
+        movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
+        if (!movement.acceleration.isZero()) {
+            PositionComponent position = ComponentMappers.positionMapper.get(player);
+            position.rotation.set(movement.acceleration);
+        }
     }
 
     void fire() {
@@ -31,9 +37,8 @@ public class InputHandler {
         PositionComponent bulletPosition = engine.createComponent(PositionComponent.class);
         bulletPosition.position.set(playerPosition.position);
 
-        MovementComponent playerMovement = ComponentMappers.movementMapper.get(player);
         MovementComponent bulletMovement = engine.createComponent(MovementComponent.class);
-        bulletMovement.velocity.set(playerMovement.velocity.x * 10, playerMovement.velocity.y * 10);
+        bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
 
         Entity bullet = engine.createEntity();
         bullet.add(bulletPosition);

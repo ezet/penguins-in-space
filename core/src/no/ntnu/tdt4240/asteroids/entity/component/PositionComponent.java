@@ -10,20 +10,22 @@ public class PositionComponent implements Component, Pool.Poolable {
 
     public Vector2 rotation;
 
+    @SuppressWarnings("WeakerAccess")
     public PositionComponent() {
         position = new Vector2();
         rotation = new Vector2();
     }
 
-    public PositionComponent(int x, int y) {
+    public PositionComponent(int positionX, int positionY, int rotationX, int rotationY) {
         this();
-        position.set(x, y);
+        position.set(positionX, positionY);
+        rotation.set(rotationX, rotationY);
     }
 
     @Override
     public void reset() {
         position.setZero();
-        rotation.setZero();
+        position.setZero();
     }
 
 }
