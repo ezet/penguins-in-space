@@ -6,15 +6,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.asteroids.multiplayer.PlayServices;
+import no.ntnu.tdt4240.asteroids.multiplayer.IMultiplayerService;
 import no.ntnu.tdt4240.asteroids.screen.MainScreen;
 
 public class Asteroids extends Game {
 
-    public final PlayServices playService;
+    public final IMultiplayerService playService;
     private SpriteBatch batch;
 
-    public Asteroids(PlayServices playService) {
+    public Asteroids(IMultiplayerService playService) {
         this.playService = playService;
     }
 

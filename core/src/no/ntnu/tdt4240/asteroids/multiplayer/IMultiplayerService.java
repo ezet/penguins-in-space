@@ -1,6 +1,6 @@
 package no.ntnu.tdt4240.asteroids.multiplayer;
 
-public interface PlayServices {
+public interface IMultiplayerService {
     void signIn();
 
     void signOut();
