@@ -39,6 +39,7 @@ public class RenderSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         PositionComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
-        batch.draw(drawable.getRegion(), position.getX(), position.getY());
+        batch.draw(drawable.getRegion(), position.position.x, position.position.y);
+//        batch.draw(drawable.getRegion(), position.position.x, position.position.y, new Affine2().rotate(position.rotation.angle()));
     }
 }
