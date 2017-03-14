@@ -6,11 +6,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.ntnu.tdt4240.asteroids.multiplayer.PlayServices;
 import no.ntnu.tdt4240.asteroids.screen.MainScreen;
 
 public class Asteroids extends Game {
 
+    public final PlayServices playService;
     private SpriteBatch batch;
+
+    public Asteroids(PlayServices playService) {
+        this.playService = playService;
+    }
+
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);

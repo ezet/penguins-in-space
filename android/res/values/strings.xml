@@ -2,5 +2,7 @@
 <resources>
 
     <string name="app_name">Asteroids</string>
+    <string name="achievement_dum_dum">achievement_dum_dum</string>
+    <string name="leaderboard_highest">leaderboard_highest</string>
 
 </resources>
