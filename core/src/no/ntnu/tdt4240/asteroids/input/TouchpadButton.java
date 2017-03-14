@@ -6,11 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class TouchpadButton extends Widget {
+class TouchpadButton extends Widget {
 
     private final Drawable touchButton;
 
-    public TouchpadButton(Drawable touchButton) {
+    TouchpadButton(Drawable touchButton) {
         this.touchButton = touchButton;
         setTouchable(Touchable.enabled);
     }

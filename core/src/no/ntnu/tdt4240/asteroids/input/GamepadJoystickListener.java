@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 // TODO: refactor so we don't depend on the entity, use command pattern
 public class GamepadJoystickListener extends ChangeListener {
 
+    @SuppressWarnings("unused")
     private static final String TAG = GamepadJoystickListener.class.getSimpleName();
     private final InputHandler inputHandler;
 

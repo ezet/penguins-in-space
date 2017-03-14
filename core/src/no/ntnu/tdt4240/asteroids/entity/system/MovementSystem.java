@@ -14,11 +14,13 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMap
 
 public class MovementSystem extends IteratingSystem {
 
-    public static final int MAX_VELOCITY = 400;
+    private static final int MAX_VELOCITY = 400;
+    @SuppressWarnings("unused")
     private static final String TAG = MovementSystem.class.getSimpleName();
     private Vector2 temp = new Vector2();
 
     public MovementSystem() {
+        //noinspection unchecked
         super(Family.all(PositionComponent.class, MovementComponent.class).get());
     }
 

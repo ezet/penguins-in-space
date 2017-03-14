@@ -15,11 +15,13 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMap
 
 public class RenderSystem extends IteratingSystem {
 
+    @SuppressWarnings("unused")
     private static final String TAG = RenderSystem.class.getSimpleName();
     private final Camera camera;
     private final SpriteBatch batch;
 
     public RenderSystem(SpriteBatch batch) {
+        //noinspection unchecked
         super(Family.all(PositionComponent.class, DrawableComponent.class).get());
         // TODO: camera config
         this.camera = new OrthographicCamera();
@@ -40,6 +42,5 @@ public class RenderSystem extends IteratingSystem {
         PositionComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         batch.draw(drawable.getRegion(), position.position.x, position.position.y);
-//        batch.draw(drawable.getRegion(), position.position.x, position.position.y, new Affine2().rotate(position.rotation.angle()));
     }
 }

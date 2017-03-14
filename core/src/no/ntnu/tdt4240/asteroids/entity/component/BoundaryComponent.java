@@ -5,8 +5,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class BoundaryComponent implements Component, Pool.Poolable {
 
-    public static final int MODE_BOUND = 0;
-    public static final int MODE_FREE = 1;
+    public static final int MODE_FREE = 0;
 
     public int boundaryMode;
 
@@ -20,6 +19,6 @@ public class BoundaryComponent implements Component, Pool.Poolable {
 
     @Override
     public void reset() {
-        boundaryMode = MODE_BOUND;
+        boundaryMode = MODE_FREE;
     }
 }

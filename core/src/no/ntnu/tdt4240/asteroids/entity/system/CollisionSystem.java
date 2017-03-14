@@ -10,6 +10,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 public class CollisionSystem extends IteratingSystem {
 
     public CollisionSystem() {
+        //noinspection unchecked
         super(Family.all(CollisionComponent.class, PositionComponent.class).get());
     }
 
