@@ -10,18 +10,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.bulletMapper;
+
 public class ObstacleSystem extends EntitySystem {
 
     private static final int MAX_OBSTACLES = 8;
     private static final int MIN_OBSTACLES = 2;
-
+    private static final String TAG = ObstacleSystem.class.getSimpleName();
     private ImmutableArray<Entity> entities;
-
     private IDrawableComponentFactory drawableComponentFactory;
 
     public ObstacleSystem(IDrawableComponentFactory drawableComponentFactory) {
@@ -75,6 +78,17 @@ public class ObstacleSystem extends EntitySystem {
         obstacle.add(movement);
         obstacle.add(obstacleDrawable);
         obstacle.add(new ObstacleComponent());
+        obstacle.add(new BoundsComponent());
+        obstacle.add(new CollisionComponent(new CollisionComponent.ICollisionHandler() {
+            @Override
+            public void onCollision(Entity source, Entity target, Engine engine) {
+                if (bulletMapper.has(target)) {
+                    // TODO: oh noes we dies, explosions commence
+                    engine.removeEntity(source);
+                }
+                // TODO: handle other collisions
+            }
+        }));
         getEngine().addEntity(obstacle);
     }
 }

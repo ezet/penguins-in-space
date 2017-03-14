@@ -1,6 +1,8 @@
 package no.ntnu.tdt4240.asteroids.screen;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -16,10 +18,14 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
+import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.ObstacleSystem;
@@ -28,6 +34,8 @@ import no.ntnu.tdt4240.asteroids.input.GamepadButtonListener;
 import no.ntnu.tdt4240.asteroids.input.GamepadJoystickListener;
 import no.ntnu.tdt4240.asteroids.input.InputHandler;
 import no.ntnu.tdt4240.asteroids.input.VirtualGamepad;
+
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.obstacleMapper;
 
 class GameScreen extends ScreenAdapter {
 
@@ -42,6 +50,16 @@ class GameScreen extends ScreenAdapter {
     private boolean running;
     private Entity player;
     private IDrawableComponentFactory drawableComponentFactory;
+    private InputHandler inputHandler;
+    private CollisionComponent.ICollisionHandler playerCollisionHandler = new CollisionComponent.ICollisionHandler() {
+        @Override
+        public void onCollision(Entity source, Entity target, Engine engine) {
+            if (obstacleMapper.has(target)) {
+                // TODO: We hit an obstacle, HANDLE IT
+                engine.removeAllEntities();
+            }
+        }
+    };
 
     GameScreen(Asteroids game) {
         this.game = game;
@@ -58,10 +76,9 @@ class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(guiStage);
 
         initEngine(engine, batch);
-
         initGamepad(guiStage);
+        initPlayer(engine, inputHandler);
         running = true;
-
     }
 
     @Override
@@ -83,27 +100,44 @@ class GameScreen extends ScreenAdapter {
     }
 
     private void initGamepad(Stage guiStage) {
-        InputHandler inputHandler = new InputHandler(player, engine, drawableComponentFactory);
+        inputHandler = new InputHandler(engine, drawableComponentFactory);
         VirtualGamepad gamepad = new VirtualGamepad();
         gamepad.addButtonListener(new GamepadButtonListener(inputHandler));
         gamepad.addJoystickListener(new GamepadJoystickListener(inputHandler));
         guiStage.addActor(gamepad);
     }
 
-    private void initEngine(PooledEngine engine, SpriteBatch batch) {
+    private void initEngine(final PooledEngine engine, SpriteBatch batch) {
         engine.addSystem(new RenderSystem(batch));
         engine.addSystem(new GravitySystem());
         engine.addSystem(new MovementSystem());
         engine.addSystem(new ObstacleSystem(drawableComponentFactory));
+        engine.addSystem(new BoundsSystem());
         engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        engine.addSystem(new CollisionSystem());
+        engine.addEntityListener(new EntityListener() {
+            @Override
+            public void entityAdded(Entity entity) {
+            }
+
+            @Override
+            public void entityRemoved(Entity entity) {
+                if (entity == player) initPlayer(engine, inputHandler);
+            }
+        });
+    }
+
+    private void initPlayer(final Engine engine, InputHandler inputHandler) {
         // TODO: player should be local var, change it when touch listener is refactored
-        player = engine.createEntity();
+        player = new Entity();
         player.add(new PositionComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 1, 0));
         player.add(new MovementComponent());
         player.add(new GravityComponent(0.01f));
+        player.add(new BoundsComponent());
         player.add(new BoundaryComponent(BoundaryComponent.MODE_FREE));
         player.add(drawableComponentFactory.getPlayer());
+        player.add(new CollisionComponent(playerCollisionHandler));
         engine.addEntity(player);
+        inputHandler.setControlledEntity(player);
     }
-
 }
