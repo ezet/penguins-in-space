@@ -15,8 +15,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.input.GamepadButtonListener;
@@ -85,13 +87,14 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void initEngine(PooledEngine engine, SpriteBatch batch) {
-
         engine.addSystem(new RenderSystem(batch));
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         // TODO: player should be local var, change it when touch listener is refactored
         player = engine.createEntity();
         player.add(new PositionComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2));
         player.add(new MovementComponent());
+        player.add(new BoundaryComponent(BoundaryComponent.MODE_FREE));
         player.add(drawableComponentFactory.getPlayer());
         engine.addEntity(player);
     }
