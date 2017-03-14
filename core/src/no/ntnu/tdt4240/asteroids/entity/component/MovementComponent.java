@@ -10,6 +10,7 @@ public class MovementComponent implements Component, Pool.Poolable {
 
     public Vector2 velocity;
 
+
     public MovementComponent() {
         acceleration = new Vector2();
         velocity = new Vector2();

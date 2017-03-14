@@ -30,7 +30,6 @@ public class MovementSystem extends IteratingSystem {
         MovementComponent movement = movementMapper.get(entity);
 
         temp.set(movement.acceleration).scl(deltaTime);
-
         movement.velocity.add(temp).clamp(0, MAX_VELOCITY);
 
 

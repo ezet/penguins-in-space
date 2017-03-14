@@ -93,7 +93,7 @@ class GameScreen extends ScreenAdapter {
         engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         // TODO: player should be local var, change it when touch listener is refactored
         player = engine.createEntity();
-        player.add(new PositionComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2));
+        player.add(new PositionComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 1, 0));
         player.add(new MovementComponent());
         player.add(new BoundaryComponent(BoundaryComponent.MODE_FREE));
         player.add(drawableComponentFactory.getPlayer());
