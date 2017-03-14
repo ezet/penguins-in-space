@@ -22,6 +22,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.ObstacleSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.input.GamepadButtonListener;
 import no.ntnu.tdt4240.asteroids.input.GamepadJoystickListener;
@@ -93,6 +94,7 @@ class GameScreen extends ScreenAdapter {
         engine.addSystem(new RenderSystem(batch));
         engine.addSystem(new GravitySystem());
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new ObstacleSystem(drawableComponentFactory));
         engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         // TODO: player should be local var, change it when touch listener is refactored
         player = engine.createEntity();

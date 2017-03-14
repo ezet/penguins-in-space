@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
@@ -54,7 +55,10 @@ public class InputHandler {
     void fire() {
         PositionComponent playerPosition = ComponentMappers.positionMapper.get(player);
         PositionComponent bulletPosition = engine.createComponent(PositionComponent.class);
+        DrawableComponent playerDrawable = ComponentMappers.drawableMapper.get(player);
         bulletPosition.position.set(playerPosition.position);
+        bulletPosition.position.x += (playerDrawable.getRegion().getRegionWidth() / 2);
+        bulletPosition.position.y += (playerDrawable.getRegion().getRegionHeight() / 2);
 
         MovementComponent bulletMovement = engine.createComponent(MovementComponent.class);
         bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
@@ -62,7 +66,8 @@ public class InputHandler {
         Entity bullet = engine.createEntity();
         bullet.add(bulletPosition);
         bullet.add(bulletMovement);
-        bullet.add(drawableComponentFactory.getBullet());
+        DrawableComponent bulletDrawable = drawableComponentFactory.getBullet();
+        bullet.add(bulletDrawable);
         engine.addEntity(bullet);
         for (InputListener listener : listeners) {
             listener.onFire();
