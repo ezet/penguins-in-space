@@ -6,11 +6,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import no.ntnu.tdt4240.asteroids.network.INetworkService;
 import no.ntnu.tdt4240.asteroids.screen.MainScreen;
 
 public class Asteroids extends Game {
 
+    private static INetworkService networkService;
     private SpriteBatch batch;
+
+    Asteroids(INetworkService networkService) {
+        Asteroids.networkService = networkService;
+    }
+
+    public static INetworkService getNetworkService() {
+        return networkService;
+    }
+
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);

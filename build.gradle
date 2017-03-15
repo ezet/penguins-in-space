@@ -53,6 +53,8 @@ project(":android") {
 
     dependencies {
         compile project(":core")
+        compile project(":BaseGameUtils")
+        compile 'com.google.android.gms:play-services-games:10.2.0'
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -93,11 +95,10 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java"
-
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+
     }
 }
 

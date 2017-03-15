@@ -47,9 +47,9 @@ class GameScreen extends ScreenAdapter {
     private final SpriteBatch batch;
     private final Stage guiStage;
     private final PooledEngine engine;
+    Entity player;
+    IDrawableComponentFactory drawableComponentFactory;
     private boolean running;
-    private Entity player;
-    private IDrawableComponentFactory drawableComponentFactory;
     private InputHandler inputHandler;
     private CollisionComponent.ICollisionHandler playerCollisionHandler = new CollisionComponent.ICollisionHandler() {
         @Override
@@ -107,7 +107,7 @@ class GameScreen extends ScreenAdapter {
         guiStage.addActor(gamepad);
     }
 
-    private void initEngine(final PooledEngine engine, SpriteBatch batch) {
+    void initEngine(final PooledEngine engine, SpriteBatch batch) {
         engine.addSystem(new RenderSystem(batch));
         engine.addSystem(new GravitySystem());
         engine.addSystem(new MovementSystem());
