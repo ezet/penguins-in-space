@@ -90,12 +90,12 @@ class GameScreen extends ScreenAdapter {
     private void update(float delta) {
         if (delta > 0.1f) delta = 0.1f;
         if (running) engine.update(delta);
+        guiStage.act();
         // TODO: update everything else
     }
 
     private void draw() {
         guiStage.draw();
-
         // TODO: draw UI
     }
 
