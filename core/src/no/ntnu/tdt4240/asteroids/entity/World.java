@@ -87,7 +87,7 @@ public class World {
         int attempts = MIN_OBSTACLES - currentObstacles;
         int current = currentObstacles;
         while (attempts > 0) {
-            createObstacle();
+            engine.addEntity(createObstacle());
             --attempts;
             ++current;
         }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.World;
+import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
@@ -105,6 +106,7 @@ class GameScreen extends ScreenAdapter {
         engine.addSystem(new BoundsSystem());
         engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         engine.addSystem(new CollisionSystem());
+        engine.addSystem(new AnimationSystem());
     }
 
 }
