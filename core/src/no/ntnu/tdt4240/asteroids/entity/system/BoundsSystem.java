@@ -27,13 +27,11 @@ public class BoundsSystem extends IteratingSystem {
         PositionComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         if (bounds.bounds.width == 0) {
-            bounds.bounds.width = drawable.getRegion().getRegionWidth() - MARGIN * 2;
+            bounds.bounds.width = drawable.region.getRegionWidth() - MARGIN * 2;
         }
         if (bounds.bounds.height == 0) {
-            bounds.bounds.height = drawable.getRegion().getRegionHeight() - MARGIN * 2;
+            bounds.bounds.height = drawable.region.getRegionHeight() - MARGIN * 2;
         }
-
-        bounds.bounds.setPosition(position.position.x + MARGIN, position.position.y + MARGIN);
-
+        bounds.bounds.setCenter(position.position);
     }
 }

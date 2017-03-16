@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.Random;
 
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
@@ -92,24 +93,26 @@ public class World {
         }
         attempts = MAX_OBSTACLES - current;
         for (int i = 0; i < attempts; ++i)
-            if (MathUtils.random() > 1 - SPAWN_CHANCE)
-                createObstacle();
+            if (MathUtils.random() > 1 - SPAWN_CHANCE) {
+                engine.addEntity(createObstacle());
+            }
     }
 
 
-    private void createObstacle() {
+    private Entity createObstacle() {
         Entity obstacle = EntityFactory.getInstance().createObstacle();
 
         // TODO: Improve obstacle spawn position
         PositionComponent position = obstacle.getComponent(PositionComponent.class);
+        DrawableComponent drawable = obstacle.getComponent(DrawableComponent.class);
+
         int x = MathUtils.random(0, Gdx.graphics.getWidth());
-        int y = Gdx.graphics.getHeight();
+        int y = Gdx.graphics.getHeight() + drawable.region.getRegionHeight() / 2;
         position.position.set(x, y);
 
         MovementComponent movement = obstacle.getComponent(MovementComponent.class);
-        movement.velocity.setToRandomDirection().clamp(100, 200);
-
-        engine.addEntity(obstacle);
+        movement.velocity.setToRandomDirection().clamp(100, 250);
+        return obstacle;
     }
 
     private class ObstacleListener implements EntityListener {

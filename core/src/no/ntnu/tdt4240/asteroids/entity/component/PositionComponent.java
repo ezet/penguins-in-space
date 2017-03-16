@@ -25,7 +25,7 @@ public class PositionComponent implements Component, Pool.Poolable {
     @Override
     public void reset() {
         position.setZero();
-        position.setZero();
+        rotation.setZero();
     }
 
 }
