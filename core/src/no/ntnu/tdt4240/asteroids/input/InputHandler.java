@@ -1,20 +1,16 @@
 package no.ntnu.tdt4240.asteroids.input;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import no.ntnu.tdt4240.asteroids.entity.IDrawableComponentFactory;
-import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.BulletComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
+import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 
 public class InputHandler {
 
@@ -22,17 +18,15 @@ public class InputHandler {
     private static final int BULLET_SPEED = 800;
     private static final int ACCELERATION_SCALAR = 500;
     private final PooledEngine engine;
-    private final IDrawableComponentFactory drawableComponentFactory;
-    private final List<InputListener> listeners = new ArrayList<InputListener>();
-    private Entity player;
+    private final List<InputListener> listeners = new ArrayList<>();
+    private Entity controlledEntity;
 
-    public InputHandler(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
+    public InputHandler(PooledEngine engine) {
         this.engine = engine;
-        this.drawableComponentFactory = drawableComponentFactory;
     }
 
     public void setControlledEntity(Entity player) {
-        this.player = player;
+        this.controlledEntity = player;
     }
 
     public void addListener(InputListener listener) {
@@ -47,11 +41,11 @@ public class InputHandler {
         listeners.clear();
     }
 
-    void move(float inputX, float inputY) {
-        MovementComponent movement = ComponentMappers.movementMapper.get(player);
+    public void move(float inputX, float inputY) {
+        MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
         movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
         if (!movement.acceleration.isZero()) {
-            PositionComponent position = ComponentMappers.positionMapper.get(player);
+            PositionComponent position = ComponentMappers.positionMapper.get(controlledEntity);
             position.rotation.set(movement.acceleration);
         }
         for (InputListener listener : listeners) {
@@ -59,34 +53,19 @@ public class InputHandler {
         }
     }
 
-    void fire() {
-        PositionComponent playerPosition = ComponentMappers.positionMapper.get(player);
-        PositionComponent bulletPosition = engine.createComponent(PositionComponent.class);
-        DrawableComponent playerDrawable = ComponentMappers.drawableMapper.get(player);
+    public void fire() {
+        EntityFactory factory = EntityFactory.getInstance();
+        Entity bullet = factory.createBullet();
+        PositionComponent playerPosition = ComponentMappers.positionMapper.get(controlledEntity);
+        PositionComponent bulletPosition = bullet.getComponent(PositionComponent.class);
+        DrawableComponent playerDrawable = ComponentMappers.drawableMapper.get(controlledEntity);
         bulletPosition.position.set(playerPosition.position);
         bulletPosition.position.x += (playerDrawable.getRegion().getRegionWidth() / 2);
         bulletPosition.position.y += (playerDrawable.getRegion().getRegionHeight() / 2);
 
-        MovementComponent bulletMovement = engine.createComponent(MovementComponent.class);
+        MovementComponent bulletMovement = bullet.getComponent(MovementComponent.class);
         bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
 
-        Entity bullet = engine.createEntity();
-        bullet.add(bulletPosition);
-        bullet.add(bulletMovement);
-        DrawableComponent bulletDrawable = drawableComponentFactory.getBullet();
-        bullet.add(new BulletComponent());
-        bullet.add(bulletDrawable);
-        bullet.add(new BoundsComponent());
-
-        bullet.add(new CollisionComponent(new CollisionComponent.ICollisionHandler() {
-            @Override
-            public void onCollision(Entity source, Entity target, Engine engine) {
-                if (ComponentMappers.obstacleMapper.has(target)) {
-                    // TODO: we hit an obstacle, MISSION ACCOMPLISHED!
-                    engine.removeEntity(source);
-                }
-            }
-        }));
         engine.addEntity(bullet);
         for (InputListener listener : listeners) {
             listener.onFire();

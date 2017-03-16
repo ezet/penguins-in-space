@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.stage.MainScreenStage;
 
 public class MainScreen extends ScreenAdapter {
 
     private final Asteroids game;
     private final OrthographicCamera guiCam;
     private final SpriteBatch batch;
+    private final Stage stage;
     private Vector3 touchPoint;
 
     public MainScreen(Asteroids game) {
@@ -22,6 +25,7 @@ public class MainScreen extends ScreenAdapter {
         touchPoint = new Vector3();
         guiCam = new OrthographicCamera(320, 480);
         guiCam.position.set(320 / 2, 480 / 2, 0);
+        stage = new MainScreenStage();
 
         // TODO: set touch points
     }

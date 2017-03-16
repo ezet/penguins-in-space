@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.entity;
+package no.ntnu.tdt4240.asteroids.entity.util;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 

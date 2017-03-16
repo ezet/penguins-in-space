@@ -1,23 +1,21 @@
 package no.ntnu.tdt4240.asteroids.entity.component;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.Pool;
 
-public class CollisionComponent implements Component {
+import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
 
-    private final ICollisionHandler collisionHandler;
+public class CollisionComponent implements Component, Pool.Poolable {
 
-    public CollisionComponent(ICollisionHandler collisionHandler) {
-        this.collisionHandler = collisionHandler;
-    }
+    public CollisionSystem.ICollisionHandler collisionHandler;
 
+//    public void onCollision(Entity source, Entity target, Engine engine) {
+//        collisionHandler.onCollision(source, target, engine);
+//    }
 
-    public void onCollision(Entity source, Entity target, Engine engine) {
-        collisionHandler.onCollision(source, target, engine);
-    }
+    @Override
+    public void reset() {
+        collisionHandler = null;
 
-    public interface ICollisionHandler {
-        void onCollision(Entity source, Entity target, Engine engine);
     }
 }

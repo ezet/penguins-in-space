@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.entity.system;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -22,14 +23,15 @@ public class CollisionSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         CollisionComponent collisionComponent = collisionMapper.get(entity);
         BoundsComponent bounds = boundsMapper.get(entity);
-
         for (Entity other : getEntities()) {
             BoundsComponent otherBounds = boundsMapper.get(other);
             if (bounds.bounds.overlaps(otherBounds.bounds)) {
-                collisionComponent.onCollision(entity, other, getEngine());
+                collisionComponent.collisionHandler.onCollision(entity, other, getEngine());
             }
         }
     }
 
-
+    public interface ICollisionHandler {
+        void onCollision(Entity source, Entity target, Engine engine);
+    }
 }
