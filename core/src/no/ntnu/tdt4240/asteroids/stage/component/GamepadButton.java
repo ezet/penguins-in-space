@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.input;
+package no.ntnu.tdt4240.asteroids.stage.component;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,11 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-class TouchpadButton extends Widget {
+class GamepadButton extends Widget {
 
     private final Drawable touchButton;
 
-    TouchpadButton(Drawable touchButton) {
+    GamepadButton(Drawable touchButton) {
         this.touchButton = touchButton;
         setTouchable(Touchable.enabled);
     }

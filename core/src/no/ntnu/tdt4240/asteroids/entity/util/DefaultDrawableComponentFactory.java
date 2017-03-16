@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.entity;
+package no.ntnu.tdt4240.asteroids.entity.util;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.Texture;
