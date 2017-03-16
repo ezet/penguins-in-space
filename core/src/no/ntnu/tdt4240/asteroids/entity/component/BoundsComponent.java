@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
 
+// TODO: consider merging BoundsComponent and System into Collision
 public class BoundsComponent implements Component, Pool.Poolable {
 
     public final Rectangle bounds = new Rectangle();

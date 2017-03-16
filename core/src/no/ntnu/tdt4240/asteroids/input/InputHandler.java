@@ -60,9 +60,8 @@ public class InputHandler {
         PositionComponent bulletPosition = bullet.getComponent(PositionComponent.class);
         DrawableComponent playerDrawable = ComponentMappers.drawableMapper.get(controlledEntity);
         bulletPosition.position.set(playerPosition.position);
-        bulletPosition.position.x += (playerDrawable.getRegion().getRegionWidth() / 2);
-        bulletPosition.position.y += (playerDrawable.getRegion().getRegionHeight() / 2);
-
+//        bulletPosition.position.x += (playerDrawable.region.getRegionWidth() / 2);
+//        bulletPosition.position.y += (playerDrawable.region.getRegionHeight() / 2);
         MovementComponent bulletMovement = bullet.getComponent(MovementComponent.class);
         bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
 

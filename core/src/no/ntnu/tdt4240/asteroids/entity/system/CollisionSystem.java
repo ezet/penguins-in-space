@@ -16,13 +16,13 @@ public class CollisionSystem extends IteratingSystem {
     public CollisionSystem() {
         //noinspection unchecked
         super(Family.all(CollisionComponent.class, BoundsComponent.class).get());
-
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         CollisionComponent collisionComponent = collisionMapper.get(entity);
         BoundsComponent bounds = boundsMapper.get(entity);
+        if (collisionComponent == null || bounds == null) return;
         for (Entity other : getEntities()) {
             BoundsComponent otherBounds = boundsMapper.get(other);
             if (bounds.bounds.overlaps(otherBounds.bounds)) {

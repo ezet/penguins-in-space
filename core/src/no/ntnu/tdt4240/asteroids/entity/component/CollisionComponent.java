@@ -9,10 +9,6 @@ public class CollisionComponent implements Component, Pool.Poolable {
 
     public CollisionSystem.ICollisionHandler collisionHandler;
 
-//    public void onCollision(Entity source, Entity target, Engine engine) {
-//        collisionHandler.onCollision(source, target, engine);
-//    }
-
     @Override
     public void reset() {
         collisionHandler = null;

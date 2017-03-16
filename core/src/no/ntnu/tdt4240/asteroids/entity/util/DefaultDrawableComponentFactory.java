@@ -33,7 +33,7 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     private DrawableComponent getDrawable(String path) {
         Texture texture = new Texture(path);
         DrawableComponent component = engine.createComponent(DrawableComponent.class);
-        component.setRegion(new TextureRegion(texture));
+        component.region = new TextureRegion(texture);
         return component;
     }
 }
