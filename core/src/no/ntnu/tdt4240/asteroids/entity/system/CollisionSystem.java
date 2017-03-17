@@ -22,7 +22,8 @@ public class CollisionSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         CollisionComponent collisionComponent = collisionMapper.get(entity);
         BoundsComponent bounds = boundsMapper.get(entity);
-        if (collisionComponent == null || bounds == null) return;
+        if (collisionComponent == null || collisionComponent.collisionHandler == null || bounds == null)
+            return;
         for (Entity other : getEntities()) {
             BoundsComponent otherBounds = boundsMapper.get(other);
             if (bounds.bounds.overlaps(otherBounds.bounds)) {

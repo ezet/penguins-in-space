@@ -1,18 +1,20 @@
 package no.ntnu.tdt4240.asteroids.stage.component;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import no.ntnu.tdt4240.asteroids.input.InputHandler;
 
-public class GamepadController extends Group {
+// TODO: should extend WidgetGroup
+public class GamepadController extends WidgetGroup {
 
     private static final int BUTTON_SIZE = 100;
     private static final int BUTTON_MARGIN = 100;
@@ -25,6 +27,16 @@ public class GamepadController extends Group {
         initTouchpad();
         touchPad.addListener(new GamepadJoystickListener(inputHandler));
         button.addListener(new GamepadButtonListener(inputHandler));
+    }
+
+    @Override
+    public void layout() {
+        super.layout();
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return getParent().getWidth();
     }
 
     @Override
@@ -49,6 +61,11 @@ public class GamepadController extends Group {
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
         addActor(button);
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
     }
 
     private static class GamepadButtonListener extends ClickListener {
@@ -83,6 +100,5 @@ public class GamepadController extends Group {
             float knobPercentY = touchpad.getKnobPercentY();
             inputHandler.move(knobPercentX, knobPercentY);
         }
-
     }
 }
