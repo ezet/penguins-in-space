@@ -29,12 +29,12 @@ public class Asteroids extends Game {
         // TODO: load assets
         // TODO: load settings
         batch = new SpriteBatch();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         setScreen(new MainScreen(this));
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render();
     }

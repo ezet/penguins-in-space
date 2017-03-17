@@ -1,19 +1,14 @@
 package no.ntnu.tdt4240.asteroids.screen;
 
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.World;
+import no.ntnu.tdt4240.asteroids.entity.GameModel;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
-import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
-import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
@@ -22,60 +17,44 @@ import no.ntnu.tdt4240.asteroids.input.InputHandler;
 import no.ntnu.tdt4240.asteroids.stage.GameScreenStage;
 import no.ntnu.tdt4240.asteroids.stage.component.GamepadController;
 
-class GameScreen extends ScreenAdapter {
-    static final int GAME_READY = 0;
-    static final int GAME_RUNNING = 1;
-    static final int GAME_PAUSED = 2;
-    static final int GAME_LEVEL_END = 3;
-    static final int GAME_GAME_OVER = 4;
+class GameScreen extends ScreenAdapter implements GameModel.IGameListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = GameScreen.class.getSimpleName();
 
     private final Asteroids game;
-    private final GameScreenStage stage;
-    private final PooledEngine engine;
-    Entity player;
-    private World world;
-    private int state = 0;
+    private GameScreenStage stage;
+    private GameModel world;
 
 
     GameScreen(Asteroids game) {
         this.game = game;
-        engine = new PooledEngine();
+        PooledEngine engine = initEngine(game.getBatch());
+
         // TODO: get factory from config
         IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
-
         EntityFactory.initialize(engine, drawableComponentFactory);
 
         // TODO: figure out camera/viewport/stage stuff
+        world = initWorld(engine);
+        stage = initStage(engine, world);
+        world.run();
+    }
 
+    private GameScreenStage initStage(PooledEngine engine, GameModel world) {
         stage = new GameScreenStage(game.getBatch());
         InputHandler inputHandler = new InputHandler(engine);
         Gdx.input.setInputProcessor(stage);
         stage.setInputController(new GamepadController(inputHandler));
-        initController();
-
-        world = new World(engine);
-        world.create();
-
         inputHandler.setControlledEntity(world.getPlayer());
-
-        initEngine(engine, game.getBatch());
-        resumeGame();
+        return stage;
     }
 
-    private void initController() {
-        // TODO: get input controller from config
-    }
-
-    private void resumeGame() {
-        state = GAME_RUNNING;
-
-    }
-
-    private void pauseGame() {
-        state = GAME_PAUSED;
+    private GameModel initWorld(PooledEngine engine) {
+        world = new GameModel(engine);
+        world.listeners.add(this);
+        world.initialize();
+        return world;
     }
 
     @Override
@@ -86,27 +65,58 @@ class GameScreen extends ScreenAdapter {
 
     private void update(float delta) {
         if (delta > 0.1f) delta = 0.1f;
-        if (state == GAME_RUNNING) engine.update(delta);
-        stage.act();
-        // TODO: update everything else
+        world.update(delta);
+        stage.act(delta);
     }
 
     private void draw() {
-        switch (state) {
-            // TODO: draw GUI based on state
-            default:
-                stage.draw();
+        stage.draw();
+    }
+
+    private PooledEngine initEngine(SpriteBatch batch) {
+        PooledEngine engine = new PooledEngine();
+        engine.addSystem(new RenderSystem(batch));
+        engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        engine.addSystem(new AnimationSystem());
+        return engine;
+    }
+
+    @Override
+    public void update(GameModel model, int event) {
+        switch (event) {
+            case GameModel.EVENT_SCORE: {
+                onUpdateScore();
+                break;
+            }
+            case GameModel.EVENT_LEVEL_COMPLETE: {
+                onLevelComplete();
+                break;
+            }
+            case GameModel.EVENT_GAME_OVER: {
+                onGameOver();
+                break;
+            }
         }
     }
 
-    void initEngine(final PooledEngine engine, SpriteBatch batch) {
-        engine.addSystem(new RenderSystem(batch));
-        engine.addSystem(new GravitySystem());
-        engine.addSystem(new MovementSystem());
-        engine.addSystem(new BoundsSystem());
-        engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        engine.addSystem(new CollisionSystem());
-        engine.addSystem(new AnimationSystem());
+    private void onGameOver() {
+        world.stop();
+        // TODO: show game over screen
+//        stage.setScore(0);
+//        world.initialize();
+//        world.run();
+        game.setScreen(new MainScreen(game));
     }
 
+    private void onLevelComplete() {
+        world.stop();
+        // TODO: show level complete screen
+        // TODO: update world, reinitialize
+        stage.setLevel(world.getLevel());
+        world.run();
+    }
+
+    private void onUpdateScore() {
+        stage.setScore(world.getScore());
+    }
 }
