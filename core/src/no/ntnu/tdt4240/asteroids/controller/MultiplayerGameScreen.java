@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.screen;
+package no.ntnu.tdt4240.asteroids.controller;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 

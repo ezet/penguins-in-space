@@ -8,7 +8,7 @@ import java.math.BigInteger;
 
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
-import no.ntnu.tdt4240.asteroids.network.INetworkService;
+import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
 

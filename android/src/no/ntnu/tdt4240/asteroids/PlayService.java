@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.GameHelper;
 
-import no.ntnu.tdt4240.asteroids.network.INetworkService;
+import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 
 public class PlayService implements INetworkService {

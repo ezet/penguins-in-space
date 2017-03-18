@@ -12,7 +12,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 
-public class InputHandler {
+public class ControllerInputHandler {
 
     // TODO: read config from settings
     private static final int BULLET_SPEED = 800;
@@ -21,7 +21,7 @@ public class InputHandler {
     private final List<InputListener> listeners = new ArrayList<>();
     private Entity controlledEntity;
 
-    public InputHandler(PooledEngine engine) {
+    public ControllerInputHandler(PooledEngine engine) {
         this.engine = engine;
     }
 
@@ -41,7 +41,7 @@ public class InputHandler {
         listeners.clear();
     }
 
-    public void move(float inputX, float inputY) {
+    public void accelerate(float inputX, float inputY) {
         MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
         movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
         if (!movement.acceleration.isZero()) {

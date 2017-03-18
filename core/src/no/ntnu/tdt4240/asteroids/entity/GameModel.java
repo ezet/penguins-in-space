@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 import java.util.Vector;
@@ -161,11 +160,12 @@ public class GameModel {
     private Entity createObstacle() {
         Entity obstacle = EntityFactory.getInstance().createObstacle();
 
-        PositionComponent position = obstacle.getComponent(PositionComponent.class);
         DrawableComponent drawable = obstacle.getComponent(DrawableComponent.class);
         CollisionComponent collisionComponent = obstacle.getComponent(CollisionComponent.class);
         collisionComponent.collisionHandler = obstacleCollisionHandler;
 
+        // TODO: replace values with constants
+        // TODO: consider not spawning obstacles close to the player
         int obstacleSide = MathUtils.random(4);
         // 0 = top-spawn, 1 = bottom-spawn, 2 = left-spawn, 3 = right-spawn
         int x, y;
@@ -197,6 +197,7 @@ public class GameModel {
                 xVec *= -1;
             }
         }
+        PositionComponent position = obstacle.getComponent(PositionComponent.class);
         position.position.set(x, y);
         MovementComponent movement = obstacle.getComponent(MovementComponent.class);
         movement.velocity.set(xVec, yVec);

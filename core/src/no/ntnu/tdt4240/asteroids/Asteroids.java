@@ -6,8 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.asteroids.network.INetworkService;
-import no.ntnu.tdt4240.asteroids.screen.MainScreen;
+import no.ntnu.tdt4240.asteroids.controller.MainScreen;
+import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 public class Asteroids extends Game {
 

@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.stage.component;
+package no.ntnu.tdt4240.asteroids.view.widget;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.input.InputHandler;
+import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
@@ -23,10 +23,10 @@ public class GamepadController extends WidgetGroup {
     private Touchpad touchPad;
     private GamepadButton button;
 
-    public GamepadController(InputHandler inputHandler) {
+    public GamepadController(ControllerInputHandler controllerInputHandler) {
         initTouchpad();
-        touchPad.addListener(new GamepadJoystickListener(inputHandler));
-        button.addListener(new GamepadButtonListener(inputHandler));
+        touchPad.addListener(new GamepadJoystickListener(controllerInputHandler));
+        button.addListener(new GamepadButtonListener(controllerInputHandler));
     }
 
     @Override
@@ -70,15 +70,17 @@ public class GamepadController extends WidgetGroup {
 
     private static class GamepadButtonListener extends ClickListener {
 
-        private final InputHandler inputHandler;
+        private final ControllerInputHandler controllerInputHandler;
 
-        GamepadButtonListener(InputHandler inputHandler) {
-            this.inputHandler = inputHandler;
+        GamepadButtonListener(ControllerInputHandler controllerInputHandler) {
+            this.controllerInputHandler = controllerInputHandler;
         }
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            inputHandler.fire();
+            controllerInputHandler.fire();
+            event.stop();
+            event.handle();
         }
     }
 
@@ -87,10 +89,10 @@ public class GamepadController extends WidgetGroup {
 
         @SuppressWarnings("unused")
         private static final String TAG = GamepadJoystickListener.class.getSimpleName();
-        private final InputHandler inputHandler;
+        private final ControllerInputHandler controllerInputHandler;
 
-        GamepadJoystickListener(InputHandler inputHandler) {
-            this.inputHandler = inputHandler;
+        GamepadJoystickListener(ControllerInputHandler controllerInputHandler) {
+            this.controllerInputHandler = controllerInputHandler;
         }
 
         @Override
@@ -98,7 +100,9 @@ public class GamepadController extends WidgetGroup {
             Touchpad touchpad = (Touchpad) actor;
             float knobPercentX = touchpad.getKnobPercentX();
             float knobPercentY = touchpad.getKnobPercentY();
-            inputHandler.move(knobPercentX, knobPercentY);
+            controllerInputHandler.accelerate(knobPercentX, knobPercentY);
+            event.handle();
+            event.stop();
         }
     }
 }

@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.stage.component;
+package no.ntnu.tdt4240.asteroids.view.widget;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

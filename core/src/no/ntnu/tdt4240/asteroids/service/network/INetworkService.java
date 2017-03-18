@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.network;
+package no.ntnu.tdt4240.asteroids.service.network;
 
 public interface INetworkService {
     void signIn();
