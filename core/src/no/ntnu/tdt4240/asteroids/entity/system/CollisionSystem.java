@@ -7,7 +7,9 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.RectangularBoundsComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.collisionMapper;
@@ -18,7 +20,7 @@ public class CollisionSystem extends IteratingSystem {
 
     public CollisionSystem() {
         //noinspection unchecked
-        super(Family.all(CollisionComponent.class, BoundsComponent.class).get());
+        super(Family.all(CollisionComponent.class).one(RectangularBoundsComponent.class, CircularBoundsComponent.class).get());
     }
 
     @Override
@@ -33,7 +35,7 @@ public class CollisionSystem extends IteratingSystem {
                     && collisionComponent.ignoreComponents.matches(other)) continue;
             if (entity == other) continue;
             BoundsComponent otherBounds = boundsMapper.get(other);
-            if (bounds.rectangularBounds.overlaps(otherBounds.rectangularBounds)) {
+            if (bounds.overlaps(otherBounds)) {
                 if (collisionComponent.collisionHandler != null) {
                     collisionComponent.collisionHandler.onCollision(entity, other, getEngine());
                 }
