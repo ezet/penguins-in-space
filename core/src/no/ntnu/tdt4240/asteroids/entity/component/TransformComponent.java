@@ -4,19 +4,19 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 
-public class PositionComponent implements Component, Pool.Poolable {
+public class TransformComponent implements Component, Pool.Poolable {
 
     public Vector2 position;
 
     public Vector2 rotation;
 
     @SuppressWarnings("WeakerAccess")
-    public PositionComponent() {
+    public TransformComponent() {
         position = new Vector2();
         rotation = new Vector2();
     }
 
-    public PositionComponent(int positionX, int positionY, int rotationX, int rotationY) {
+    public TransformComponent(int positionX, int positionY, int rotationX, int rotationY) {
         this();
         position.set(positionX, positionY);
         rotation.set(rotationX, rotationY);

@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundaryMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
@@ -18,7 +18,7 @@ public class BoundarySystem extends IteratingSystem {
 
     @SuppressWarnings("unused")
     private static final String TAG = BoundarySystem.class.getSimpleName();
-    private static final Family family = Family.all(PositionComponent.class, MovementComponent.class, DrawableComponent.class).get();
+    private static final Family family = Family.all(TransformComponent.class, MovementComponent.class, DrawableComponent.class).get();
     private final int width;
     private final int height;
     private final Rectangle boundary;
@@ -33,11 +33,11 @@ public class BoundarySystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        PositionComponent pos = positionMapper.get(entity);
+        TransformComponent pos = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         boolean free = false;
         BoundaryComponent boundaryComponent = boundaryMapper.get(entity);
-        if (boundaryComponent != null && boundaryComponent.boundaryMode == BoundaryComponent.MODE_FREE) {
+        if (boundaryComponent != null && boundaryComponent.boundaryMode == BoundaryComponent.MODE_WRAP) {
             free = true;
         }
         if (pos.position.x + drawable.region.getRegionHeight() / 2 < 0) {

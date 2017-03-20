@@ -5,24 +5,32 @@ import com.badlogic.ashley.core.ComponentMapper;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.BulletComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.ObstacleComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
+import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 public abstract class ComponentMappers {
 
-    public static final ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
+    public static final ComponentMapper<TransformComponent> positionMapper = ComponentMapper.getFor(TransformComponent.class);
     public static final ComponentMapper<MovementComponent> movementMapper = ComponentMapper.getFor(MovementComponent.class);
     public static final ComponentMapper<DrawableComponent> drawableMapper = ComponentMapper.getFor(DrawableComponent.class);
     public static final ComponentMapper<BoundaryComponent> boundaryMapper = ComponentMapper.getFor(BoundaryComponent.class);
     public static final ComponentMapper<GravityComponent> gravityMapper = ComponentMapper.getFor(GravityComponent.class);
     public static final ComponentMapper<CollisionComponent> collisionMapper = ComponentMapper.getFor(CollisionComponent.class);
     public static final ComponentMapper<BoundsComponent> boundsMapper = ComponentMapper.getFor(BoundsComponent.class);
-    public static final ComponentMapper<ObstacleComponent> obstacleMapper = ComponentMapper.getFor(ObstacleComponent.class);
-    public static final ComponentMapper<BulletComponent> bulletMapper = ComponentMapper.getFor(BulletComponent.class);
+    public static final ComponentMapper<ObstacleClass> obstacleMapper = ComponentMapper.getFor(ObstacleClass.class);
+    public static final ComponentMapper<BulletClass> bulletMapper = ComponentMapper.getFor(BulletClass.class);
     public static final ComponentMapper<AnimationComponent> animationMapper = ComponentMapper.getFor(AnimationComponent.class);
+    public static final ComponentMapper<EffectComponent> effectMapper = ComponentMapper.getFor(EffectComponent.class);
+    public static final ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
+    public static final ComponentMapper<DamageComponent> damageMapper = ComponentMapper.getFor(DamageComponent.class);
+    public static final ComponentMapper<ShootComponent> shootMapper = ComponentMapper.getFor(ShootComponent.class);
 }

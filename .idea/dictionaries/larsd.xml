@@ -2,6 +2,7 @@
   <dictionary name="larsd">
     <words>
       <w>gamepad</w>
+      <w>hitpoints</w>
       <w>touchpad</w>
     </words>
   </dictionary>

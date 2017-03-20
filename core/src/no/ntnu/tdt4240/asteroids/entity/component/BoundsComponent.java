@@ -7,10 +7,10 @@ import com.badlogic.gdx.utils.Pool;
 // TODO: consider merging BoundsComponent and System into Collision
 public class BoundsComponent implements Component, Pool.Poolable {
 
-    public final Rectangle bounds = new Rectangle();
+    public final Rectangle rectangularBounds = new Rectangle();
 
     @Override
     public void reset() {
-        bounds.set(0, 0, 0, 0);
+        rectangularBounds.set(0, 0, 0, 0);
     }
 }

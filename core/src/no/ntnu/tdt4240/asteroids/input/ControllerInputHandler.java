@@ -6,11 +6,12 @@ import com.badlogic.ashley.core.PooledEngine;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
-import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.shootMapper;
 
 public class ControllerInputHandler {
 
@@ -45,7 +46,7 @@ public class ControllerInputHandler {
         MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
         movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
         if (!movement.acceleration.isZero()) {
-            PositionComponent position = ComponentMappers.positionMapper.get(controlledEntity);
+            TransformComponent position = ComponentMappers.positionMapper.get(controlledEntity);
             position.rotation.set(movement.acceleration);
         }
         for (InputListener listener : listeners) {
@@ -54,18 +55,19 @@ public class ControllerInputHandler {
     }
 
     public void fire() {
-        EntityFactory factory = EntityFactory.getInstance();
-        Entity bullet = factory.createBullet();
-        PositionComponent playerPosition = ComponentMappers.positionMapper.get(controlledEntity);
-        PositionComponent bulletPosition = bullet.getComponent(PositionComponent.class);
-        DrawableComponent playerDrawable = ComponentMappers.drawableMapper.get(controlledEntity);
-        bulletPosition.position.set(playerPosition.position);
-//        bulletPosition.position.x += (playerDrawable.region.getRegionWidth() / 2);
-//        bulletPosition.position.y += (playerDrawable.region.getRegionHeight() / 2);
-        MovementComponent bulletMovement = bullet.getComponent(MovementComponent.class);
-        bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
+        ShootComponent shootComponent = shootMapper.get(controlledEntity);
+        shootComponent.fire(engine, controlledEntity);
 
-        engine.addEntity(bullet);
+//        EntityFactory factory = EntityFactory.getInstance();
+//        Entity bullet = factory.createPlayerBullet();
+//        TransformComponent playerPosition = ComponentMappers.positionMapper.get(controlledEntity);
+//        TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
+//        bulletPosition.position.set(playerPosition.position);
+//        MovementComponent bulletMovement = bullet.getComponent(MovementComponent.class);
+//        bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
+//        engine.addEntity(bullet);
+
+
         for (InputListener listener : listeners) {
             listener.onFire();
         }

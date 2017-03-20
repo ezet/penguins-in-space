@@ -12,24 +12,26 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Random;
 import java.util.Vector;
 
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.ObstacleComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.EffectSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.bulletMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.obstacleMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
 
+@SuppressWarnings("WeakerAccess")
 public class GameModel {
 
     public static final int EVENT_SCORE = 0;
@@ -49,8 +51,8 @@ public class GameModel {
     private static final int MIN_OBSTACLES = 3;
     public final Vector<IGameListener> listeners = new Vector<>();
     // TODO: add config
-    private final PooledEngine engine;
-    private final CollisionSystem.ICollisionHandler playerCollisionHandler = new PlayerCollisionHandler();
+    final PooledEngine engine;
+    private final DamageSystem.IEntityDestroyedListener playerDestroyedHandler = new PlayerDestroyedHandler();
     private final Entity player;
     private final EntityListener resetListener = new EntityListener() {
         @Override
@@ -70,30 +72,27 @@ public class GameModel {
     private int level = 0;
     // TODO: use texture packer and atlas
     private Array<TextureRegion> explosions = new Array<>();
-    private CollisionSystem.ICollisionHandler obstacleCollisionHandler = new CollisionSystem.ICollisionHandler() {
+
+    private DamageSystem.IEntityDestroyedListener obstacleDestroyedHandler = new DamageSystem.IEntityDestroyedListener() {
         @Override
-        public void onCollision(Entity source, Entity target, Engine engine) {
-            if (bulletMapper.has(target)) {
-                AnimationComponent animation = new AnimationComponent();
-                source.remove(CollisionComponent.class);
-                source.remove(MovementComponent.class);
-                animation.removeOnAnimationComplete = true;
-                animation.frames.addAll(explosions);
-                source.add(animation);
-                increaseScore();
-            }
-            // TODO: handle other collisions
+        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+            AnimationComponent animation = new AnimationComponent();
+            target.remove(CollisionComponent.class);
+            target.remove(MovementComponent.class);
+            animation.removeOnAnimationComplete = true;
+            animation.frames.addAll(explosions);
+            target.add(animation);
+            increaseScore();
         }
     };
-    // TODO: share random seed with networked clients ?
-    private Random random;
+
 
     public GameModel(PooledEngine engine) {
         this.engine = engine;
         //noinspection unchecked
-        engine.addEntityListener(Family.all(ObstacleComponent.class).get(), new ObstacleListener());
+        engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener());
         player = new Entity();
-        initEngineCore();
+        setupEngineSystems();
         initExplosions();
     }
 
@@ -102,13 +101,16 @@ public class GameModel {
         notifyListeners(EVENT_SCORE);
     }
 
-    private void initEngineCore() {
-        engine.addSystem(new GravitySystem());
-        engine.addSystem(new MovementSystem());
+    private void setupEngineSystems() {
         engine.addSystem(new BoundsSystem());
         engine.addSystem(new CollisionSystem());
+        engine.addSystem(new DamageSystem(engine.getSystem(CollisionSystem.class)));
+        engine.addSystem(new EffectSystem());
+        engine.addSystem(new GravitySystem());
+        engine.addSystem(new MovementSystem());
     }
 
+    // TODO: move this
     private void initExplosions() {
         Texture texture = new Texture("explosion.png");
         for (int i = 0; i < 5; ++i) {
@@ -137,8 +139,8 @@ public class GameModel {
 
     private void initPlayer() {
         EntityFactory.getInstance().initPlayer(player);
-        CollisionComponent collisionComponent = player.getComponent(CollisionComponent.class);
-        collisionComponent.collisionHandler = playerCollisionHandler;
+        healthMapper.get(player).entityDestroyedHandler = playerDestroyedHandler;
+        player.getComponent(HealthComponent.class).entityDestroyedHandler = playerDestroyedHandler;
         engine.addEntity(player);
     }
 
@@ -161,8 +163,9 @@ public class GameModel {
         Entity obstacle = EntityFactory.getInstance().createObstacle();
 
         DrawableComponent drawable = obstacle.getComponent(DrawableComponent.class);
-        CollisionComponent collisionComponent = obstacle.getComponent(CollisionComponent.class);
-        collisionComponent.collisionHandler = obstacleCollisionHandler;
+
+        HealthComponent healthComponent = healthMapper.get(obstacle);
+        healthComponent.entityDestroyedHandler = obstacleDestroyedHandler;
 
         // TODO: replace values with constants
         // TODO: consider not spawning obstacles close to the player
@@ -197,14 +200,14 @@ public class GameModel {
                 xVec *= -1;
             }
         }
-        PositionComponent position = obstacle.getComponent(PositionComponent.class);
+        TransformComponent position = obstacle.getComponent(TransformComponent.class);
         position.position.set(x, y);
         MovementComponent movement = obstacle.getComponent(MovementComponent.class);
         movement.velocity.set(xVec, yVec);
         return obstacle;
     }
 
-    private void gameOver() {
+    void gameOver() {
         state = STATE_GAME_OVER;
         notifyListeners(EVENT_GAME_OVER);
     }
@@ -250,7 +253,7 @@ public class GameModel {
 
     private class ObstacleListener implements EntityListener {
 
-        private ImmutableArray<Entity> obstacles = engine.getEntitiesFor(Family.all(ObstacleComponent.class).get());
+        private final ImmutableArray<Entity> obstacles = engine.getEntitiesFor(Family.all(ObstacleClass.class).get());
 
         @Override
         public void entityAdded(Entity entity) {
@@ -263,14 +266,11 @@ public class GameModel {
         }
     }
 
-    private class PlayerCollisionHandler implements CollisionSystem.ICollisionHandler {
+    private class PlayerDestroyedHandler implements DamageSystem.IEntityDestroyedListener {
+
         @Override
-        public void onCollision(Entity source, Entity target, Engine engine) {
-            if (obstacleMapper.has(target)) {
-                // TODO: We hit an obstacle, HANDLE IT, eg. update listeners
-                gameOver();
-            }
+        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+            gameOver();
         }
     }
-
 }

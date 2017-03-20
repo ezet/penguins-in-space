@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
@@ -18,20 +18,20 @@ public class BoundsSystem extends IteratingSystem {
 
     public BoundsSystem() {
         //noinspection unchecked
-        super(Family.all(BoundsComponent.class, PositionComponent.class, DrawableComponent.class).get());
+        super(Family.all(BoundsComponent.class, TransformComponent.class, DrawableComponent.class).get());
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         BoundsComponent bounds = boundsMapper.get(entity);
-        PositionComponent position = positionMapper.get(entity);
+        TransformComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
-        if (bounds.bounds.width == 0) {
-            bounds.bounds.width = drawable.region.getRegionWidth() - MARGIN * 2;
+        if (bounds.rectangularBounds.width == 0) {
+            bounds.rectangularBounds.width = drawable.region.getRegionWidth() - MARGIN * 2;
         }
-        if (bounds.bounds.height == 0) {
-            bounds.bounds.height = drawable.region.getRegionHeight() - MARGIN * 2;
+        if (bounds.rectangularBounds.height == 0) {
+            bounds.rectangularBounds.height = drawable.region.getRegionHeight() - MARGIN * 2;
         }
-        bounds.bounds.setCenter(position.position);
+        bounds.rectangularBounds.setCenter(position.position);
     }
 }

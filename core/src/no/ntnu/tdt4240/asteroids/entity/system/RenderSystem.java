@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PositionComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
@@ -24,7 +24,7 @@ public class RenderSystem extends IteratingSystem {
 
     public RenderSystem(Batch batch) {
         //noinspection unchecked
-        super(Family.all(PositionComponent.class, DrawableComponent.class).get());
+        super(Family.all(TransformComponent.class, DrawableComponent.class).get());
         // TODO: camera config
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.batch = batch;
@@ -41,7 +41,7 @@ public class RenderSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        PositionComponent position = positionMapper.get(entity);
+        TransformComponent position = positionMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         TextureRegion region = drawable.region;
 //        batch.draw(drawable.region, position.position.x, position.position.y);
