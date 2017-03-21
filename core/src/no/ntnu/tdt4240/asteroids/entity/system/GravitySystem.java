@@ -12,9 +12,10 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMap
 
 public class GravitySystem extends IteratingSystem {
 
+    private static final Family FAMILY = Family.all(GravityComponent.class, MovementComponent.class).get();
+
     public GravitySystem() {
-        //noinspection unchecked
-        super(Family.all(GravityComponent.class, MovementComponent.class).get());
+        super(FAMILY);
     }
 
     @Override

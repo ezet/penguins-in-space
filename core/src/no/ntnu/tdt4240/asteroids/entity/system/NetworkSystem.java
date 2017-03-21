@@ -10,7 +10,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 
 public class NetworkSystem extends IteratingSystem {
@@ -26,7 +26,7 @@ public class NetworkSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         // TODO: send position and other relevant data
-        TransformComponent transformComponent = positionMapper.get(entity);
+        TransformComponent transformComponent = transformMapper.get(entity);
         byte[] bytes = BigInteger.valueOf((long) transformComponent.position.x).toByteArray();
         networkService.sendUnreliableMessageToOthers(bytes);
     }

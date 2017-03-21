@@ -9,24 +9,24 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 
 public class MovementSystem extends IteratingSystem {
 
+    private static final Family FAMILY = Family.all(TransformComponent.class, MovementComponent.class).get();
     private static final int MAX_VELOCITY = 400;
     @SuppressWarnings("unused")
     private static final String TAG = MovementSystem.class.getSimpleName();
     private Vector2 temp = new Vector2();
 
     public MovementSystem() {
-        //noinspection unchecked
-        super(Family.all(TransformComponent.class, MovementComponent.class).get());
+        super(FAMILY);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        TransformComponent position = positionMapper.get(entity);
+        TransformComponent position = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
 
         temp.set(movement.acceleration).scl(deltaTime);

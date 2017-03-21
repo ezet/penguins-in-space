@@ -9,4 +9,6 @@ public interface IDrawableComponentFactory {
     DrawableComponent getBullet();
 
     DrawableComponent getObstacle();
+
+    DrawableComponent getPowerup();
 }

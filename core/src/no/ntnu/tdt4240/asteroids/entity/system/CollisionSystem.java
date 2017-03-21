@@ -1,8 +1,8 @@
 package no.ntnu.tdt4240.asteroids.entity.system;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
 
@@ -16,11 +16,11 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.collisionMa
 
 public class CollisionSystem extends IteratingSystem {
 
-    public Array<ICollisionHandler> listeners = new Array<>();
+    private static final Family FAMILY = Family.all(CollisionComponent.class).one(RectangularBoundsComponent.class, CircularBoundsComponent.class).get();
+    Array<ICollisionHandler> listeners = new Array<>();
 
     public CollisionSystem() {
-        //noinspection unchecked
-        super(Family.all(CollisionComponent.class).one(RectangularBoundsComponent.class, CircularBoundsComponent.class).get());
+        super(FAMILY);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CollisionSystem extends IteratingSystem {
             BoundsComponent otherBounds = boundsMapper.get(other);
             if (bounds.overlaps(otherBounds)) {
                 if (collisionComponent.collisionHandler != null) {
-                    collisionComponent.collisionHandler.onCollision(entity, other, getEngine());
+                    collisionComponent.collisionHandler.onCollision((PooledEngine) getEngine(), entity, other);
                 }
                 notifyListeners(entity, other);
             }
@@ -46,12 +46,12 @@ public class CollisionSystem extends IteratingSystem {
 
     private void notifyListeners(Entity source, Entity target) {
         for (ICollisionHandler listener : listeners) {
-            listener.onCollision(source, target, getEngine());
+            listener.onCollision((PooledEngine) getEngine(), source, target);
         }
     }
 
 
     public interface ICollisionHandler {
-        void onCollision(Entity source, Entity target, Engine engine);
+        void onCollision(PooledEngine engine, Entity source, Entity target);
     }
 }

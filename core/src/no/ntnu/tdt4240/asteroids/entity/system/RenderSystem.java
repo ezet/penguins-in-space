@@ -19,19 +19,21 @@ import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 public class RenderSystem extends IteratingSystem {
 
+    private static final Family FAMILY = Family.all(TransformComponent.class, DrawableComponent.class).get();
     @SuppressWarnings("unused")
     private static final String TAG = RenderSystem.class.getSimpleName();
     private static ShapeRenderer shapeRenderer;
     private final Camera camera;
     private final Batch batch;
+    private boolean debug;
 
     public RenderSystem(Batch batch) {
         //noinspection unchecked
-        super(Family.all(TransformComponent.class, DrawableComponent.class).get());
+        super(FAMILY);
         // TODO: camera config
         this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.batch = batch;
@@ -48,25 +50,18 @@ public class RenderSystem extends IteratingSystem {
         batch.begin();
         super.update(deltaTime);
         batch.end();
-        drawBounds();
+        if (debug) {
+            drawBounds();
+        }
 
     }
 
     private void drawBounds() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         for (Entity entity : getEntities()) {
-            TransformComponent transform = positionMapper.get(entity);
-//            DrawableComponent drawable = drawableMapper.get(entity);
             Shape2D bounds = boundsMapper.get(entity).getBounds();
             if (bounds instanceof Rectangle) {
                 Rectangle region = (Rectangle) bounds;
-//                float width = region.getWidth();
-//                float height = region.getHeight();
-//                float originX = width * 0.5f;
-//                float originY = height * 0.5f;
-//                float x = transform.position.x - originX;
-//                float y = transform.position.y - originY;
-//                shapeRenderer.rect(x, y, width, height);
                 shapeRenderer.rect(region.x, region.y, region.width, region.height);
             } else if (bounds instanceof Circle) {
                 Circle region = (Circle) bounds;
@@ -79,16 +74,19 @@ public class RenderSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        TransformComponent transform = positionMapper.get(entity);
+        TransformComponent transform = transformMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
-        TextureRegion region = drawable.region;
-        float width = region.getRegionWidth();
-        float height = region.getRegionHeight();
+        TextureRegion region = drawable.texture;
+        float width = region.getRegionWidth() * transform.scaleX;
+        float height = region.getRegionHeight() * transform.scaleY;
         float originX = width * 0.5f;
         float originY = height * 0.5f;
         float x = transform.position.x - originX;
         float y = transform.position.y - originY;
-        float scale = 1;
-        batch.draw(drawable.region, x, y, originX, originY, width, height, scale, scale, transform.rotation.angle());
+        batch.draw(drawable.texture, x, y, originX, originY, width, height, transform.scaleX, transform.scaleY, transform.rotation.angle());
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

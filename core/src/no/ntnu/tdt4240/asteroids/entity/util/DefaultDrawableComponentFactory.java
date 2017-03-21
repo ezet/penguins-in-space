@@ -33,7 +33,13 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     private DrawableComponent getDrawable(String path) {
         Texture texture = new Texture(path);
         DrawableComponent component = engine.createComponent(DrawableComponent.class);
-        component.region = new TextureRegion(texture);
+        component.texture = new TextureRegion(texture);
         return component;
     }
+
+    @Override
+    public DrawableComponent getPowerup() {
+        return getDrawable("powerup.png");
+    }
+
 }
