@@ -56,11 +56,22 @@ public class GamepadController extends WidgetGroup {
         style.knob = touchpadSkin.getDrawable("touchKnob");
         touchPad = new Touchpad(10, style);
         touchPad.setBounds(50, 50, 200, 200);
-        addActor(touchPad);
+
+        addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+            }
+        });
+        NoClickZone padZone = new NoClickZone(touchPad, 100);
+        addActor(padZone);
+
+//        addActor(touchPad);
         touchpadSkin.add("touchButton", new Texture("data/touchKnob.png"));
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
-        addActor(button);
+        NoClickZone buttonZone = new NoClickZone(button, 100);
+        addActor(buttonZone);
     }
 
     @Override
