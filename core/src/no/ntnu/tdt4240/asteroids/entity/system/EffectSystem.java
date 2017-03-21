@@ -12,11 +12,11 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.effectMappe
 
 public class EffectSystem extends IteratingSystem {
 
-    private static final Family family = Family.all(EffectComponent.class).get();
+    private static final Family FAMILY = Family.all(EffectComponent.class).get();
 
 
     public EffectSystem() {
-        super(family);
+        super(FAMILY);
     }
 
     @Override

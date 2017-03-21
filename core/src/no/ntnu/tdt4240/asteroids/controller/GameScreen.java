@@ -6,13 +6,13 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.GameModel;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.game.GameModel;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.view.GameScreenStage;
 import no.ntnu.tdt4240.asteroids.view.IGameScreenView;
@@ -22,7 +22,7 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
 
     @SuppressWarnings("unused")
     private static final String TAG = GameScreen.class.getSimpleName();
-
+    private static final boolean DEBUG = true;
     private final Asteroids game;
     private IGameScreenView view;
     private GameModel world;
@@ -30,7 +30,7 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
 
     GameScreen(Asteroids game) {
         this.game = game;
-        PooledEngine engine = initEngine(game.getBatch());
+        PooledEngine engine = setupEngine(game.getBatch());
 
         // TODO: get factory from config
         IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
@@ -74,11 +74,14 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
         view.draw();
     }
 
-    private PooledEngine initEngine(SpriteBatch batch) {
+    private PooledEngine setupEngine(SpriteBatch batch) {
         PooledEngine engine = new PooledEngine();
-        engine.addSystem(new RenderSystem(batch));
+        RenderSystem renderSystem = new RenderSystem(batch);
+        renderSystem.setDebug(DEBUG);
+        engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         engine.addSystem(new AnimationSystem());
+
         return engine;
     }
 

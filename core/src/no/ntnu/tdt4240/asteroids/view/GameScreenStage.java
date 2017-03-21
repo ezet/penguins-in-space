@@ -169,6 +169,11 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     }
 
     @Override
+    public void setDebug(boolean debug) {
+        setDebugAll(debug);
+    }
+
+    @Override
     public void update(float delta) {
         act(delta);
     }

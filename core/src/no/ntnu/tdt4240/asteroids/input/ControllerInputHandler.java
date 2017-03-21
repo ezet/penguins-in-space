@@ -46,7 +46,7 @@ public class ControllerInputHandler {
         MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
         movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
         if (!movement.acceleration.isZero()) {
-            TransformComponent position = ComponentMappers.positionMapper.get(controlledEntity);
+            TransformComponent position = ComponentMappers.transformMapper.get(controlledEntity);
             position.rotation.set(movement.acceleration);
         }
         for (InputListener listener : listeners) {

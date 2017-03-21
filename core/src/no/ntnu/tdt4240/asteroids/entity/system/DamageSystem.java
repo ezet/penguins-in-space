@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.entity.system;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Array;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
@@ -14,15 +15,15 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMappe
 
 public class DamageSystem extends EntitySystem implements CollisionSystem.ICollisionHandler {
 
-    public Array<IDamageTakenListener> damageListeners = new Array<>();
-    public Array<IEntityDestroyedListener> destroyedListeners = new Array<>();
+    private Array<IDamageTakenListener> damageListeners = new Array<>();
+    private Array<IEntityDestroyedListener> destroyedListeners = new Array<>();
 
     public DamageSystem(CollisionSystem collisionSystem) {
         collisionSystem.listeners.add(this);
     }
 
     @Override
-    public void onCollision(Entity source, Entity target, Engine engine) {
+    public void onCollision(PooledEngine engine, Entity source, Entity target) {
         DamageComponent damageComponent = damageMapper.get(source);
         HealthComponent healthComponent = healthMapper.get(target);
         if (healthComponent == null || damageComponent == null) return;

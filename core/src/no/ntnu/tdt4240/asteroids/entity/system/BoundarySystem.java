@@ -3,7 +3,6 @@ package no.ntnu.tdt4240.asteroids.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.math.Rectangle;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -12,44 +11,43 @@ import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundaryMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 public class BoundarySystem extends IteratingSystem {
 
     @SuppressWarnings("unused")
     private static final String TAG = BoundarySystem.class.getSimpleName();
-    private static final Family family = Family.all(TransformComponent.class, MovementComponent.class, DrawableComponent.class).get();
+    private static final Family FAMILY = Family.all(TransformComponent.class, MovementComponent.class, DrawableComponent.class).get();
     private final int width;
     private final int height;
-    private final Rectangle boundary;
+    // TODO: consider using rectangle as boundary
+    //private final Rectangle boundary;
 
     public BoundarySystem(int width, int height) {
-        //noinspection unchecked
-        super(family);
-        boundary = new Rectangle(0, 0, width, height);
+        super(FAMILY);
         this.width = width;
         this.height = height;
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        TransformComponent pos = positionMapper.get(entity);
+        TransformComponent pos = transformMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         boolean free = false;
         BoundaryComponent boundaryComponent = boundaryMapper.get(entity);
         if (boundaryComponent != null && boundaryComponent.boundaryMode == BoundaryComponent.MODE_WRAP) {
             free = true;
         }
-        if (pos.position.x + drawable.region.getRegionHeight() / 2 < 0) {
+        if (pos.position.x + drawable.texture.getRegionHeight() / 2 < 0) {
             if (free) pos.position.x = width;
             else deleteEntity(entity);
-        } else if (pos.position.x - drawable.region.getRegionWidth() / 2 > width) {
+        } else if (pos.position.x - drawable.texture.getRegionWidth() / 2 > width) {
             if (free) pos.position.x = 0;
             else deleteEntity(entity);
-        } else if (pos.position.y + drawable.region.getRegionHeight() / 2 < 0) {
+        } else if (pos.position.y + drawable.texture.getRegionHeight() / 2 < 0) {
             if (free) pos.position.y = height;
             else deleteEntity(entity);
-        } else if (pos.position.y - drawable.region.getRegionHeight() / 2 > height) {
+        } else if (pos.position.y - drawable.texture.getRegionHeight() / 2 > height) {
             if (free) pos.position.y = 0;
             else deleteEntity(entity);
         }

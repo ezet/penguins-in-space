@@ -9,4 +9,6 @@ public interface IGameScreenView extends IView {
     void updateScore(int score);
 
     void updateLevel(int level);
+
+    void setDebug(boolean debug);
 }

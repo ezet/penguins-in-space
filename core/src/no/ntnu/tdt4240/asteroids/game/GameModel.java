@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.entity;
+package no.ntnu.tdt4240.asteroids.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -27,9 +27,16 @@ import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.EffectSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
+import no.ntnu.tdt4240.asteroids.entity.util.EffectFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
+import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
+import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
 
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 @SuppressWarnings("WeakerAccess")
 public class GameModel {
@@ -43,8 +50,9 @@ public class GameModel {
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
     public static final int STATE_GAME_OVER = 4;
+    public static final double POWERUP_SPAWN_CHANCE = 0.2;
     // TODO: add config
-    private static final double SPAWN_CHANCE = 0.2;
+    private static final double OBSTACLE_SPAWN_CHANCE = 0.3;
     // TODO: add config
     private static final int MAX_OBSTACLES = 8;
     // TODO: add config
@@ -74,15 +82,19 @@ public class GameModel {
     private Array<TextureRegion> explosions = new Array<>();
 
     private DamageSystem.IEntityDestroyedListener obstacleDestroyedHandler = new DamageSystem.IEntityDestroyedListener() {
+
         @Override
         public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+            spawnPowerup(target);
             AnimationComponent animation = new AnimationComponent();
             target.remove(CollisionComponent.class);
-            target.remove(MovementComponent.class);
+//            target.remove(MovementComponent.class);
             animation.removeOnAnimationComplete = true;
             animation.frames.addAll(explosions);
             target.add(animation);
             increaseScore();
+            EffectFactory.getInstance().registerEffect(InvulnerabilityEffect.class);
+            EffectFactory.getInstance().registerEffect(MultishotEffect.class);
         }
     };
 
@@ -153,37 +165,53 @@ public class GameModel {
             ++current;
         }
         attempts = MAX_OBSTACLES - current;
-        for (int i = 0; i < attempts; ++i)
-            if (MathUtils.random() > 1 - SPAWN_CHANCE) {
+        for (int i = 0; i < attempts; ++i) {
+            if (MathUtils.random() > 1 - OBSTACLE_SPAWN_CHANCE) {
                 engine.addEntity(createObstacle());
             }
+        }
+    }
+
+    // TODO: improve spawn position and direction
+
+    private Entity createPowerup(Entity source) {
+        MovementComponent sourceMovement = movementMapper.get(source);
+        TransformComponent sourceTransform = transformMapper.get(source);
+        Entity entity = EntityFactory.getInstance().createPowerup(getEffect());
+        TransformComponent transformComponent = transformMapper.get(entity);
+        transformComponent.position.set(sourceTransform.position);
+        MovementComponent movementComponent = movementMapper.get(entity);
+        movementComponent.velocity.set(sourceMovement.velocity);
+        return entity;
+    }
+
+    private IEffect getEffect() {
+        return EffectFactory.getInstance().getRandomEffect();
     }
 
     private Entity createObstacle() {
-        Entity obstacle = EntityFactory.getInstance().createObstacle();
-
-        DrawableComponent drawable = obstacle.getComponent(DrawableComponent.class);
-
-        HealthComponent healthComponent = healthMapper.get(obstacle);
+        Entity entity = EntityFactory.getInstance().createObstacle();
+        DrawableComponent drawable = drawableMapper.get(entity);
+        HealthComponent healthComponent = healthMapper.get(entity);
         healthComponent.entityDestroyedHandler = obstacleDestroyedHandler;
 
         // TODO: replace values with constants
         // TODO: consider not spawning obstacles close to the player
-        int obstacleSide = MathUtils.random(4);
+        int spawnPosition = MathUtils.random(4);
         // 0 = top-spawn, 1 = bottom-spawn, 2 = left-spawn, 3 = right-spawn
         int x, y;
         float xVec, yVec;
-        int halfRegionHeight = drawable.region.getRegionHeight()/2;
-        int halfRegionWidth = drawable.region.getRegionWidth()/2;
+        int halfRegionHeight = drawable.texture.getRegionHeight() / 2;
+        int halfRegionWidth = drawable.texture.getRegionWidth() / 2;
         int graphicsWidth = Gdx.graphics.getWidth();
         int graphicsHeight = Gdx.graphics.getHeight();
 
         // Based on spawn, position and movement (always inwards) is generated randomly.
-        if (obstacleSide < 2){
+        if (spawnPosition < 2) {
             x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
-            xVec = MathUtils.random(-100,101);
-            yVec = MathUtils.random()*200;
-            if (obstacleSide == 0){
+            xVec = MathUtils.random(-100, 101);
+            yVec = MathUtils.random() * 200;
+            if (spawnPosition == 0) {
                 y = -halfRegionHeight;
             } else {
                 yVec *= -1;
@@ -192,19 +220,19 @@ public class GameModel {
         } else {
             y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
             yVec = MathUtils.random(-100, 101);
-            xVec = MathUtils.random()*200;
-            if (obstacleSide == 2){
+            xVec = MathUtils.random() * 200;
+            if (spawnPosition == 2) {
                 x = -halfRegionWidth;
             } else {
                 x = graphicsWidth + halfRegionWidth;
                 xVec *= -1;
             }
         }
-        TransformComponent position = obstacle.getComponent(TransformComponent.class);
+        TransformComponent position = entity.getComponent(TransformComponent.class);
         position.position.set(x, y);
-        MovementComponent movement = obstacle.getComponent(MovementComponent.class);
+        MovementComponent movement = entity.getComponent(MovementComponent.class);
         movement.velocity.set(xVec, yVec);
-        return obstacle;
+        return entity;
     }
 
     void gameOver() {
@@ -246,6 +274,12 @@ public class GameModel {
         return level;
     }
 
+    private void spawnPowerup(Entity entity) {
+        if (MathUtils.random() > 1 - POWERUP_SPAWN_CHANCE) {
+            engine.addEntity(createPowerup(entity));
+        }
+    }
+
     public interface IGameListener {
 
         void update(GameModel model, int event);
@@ -253,7 +287,7 @@ public class GameModel {
 
     private class ObstacleListener implements EntityListener {
 
-        private final ImmutableArray<Entity> obstacles = engine.getEntitiesFor(Family.all(ObstacleClass.class).get());
+        private final ImmutableArray<Entity> objects = engine.getEntitiesFor(Family.one(ObstacleClass.class).get());
 
         @Override
         public void entityAdded(Entity entity) {
@@ -262,7 +296,7 @@ public class GameModel {
 
         @Override
         public void entityRemoved(Entity entity) {
-            spawnObstacles(obstacles.size());
+            spawnObstacles(objects.size());
         }
     }
 

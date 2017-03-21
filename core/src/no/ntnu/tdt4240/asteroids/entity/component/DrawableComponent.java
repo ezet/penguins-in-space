@@ -6,14 +6,14 @@ import com.badlogic.gdx.utils.Pool;
 
 public class DrawableComponent implements Component, Pool.Poolable {
 
-    public TextureRegion region;
+    public TextureRegion texture;
 
     public DrawableComponent() {
     }
 
     @Override
     public void reset() {
-        region = null;
+        texture = null;
     }
 
 }

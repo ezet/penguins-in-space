@@ -10,6 +10,10 @@ public class TransformComponent implements Component, Pool.Poolable {
 
     public Vector2 rotation;
 
+    public int scaleX = 1;
+
+    public int scaleY = 1;
+
     @SuppressWarnings("WeakerAccess")
     public TransformComponent() {
         position = new Vector2();
@@ -26,6 +30,8 @@ public class TransformComponent implements Component, Pool.Poolable {
     public void reset() {
         position.setZero();
         rotation.setZero();
+        scaleX = 1;
+        scaleY = 1;
     }
 
 }

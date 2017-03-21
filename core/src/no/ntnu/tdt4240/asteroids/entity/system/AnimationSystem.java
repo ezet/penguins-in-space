@@ -13,10 +13,10 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMap
 
 public class AnimationSystem extends IteratingSystem {
 
-    private final static Family family = Family.all(AnimationComponent.class).get();
+    private final static Family FAMILY = Family.all(AnimationComponent.class).get();
 
     public AnimationSystem() {
-        super(family);
+        super(FAMILY);
     }
 
     @Override
@@ -24,17 +24,17 @@ public class AnimationSystem extends IteratingSystem {
         AnimationComponent animationComponent = animationMapper.get(entity);
         DrawableComponent drawableComponent = drawableMapper.get(entity);
         if (animationComponent.currentFrame == 0) {
-            animationComponent.originalRegion = drawableComponent.region;
+            animationComponent.originalRegion = drawableComponent.texture;
         } else if (animationComponent.currentFrame == animationComponent.frames.size) {
             entity.remove(AnimationComponent.class);
             if (animationComponent.removeOnAnimationComplete) {
                 getEngine().removeEntity(entity);
             } else {
-                drawableComponent.region = animationComponent.originalRegion;
+                drawableComponent.texture = animationComponent.originalRegion;
             }
             return;
         }
-        drawableComponent.region = animationComponent.frames.get(animationComponent.currentFrame);
+        drawableComponent.texture = animationComponent.frames.get(animationComponent.currentFrame);
         animationComponent.currentFrame++;
     }
 }

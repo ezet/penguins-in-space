@@ -1,47 +1,28 @@
 package no.ntnu.tdt4240.asteroids.entity.component;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Array;
 
-public class EffectComponent implements Component, Pool.Poolable {
+import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 
-    // TODO: array of effects
-    public IEffect effect;
+public class EffectComponent extends BaseComponent {
 
-    private float remainingDuration;
+    private final Array<IEffect> effects = new Array<>();
 
-    private boolean applied = false;
+    public void addEffect(IEffect effect) {
+        effects.add(effect);
+    }
 
-    // TODO: move to IEffect implementation
     public void tick(PooledEngine engine, Entity entity, float delta) {
-        if (!applied) {
-            effect.applyEffect(engine, entity, this);
-            remainingDuration = effect.getDuration();
-            applied = true;
-        } else if (remainingDuration > 0) {
-            remainingDuration -= delta;
-        } else {
-            entity.remove(EffectComponent.class);
-            effect.removeEffect(engine, entity, this);
-            applied = false;
-            remainingDuration = 0;
+        for (IEffect effect : effects) {
+            effect.tick(engine, entity, this, delta);
         }
     }
 
     @Override
     public void reset() {
-        effect = null;
-        remainingDuration = 0;
-        applied = false;
+        effects.clear();
     }
 
-    public interface IEffect {
-        void applyEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent);
-
-        void removeEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent);
-
-        float getDuration();
-    }
 }

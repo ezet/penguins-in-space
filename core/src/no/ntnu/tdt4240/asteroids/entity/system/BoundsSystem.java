@@ -12,23 +12,22 @@ import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.positionMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 public class BoundsSystem extends IteratingSystem {
 
-    public static final int MARGIN = 0;
+    private static final Family FAMILY = Family.all(TransformComponent.class, DrawableComponent.class).one(CircularBoundsComponent.class, RectangularBoundsComponent.class).get();
 
     public BoundsSystem() {
-        //noinspection unchecked
-        super(Family.all(TransformComponent.class, DrawableComponent.class).one(CircularBoundsComponent.class, RectangularBoundsComponent.class).get());
+        super(FAMILY);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         BoundsComponent bounds = boundsMapper.get(entity);
-        TransformComponent position = positionMapper.get(entity);
+        TransformComponent transform = transformMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
-        bounds.setSize(drawable.region.getRegionWidth() - MARGIN * 2, drawable.region.getRegionHeight() - MARGIN * 2);
-        bounds.setCenter(position.position);
+        bounds.setSize(drawable.texture.getRegionWidth() * transform.scaleX, drawable.texture.getRegionHeight() * transform.scaleY);
+        bounds.setCenter(transform.position);
     }
 }
