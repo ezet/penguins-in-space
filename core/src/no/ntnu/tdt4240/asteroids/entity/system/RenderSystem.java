@@ -13,7 +13,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
@@ -30,27 +34,34 @@ public class RenderSystem extends IteratingSystem {
     private final Camera camera;
     private final Batch batch;
     private boolean debug;
+    private Viewport viewport;
 
     public RenderSystem(Batch batch) {
         //noinspection unchecked
         super(FAMILY);
         // TODO: camera config
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.camera = new OrthographicCamera();
+        viewport = new FitViewport(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT, camera);
+        viewport.apply();
+        camera.position.set((Asteroids.VIRTUAL_WIDTH) / 2, (Asteroids.VIRTUAL_HEIGHT) / 2, 0);
+
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setColor(Color.RED);
-        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-        shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+        //shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
     }
 
     @Override
     public void update(float deltaTime) {
-//        batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
         camera.update();
         batch.begin();
         super.update(deltaTime);
         batch.end();
+
         if (debug) {
+            shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+
             drawBounds();
         }
 
@@ -88,5 +99,10 @@ public class RenderSystem extends IteratingSystem {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public void resize(int width, int height){
+        viewport.update(width, height, true);
+        camera.position.set((Asteroids.VIRTUAL_WIDTH ) / 2, (Asteroids.VIRTUAL_HEIGHT) / 2, 0);
     }
 }

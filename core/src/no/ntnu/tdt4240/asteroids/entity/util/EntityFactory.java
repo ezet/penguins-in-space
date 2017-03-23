@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.collisionhandler.BulletCollisionHandler;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
@@ -52,7 +53,8 @@ public class EntityFactory {
 
     public Entity initPlayer(Entity player) {
         player.add(new PlayerClass());
-        player.add(new TransformComponent(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 1, 0));
+        //// TODO: 3/23/2017  Change to constant width/height
+        player.add(new TransformComponent(Asteroids.VIRTUAL_WIDTH/ 2, Asteroids.VIRTUAL_HEIGHT / 2, 1, 0));
         player.add(new MovementComponent());
         player.add(new GravityComponent(GRAVITY));
         player.add(new CircularBoundsComponent());

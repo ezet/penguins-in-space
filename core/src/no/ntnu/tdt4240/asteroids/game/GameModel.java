@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Vector;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -203,8 +204,8 @@ public class GameModel {
         float xVec, yVec;
         int halfRegionHeight = drawable.texture.getRegionHeight() / 2;
         int halfRegionWidth = drawable.texture.getRegionWidth() / 2;
-        int graphicsWidth = Gdx.graphics.getWidth();
-        int graphicsHeight = Gdx.graphics.getHeight();
+        int graphicsWidth = Asteroids.VIRTUAL_WIDTH;
+        int graphicsHeight =Asteroids.VIRTUAL_HEIGHT;
 
         // Based on spawn, position and movement (always inwards) is generated randomly.
         if (spawnPosition < 2) {

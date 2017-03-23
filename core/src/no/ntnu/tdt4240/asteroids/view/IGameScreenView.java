@@ -11,4 +11,6 @@ public interface IGameScreenView extends IView {
     void updateLevel(int level);
 
     void setDebug(boolean debug);
+
+    void resize(int width, int height);
 }
