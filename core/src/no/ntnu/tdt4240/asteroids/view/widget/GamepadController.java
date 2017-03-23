@@ -16,10 +16,11 @@ import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
 
-    private static final int BUTTON_SIZE = 100;
-    private static final int BUTTON_MARGIN = 100;
+    private static final int BUTTON_SIZE = 50;
+    private static final int BUTTON_MARGIN = 30;
     @SuppressWarnings("unused")
     private static final String TAG = GamepadController.class.getSimpleName();
+    public static final int NO_CLICK_MARGIN = 50;
     private Touchpad touchPad;
     private GamepadButton button;
 
@@ -54,8 +55,9 @@ public class GamepadController extends WidgetGroup {
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
         style.background = touchpadSkin.getDrawable("touchBackground");
         style.knob = touchpadSkin.getDrawable("touchKnob");
+        
         touchPad = new Touchpad(10, style);
-        touchPad.setBounds(50, 50, 200, 200);
+        touchPad.setBounds(30, 30, 200/2, 200/2);
 
         addListener(new ClickListener() {
             @Override
@@ -63,14 +65,14 @@ public class GamepadController extends WidgetGroup {
                 super.clicked(event, x, y);
             }
         });
-        NoClickZone padZone = new NoClickZone(touchPad, 100);
+        NoClickZone padZone = new NoClickZone(touchPad, NO_CLICK_MARGIN);
         addActor(padZone);
 
 //        addActor(touchPad);
         touchpadSkin.add("touchButton", new Texture("data/touchKnob.png"));
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
-        NoClickZone buttonZone = new NoClickZone(button, 100);
+        NoClickZone buttonZone = new NoClickZone(button, NO_CLICK_MARGIN);
         addActor(buttonZone);
     }
 

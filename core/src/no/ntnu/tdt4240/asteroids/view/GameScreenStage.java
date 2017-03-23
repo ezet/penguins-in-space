@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -19,17 +20,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.controller.GameScreen;
+
+import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
+import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
+import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
+import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
 
 
 public class GameScreenStage extends Stage implements IGameScreenView {
 
     private static final String TAG = GameScreenStage.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.
-    private static Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    //private static Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    //private static Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
     private final GameScreen.InputHandler inputHandler;
     private final Table table = new Table();
     private final BitmapFont defaultFont = new BitmapFont();
@@ -43,9 +53,19 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     private final TextButton quit = new TextButton("QUIT", buttonSkin);
     private Cell mainMenuCell;
 
+    static Viewport guiViewport;
+
+    static {
+        OrthographicCamera camera = new OrthographicCamera();
+        guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT, camera);
+        guiViewport.apply();
+        camera.position.set((Asteroids.GUI_VIRTUAL_WIDTH) / 2, (Asteroids.GUI_VIRTUAL_WIDTH) / 2, 0);
+    }
+
 
     public GameScreenStage(Batch batch, GameScreen.InputHandler inputHandler) {
         super(guiViewport, batch);
+
         this.inputHandler = inputHandler;
         this.addActor(table);
         initGui();
@@ -63,16 +83,16 @@ public class GameScreenStage extends Stage implements IGameScreenView {
         table.setFillParent(true);
         table.top();
         // TODO: use proper style, remove scaling
-        scoreLabel.setFontScale(2);
-        levelLabel.setFontScale(2);
+        scoreLabel.setFontScale(1);
+        levelLabel.setFontScale(1);
         table.add(scoreLabel).space(20);
         table.add(levelLabel).space(20);
         table.row();
 
-        resume.getLabel().setFontScale(3);
-        settings.getLabel().setFontScale(3);
-        quitToMenu.getLabel().setFontScale(3);
-        quit.getLabel().setFontScale(3);
+        resume.getLabel().setFontScale(1);
+        settings.getLabel().setFontScale(1);
+        quitToMenu.getLabel().setFontScale(1);
+        quit.getLabel().setFontScale(1);
 
         VerticalGroup verticalGroup = new VerticalGroup();
         verticalGroup.setVisible(false);
@@ -171,6 +191,11 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     @Override
     public void setDebug(boolean debug) {
         setDebugAll(debug);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        getViewport().update(width, height);
     }
 
     @Override

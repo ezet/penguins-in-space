@@ -13,6 +13,11 @@ public class Asteroids extends Game {
 
     private static INetworkService networkService;
     private SpriteBatch batch;
+    public static final int VIRTUAL_WIDTH = 1920;
+    public static final int VIRTUAL_HEIGHT = 1080;
+    public static final int GUI_VIRTUAL_WIDTH = 1920/3;
+    public static final int GUI_VIRTUAL_HEIGHT = 1080/3;
+
 
     Asteroids(INetworkService networkService) {
         Asteroids.networkService = networkService;

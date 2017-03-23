@@ -24,13 +24,14 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
     private static final String TAG = GameScreen.class.getSimpleName();
     private static final boolean DEBUG = true;
     private final Asteroids game;
+    private final PooledEngine engine;
     private IGameScreenView view;
     private GameModel world;
 
 
     GameScreen(Asteroids game) {
         this.game = game;
-        PooledEngine engine = setupEngine(game.getBatch());
+        engine = setupEngine(game.getBatch());
 
         // TODO: get factory from config
         IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
@@ -40,6 +41,14 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
         world = setupModel(engine);
         view = setupView(engine, world);
         world.run();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        engine.getSystem(RenderSystem.class).resize(width, height);
+        view.resize(width, height);
+
     }
 
     private IGameScreenView setupView(PooledEngine engine, GameModel world) {
@@ -79,7 +88,7 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
         RenderSystem renderSystem = new RenderSystem(batch);
         renderSystem.setDebug(DEBUG);
         engine.addSystem(renderSystem);
-        engine.addSystem(new BoundarySystem(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());
 
         return engine;
@@ -146,4 +155,5 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
         }
 
     }
+
 }
