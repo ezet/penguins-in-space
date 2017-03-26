@@ -22,6 +22,7 @@ public class ControllerInputHandler {
     private final List<InputListener> listeners = new ArrayList<>();
     private Entity controlledEntity;
 
+
     public ControllerInputHandler(PooledEngine engine) {
         this.engine = engine;
     }
