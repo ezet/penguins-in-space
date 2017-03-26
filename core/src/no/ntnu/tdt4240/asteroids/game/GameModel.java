@@ -205,7 +205,7 @@ public class GameModel {
         int halfRegionHeight = drawable.texture.getRegionHeight() / 2;
         int halfRegionWidth = drawable.texture.getRegionWidth() / 2;
         int graphicsWidth = Asteroids.VIRTUAL_WIDTH;
-        int graphicsHeight =Asteroids.VIRTUAL_HEIGHT;
+        int graphicsHeight = Asteroids.VIRTUAL_HEIGHT;
 
         // Based on spawn, position and movement (always inwards) is generated randomly.
         if (spawnPosition < 2) {

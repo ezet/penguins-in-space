@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -38,6 +39,7 @@ public class RenderSystem extends IteratingSystem {
 
     public RenderSystem(Batch batch) {
         //noinspection unchecked
+
         super(FAMILY);
         // TODO: camera config
         this.camera = new OrthographicCamera();
