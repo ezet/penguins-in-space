@@ -18,12 +18,12 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import no.ntnu.tdt4240.asteroids.controller.MainScreen;
+import no.ntnu.tdt4240.asteroids.controller.IMainController;
 
 
-public class MainScreenStage extends Stage implements IMainScreenView {
+public class MainView extends Stage implements IMainView {
 
-    private static final String TAG = MainScreenStage.class.getSimpleName();
+    private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
     private final TextButton play = new TextButton("PLAY", buttonSkin);
@@ -32,13 +32,14 @@ public class MainScreenStage extends Stage implements IMainScreenView {
     private final BitmapFont defaultFont = new BitmapFont();
     private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-    private final MainScreen.InputHandler inputHandler;
+    private final IMainController controller;
+
     // TODO: implement main screen gui
 
 
-    public MainScreenStage(Batch batch, MainScreen.InputHandler inputHandler) {
+    public MainView(Batch batch, IMainController controller) {
         super(viewport, batch);
-        this.inputHandler = inputHandler;
+        this.controller = controller;
         setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
@@ -60,8 +61,7 @@ public class MainScreenStage extends Stage implements IMainScreenView {
                 table.addAction(Actions.sequence(Actions.fadeOut(1), new RunnableAction() {
                     @Override
                     public void run() {
-                        inputHandler.onPlay();
-//                        Gdx.app.debug(TAG, "Runnable: run: ");
+                        controller.onPlay();
                     }
                 }));
             }
@@ -69,7 +69,7 @@ public class MainScreenStage extends Stage implements IMainScreenView {
         quit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                inputHandler.onQuit();
+                controller.onQuit();
             }
         });
     }

@@ -19,28 +19,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.controller.GameScreen;
-
-import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
-import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
-import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
-import static no.ntnu.tdt4240.asteroids.view.GameScreenStage.guiViewport;
+import no.ntnu.tdt4240.asteroids.controller.IGameController;
 
 
-public class GameScreenStage extends Stage implements IGameScreenView {
+public class GameView extends Stage implements IGameView {
 
-    private static final String TAG = GameScreenStage.class.getSimpleName();
+    private static final String TAG = GameView.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.
-    //private static Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    //private static Viewport guiViewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-    private final GameScreen.InputHandler inputHandler;
+    private final IGameController inputHandler;
     private final Table table = new Table();
     private final BitmapFont defaultFont = new BitmapFont();
     private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
@@ -53,7 +44,7 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     private final TextButton quit = new TextButton("QUIT", buttonSkin);
     private Cell mainMenuCell;
 
-    static Viewport guiViewport;
+    private static Viewport guiViewport;
 
     static {
         OrthographicCamera camera = new OrthographicCamera();
@@ -63,9 +54,8 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     }
 
 
-    public GameScreenStage(Batch batch, GameScreen.InputHandler inputHandler) {
+    public GameView(Batch batch, IGameController inputHandler) {
         super(guiViewport, batch);
-
         this.inputHandler = inputHandler;
         this.addActor(table);
         initGui();
@@ -107,7 +97,6 @@ public class GameScreenStage extends Stage implements IGameScreenView {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (event.isHandled()) return;
-                Gdx.app.debug(TAG, "ChangeListener: pause");
                 pauseGame();
                 event.handle();
             }
@@ -117,7 +106,6 @@ public class GameScreenStage extends Stage implements IGameScreenView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (event.isHandled()) return;
-                Gdx.app.debug(TAG, "ChangeListener: resume");
                 resumeGame();
                 event.handle();
             }
@@ -126,7 +114,6 @@ public class GameScreenStage extends Stage implements IGameScreenView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (event.isHandled()) return;
-                Gdx.app.debug(TAG, "ChangeListener: settings");
                 settings();
                 event.handle();
             }
@@ -135,7 +122,6 @@ public class GameScreenStage extends Stage implements IGameScreenView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (event.isHandled()) return;
-                Gdx.app.debug(TAG, "ChangeListener: quitToMenu");
                 quitToMenu();
                 event.handle();
             }
@@ -144,7 +130,6 @@ public class GameScreenStage extends Stage implements IGameScreenView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (event.isHandled()) return;
-                Gdx.app.debug(TAG, "ChangeListener: quit");
                 quit();
                 event.handle();
             }
@@ -152,7 +137,7 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     }
 
     private void quitToMenu() {
-
+        inputHandler.onQuitLevel();
     }
 
     private void settings() {
@@ -160,7 +145,7 @@ public class GameScreenStage extends Stage implements IGameScreenView {
     }
 
     private void quit() {
-
+        inputHandler.onQuit();
     }
 
     private void pauseGame() {

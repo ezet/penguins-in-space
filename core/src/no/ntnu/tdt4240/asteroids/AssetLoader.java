@@ -15,33 +15,15 @@ public class AssetLoader {
     public static Music backgroundMusic;
     public static Sound explosion, shot, die, powerup;
 
-    public void loadAssets() {
+    void loadAssets() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sounds/music.mp3"));
         explosion = Gdx.audio.newSound(Gdx.files.internal("Sounds/explosion.wav"));
         shot = Gdx.audio.newSound(Gdx.files.internal("Sounds/shoot.wav"));
         powerup = Gdx.audio.newSound(Gdx.files.internal("Sounds/powerup.wav"));
         //die = Gdx.audio.newMusic(Gdx.files.internal("Sounds/music.mp3"));
-
-
-        // TODO: load assets
     }
 
-
-   /* public AssetLoader() {
-
-        this.assetManager = new AssetManager();
-    }*/
-
-/*    public void loadAssets() {
-        assetManager.load("Sounds/music.mp3", Music.class);
-        assetManager.load("Sounds/powerup.wav", Sound.class);
-        assetManager.load("Sounds/explosion.wav", Sound.class);
-        assetManager.finishLoading();
-        // TODO: load assets
-    }*/
-
-
-    public void dispose(){
+    void dispose(){
         backgroundMusic.dispose();
 
     }

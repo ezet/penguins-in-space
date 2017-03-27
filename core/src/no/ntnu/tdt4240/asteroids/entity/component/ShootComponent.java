@@ -15,8 +15,6 @@ public class ShootComponent implements Component {
     public void fire(PooledEngine engine, Entity controlledEntity) {
         if (handler == null) handler = new StandardShotHandler();
         handler.fire(engine, controlledEntity);
-        //TODO move sound to somewhere else?
-        AssetLoader.shot.play();
     }
 
 

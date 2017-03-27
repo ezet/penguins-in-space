@@ -8,7 +8,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.asteroids.controller.MainScreen;
+import no.ntnu.tdt4240.asteroids.controller.MainController;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 public class Asteroids extends Game {
@@ -36,14 +36,13 @@ public class Asteroids extends Game {
         assetLoader = new AssetLoader();
         assetLoader.loadAssets();
         // TODO: load assets
-        //music = assetLoader.assetManager.get("Sounds/music.mp3");
         assetLoader.backgroundMusic.setLooping(true);                // will repeat playback until music.stop() is called
         assetLoader.backgroundMusic.play();                          // resumes the playback
 
         // TODO: load settings
         batch = new SpriteBatch();
         Gdx.gl.glClearColor(0, 0, 0, 1);
-        setScreen(new MainScreen(this));
+        setScreen(new MainController(this));
     }
 
     @Override

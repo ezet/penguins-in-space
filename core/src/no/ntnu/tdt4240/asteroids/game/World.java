@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -40,7 +39,7 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMap
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 @SuppressWarnings("WeakerAccess")
-public class GameModel {
+public class World {
 
     public static final int EVENT_SCORE = 0;
     public static final int EVENT_GAME_OVER = 1;
@@ -108,7 +107,7 @@ public class GameModel {
     };
 
 
-    public GameModel(PooledEngine engine) {
+    public World(PooledEngine engine) {
         this.engine = engine;
         //noinspection unchecked
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener());
@@ -273,7 +272,7 @@ public class GameModel {
 
     private void notifyListeners(int event) {
         for (IGameListener listener : listeners) {
-            listener.update(this, event);
+            listener.handle(this, event);
         }
     }
 
@@ -298,7 +297,7 @@ public class GameModel {
 
     public interface IGameListener {
 
-        void update(GameModel model, int event);
+        void handle(World model, int event);
     }
 
     private class ObstacleListener implements EntityListener {

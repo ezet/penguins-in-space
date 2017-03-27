@@ -16,7 +16,6 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.shootMapper
 public class ControllerInputHandler {
 
     // TODO: read config from settings
-    private static final int BULLET_SPEED = 800;
     private static final int ACCELERATION_SCALAR = 500;
     private final PooledEngine engine;
     private final List<InputListener> listeners = new ArrayList<>();
@@ -45,7 +44,7 @@ public class ControllerInputHandler {
 
     public void accelerate(float inputX, float inputY) {
         MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
-        movement.acceleration.set(inputX, inputY).scl(ACCELERATION_SCALAR);
+        movement.acceleration.set(inputX, inputY).scl(movement.accelerationScalar);
         if (!movement.acceleration.isZero()) {
             TransformComponent position = ComponentMappers.transformMapper.get(controlledEntity);
             position.rotation.set(movement.acceleration);
@@ -58,17 +57,6 @@ public class ControllerInputHandler {
     public void fire() {
         ShootComponent shootComponent = shootMapper.get(controlledEntity);
         shootComponent.fire(engine, controlledEntity);
-
-//        EntityFactory factory = EntityFactory.getInstance();
-//        Entity bullet = factory.createPlayerBullet();
-//        TransformComponent playerPosition = ComponentMappers.positionMapper.get(controlledEntity);
-//        TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
-//        bulletPosition.position.set(playerPosition.position);
-//        MovementComponent bulletMovement = bullet.getComponent(MovementComponent.class);
-//        bulletMovement.velocity.set(playerPosition.rotation).setLength(BULLET_SPEED);
-//        engine.addEntity(bullet);
-
-
         for (InputListener listener : listeners) {
             listener.onFire();
         }
