@@ -46,6 +46,11 @@ public class GameModel {
     public static final int EVENT_GAME_OVER = 1;
     public static final int EVENT_LEVEL_COMPLETE = 2;
 
+    private final static int EDGE_LEFT = 0;
+    private static final int EDGE_TOP = 1;
+    private static final int EDGE_RIGHT = 2;
+    private static final int EDGE_BOTTOM = 3;
+
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
@@ -58,6 +63,9 @@ public class GameModel {
     private static final int MAX_OBSTACLES = 8;
     // TODO: add config
     private static final int MIN_OBSTACLES = 3;
+    private static final int PRIMARY_OBSTACLE_SPAWN_SPEED = 200;
+    private static final int SECONDARY_OBSTACLE_SPAWN_SPEED = 100;
+
     public final Vector<IGameListener> listeners = new Vector<>();
     // TODO: add config
     final PooledEngine engine;
@@ -196,38 +204,45 @@ public class GameModel {
         HealthComponent healthComponent = healthMapper.get(entity);
         healthComponent.entityDestroyedHandler = obstacleDestroyedHandler;
 
-        // TODO: replace values with constants
         // TODO: consider not spawning obstacles close to the player
-        int spawnPosition = MathUtils.random(4);
-        // 0 = top-spawn, 1 = bottom-spawn, 2 = left-spawn, 3 = right-spawn
-        int x, y;
-        float xVec, yVec;
+
+        int edge = MathUtils.random(3);
+        int x = 0;
+        int y = 0;
+        float xVec = 0;
+        float yVec = 0;
         int halfRegionHeight = drawable.texture.getRegionHeight() / 2;
         int halfRegionWidth = drawable.texture.getRegionWidth() / 2;
         int graphicsWidth = Asteroids.VIRTUAL_WIDTH;
         int graphicsHeight = Asteroids.VIRTUAL_HEIGHT;
 
         // Based on spawn, position and movement (always inwards) is generated randomly.
-        if (spawnPosition < 2) {
-            x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
-            xVec = MathUtils.random(-100, 101);
-            yVec = MathUtils.random() * 200;
-            if (spawnPosition == 0) {
+        switch (edge){
+            case EDGE_TOP:
+                x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
+                xVec = MathUtils.random(-SECONDARY_OBSTACLE_SPAWN_SPEED, SECONDARY_OBSTACLE_SPAWN_SPEED);
+                yVec = MathUtils.random() * PRIMARY_OBSTACLE_SPAWN_SPEED;
                 y = -halfRegionHeight;
-            } else {
-                yVec *= -1;
+                break;
+            case EDGE_BOTTOM:
+                x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
+                xVec = MathUtils.random(-SECONDARY_OBSTACLE_SPAWN_SPEED, SECONDARY_OBSTACLE_SPAWN_SPEED);
+                yVec = -1 * MathUtils.random() * PRIMARY_OBSTACLE_SPAWN_SPEED;
                 y = graphicsHeight + halfRegionHeight;
-            }
-        } else {
-            y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
-            yVec = MathUtils.random(-100, 101);
-            xVec = MathUtils.random() * 200;
-            if (spawnPosition == 2) {
+                break;
+            case EDGE_LEFT:
+                y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
+                yVec = MathUtils.random(-SECONDARY_OBSTACLE_SPAWN_SPEED, SECONDARY_OBSTACLE_SPAWN_SPEED);
+                xVec = MathUtils.random() * PRIMARY_OBSTACLE_SPAWN_SPEED;
                 x = -halfRegionWidth;
-            } else {
+                break;
+            case EDGE_RIGHT:
+                y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
+                yVec = MathUtils.random(-SECONDARY_OBSTACLE_SPAWN_SPEED, SECONDARY_OBSTACLE_SPAWN_SPEED);
+                xVec = -1 * MathUtils.random() * PRIMARY_OBSTACLE_SPAWN_SPEED;
                 x = graphicsWidth + halfRegionWidth;
-                xVec *= -1;
-            }
+                break;
+
         }
         TransformComponent position = entity.getComponent(TransformComponent.class);
         position.position.set(x, y);
