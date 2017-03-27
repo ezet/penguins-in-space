@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.game.shothandler;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
+import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
@@ -14,6 +15,7 @@ public class StandardShotHandler implements IShotHandler {
 
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {
+        AssetLoader.shot.play();
         EntityFactory factory = EntityFactory.getInstance();
         Entity bullet = factory.createPlayerBullet();
         TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);

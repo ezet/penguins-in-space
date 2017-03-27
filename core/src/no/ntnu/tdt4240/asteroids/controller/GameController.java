@@ -12,24 +12,24 @@ import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
-import no.ntnu.tdt4240.asteroids.game.GameModel;
+import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
-import no.ntnu.tdt4240.asteroids.view.GameScreenStage;
-import no.ntnu.tdt4240.asteroids.view.IGameScreenView;
+import no.ntnu.tdt4240.asteroids.view.GameView;
+import no.ntnu.tdt4240.asteroids.view.IGameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
-public class GameScreen extends ScreenAdapter implements GameModel.IGameListener {
+public class GameController extends ScreenAdapter implements World.IGameListener {
 
     @SuppressWarnings("unused")
-    private static final String TAG = GameScreen.class.getSimpleName();
+    private static final String TAG = GameController.class.getSimpleName();
     private static final boolean DEBUG = true;
     private final Asteroids game;
     private final PooledEngine engine;
-    private IGameScreenView view;
-    private GameModel world;
+    private IGameView view;
+    private World world;
 
 
-    GameScreen(Asteroids game) {
+    GameController(Asteroids game) {
         this.game = game;
         engine = setupEngine(game.getBatch());
 
@@ -51,17 +51,17 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
 
     }
 
-    private IGameScreenView setupView(PooledEngine engine, GameModel world) {
+    private IGameView setupView(PooledEngine engine, World world) {
         ControllerInputHandler controllerInputHandler = new ControllerInputHandler(engine);
         controllerInputHandler.setControlledEntity(world.getPlayer());
-        view = new GameScreenStage(game.getBatch(), new InputHandler());
+        view = new GameView(game.getBatch(), new InputHandler());
         view.setInputController(new GamepadController(controllerInputHandler));
         Gdx.input.setInputProcessor(view.getInputProcessor());
         return view;
     }
 
-    private GameModel setupModel(PooledEngine engine) {
-        world = new GameModel(engine);
+    private World setupModel(PooledEngine engine) {
+        world = new World(engine);
         world.listeners.add(this);
         world.initialize();
         return world;
@@ -95,17 +95,17 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
     }
 
     @Override
-    public void update(GameModel model, int event) {
+    public void handle(World model, int event) {
         switch (event) {
-            case GameModel.EVENT_SCORE: {
+            case World.EVENT_SCORE: {
                 onUpdateScore();
                 break;
             }
-            case GameModel.EVENT_LEVEL_COMPLETE: {
+            case World.EVENT_LEVEL_COMPLETE: {
                 onLevelComplete();
                 break;
             }
-            case GameModel.EVENT_GAME_OVER: {
+            case World.EVENT_GAME_OVER: {
                 onGameOver();
                 break;
             }
@@ -118,7 +118,7 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
 //        stage.setScore(0);
 //        world.initialize();
 //        world.run();
-        game.setScreen(new MainScreen(game));
+        game.setScreen(new MainController(game));
     }
 
     private void onLevelComplete() {
@@ -133,25 +133,26 @@ public class GameScreen extends ScreenAdapter implements GameModel.IGameListener
         view.updateScore(world.getScore());
     }
 
-    public class InputHandler {
+    private class InputHandler implements IGameController {
 
-        InputHandler() {
-        }
-
+        @Override
         public void onPause() {
             world.pause();
         }
 
+        @Override
         public void onResume() {
             world.run();
         }
 
+        @Override
         public void onQuitLevel() {
-
+            GameController.this.game.setScreen(new MainController(game));
         }
 
+        @Override
         public void onQuit() {
-
+            Gdx.app.exit();
         }
 
     }

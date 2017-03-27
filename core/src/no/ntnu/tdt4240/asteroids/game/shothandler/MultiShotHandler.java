@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.game.shothandler;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
+import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
@@ -31,8 +32,10 @@ public class MultiShotHandler implements IShotHandler {
     public void fire(PooledEngine engine, Entity controlledEntity) {
         long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis < lastShot + fireDelay) {
+
             return;
         }
+        AssetLoader.shot.play();
         lastShot = currentTimeMillis;
 
         EntityFactory factory = EntityFactory.getInstance();

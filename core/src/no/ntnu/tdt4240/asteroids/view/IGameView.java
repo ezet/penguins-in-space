@@ -2,7 +2,7 @@ package no.ntnu.tdt4240.asteroids.view;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public interface IGameScreenView extends IView {
+public interface IGameView extends IView {
 
     void setInputController(Actor inputController);
 

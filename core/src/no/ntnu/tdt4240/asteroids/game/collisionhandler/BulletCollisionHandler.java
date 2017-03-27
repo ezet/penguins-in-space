@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.entity.collisionhandler;
+package no.ntnu.tdt4240.asteroids.game.collisionhandler;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
