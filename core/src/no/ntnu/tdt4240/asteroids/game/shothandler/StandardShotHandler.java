@@ -11,7 +11,7 @@ import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 
 public class StandardShotHandler implements IShotHandler {
 
-    private int BULLET_SPEED = 800;
+    public int BULLET_SPEED = 800;
 
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {

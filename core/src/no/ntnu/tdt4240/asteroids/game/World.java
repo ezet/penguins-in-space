@@ -89,22 +89,7 @@ public class World {
     // TODO: use texture packer and atlas
     private Array<TextureRegion> explosions = new Array<>();
 
-    private DamageSystem.IEntityDestroyedListener obstacleDestroyedHandler = new DamageSystem.IEntityDestroyedListener() {
-
-        @Override
-        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
-            spawnPowerup(target);
-            AnimationComponent animation = new AnimationComponent();
-            target.remove(CollisionComponent.class);
-//            target.remove(MovementComponent.class);
-            animation.removeOnAnimationComplete = true;
-            animation.frames.addAll(explosions);
-            target.add(animation);
-            increaseScore();
-            EffectFactory.getInstance().registerEffect(InvulnerabilityEffect.class);
-            EffectFactory.getInstance().registerEffect(MultishotEffect.class);
-        }
-    };
+    private final DamageSystem.IEntityDestroyedListener obstacleDestroyedHandler = new ObstacleDestroyedHandler();
 
 
     public World(PooledEngine engine) {
@@ -114,6 +99,8 @@ public class World {
         player = new Entity();
         setupEngineSystems();
         initExplosions();
+        EffectFactory.getInstance().registerEffect(InvulnerabilityEffect.class);
+        EffectFactory.getInstance().registerEffect(MultishotEffect.class);
     }
 
     private void increaseScore() {
@@ -320,6 +307,20 @@ public class World {
         @Override
         public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
             gameOver();
+        }
+    }
+
+    private class ObstacleDestroyedHandler implements DamageSystem.IEntityDestroyedListener {
+
+        @Override
+        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+            spawnPowerup(target);
+            AnimationComponent animation = new AnimationComponent();
+            target.remove(CollisionComponent.class);
+            animation.removeOnAnimationComplete = true;
+            animation.frames.addAll(explosions);
+            target.add(animation);
+            increaseScore();
         }
     }
 }
