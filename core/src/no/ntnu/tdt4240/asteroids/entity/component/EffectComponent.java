@@ -12,7 +12,6 @@ public class EffectComponent extends BaseComponent {
     private final Array<IEffect> effects = new Array<>();
 
     public void addEffect(IEffect effect) {
-        AssetLoader.powerup.play();
         effects.add(effect);
     }
 

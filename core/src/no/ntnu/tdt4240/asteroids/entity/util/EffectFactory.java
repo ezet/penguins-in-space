@@ -7,13 +7,7 @@ import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 
 public class EffectFactory<F extends IEffect> {
 
-    private static EffectFactory instance;
     private final Array<Class<F>> effects = new Array<>();
-
-    public static EffectFactory getInstance() {
-        if (instance == null) instance = new EffectFactory();
-        return instance;
-    }
 
     public void registerEffect(Class<F> effect) {
         effects.add(effect);

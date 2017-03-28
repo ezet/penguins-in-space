@@ -6,6 +6,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.entity.DaggerEntityComponent;
+import no.ntnu.tdt4240.asteroids.entity.EntityModule;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -14,6 +16,7 @@ import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.IGameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
@@ -32,10 +35,11 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     GameController(Asteroids game) {
         this.game = game;
         engine = setupEngine(game.getBatch());
+        ServiceLocator.initializeEntityComponent(engine);
 
         // TODO: get factory from config
-        IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
-        EntityFactory.initialize(engine, drawableComponentFactory);
+//        IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
+//        EntityFactory.initialize(engine, drawableComponentFactory);
 
         // TODO: figure out camera/viewport/stage stuff
         world = setupModel(engine);
