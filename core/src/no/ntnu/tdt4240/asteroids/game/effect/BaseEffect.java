@@ -13,12 +13,12 @@ import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 
-abstract class BaseEffect implements IEffect {
+public abstract class BaseEffect implements IEffect {
 
+    @Inject
+    AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
     private TextureRegion oldRegion;
-
     private boolean applied;
-
     private float remainingDuration;
 
     protected abstract float getDuration();
@@ -29,8 +29,11 @@ abstract class BaseEffect implements IEffect {
 
     protected abstract void removeEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent);
 
-    @Inject
-    protected AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+    @Override
+    public void refresh(IEffect effect) {
+        BaseEffect baseEffect = (BaseEffect) effect;
+        baseEffect.remainingDuration =+ baseEffect.getDuration();
+    }
 
     @Override
     public void tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
@@ -42,8 +45,10 @@ abstract class BaseEffect implements IEffect {
             applied = true;
         } else if (remainingDuration > 0) {
             remainingDuration -= deltaTime;
-        } else {
-            entity.remove(EffectComponent.class);
+        }
+        if (remainingDuration < 0) {
+//            entity.remove(EffectComponent.class);
+            component.removeEffect(this);
             removeEffect(engine, entity, component);
             restoreTexture(entity);
             applied = false;
