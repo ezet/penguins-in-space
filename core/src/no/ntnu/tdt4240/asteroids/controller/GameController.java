@@ -33,11 +33,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         engine = setupEngine(game.getBatch());
         ServiceLocator.initializeEntityComponent(engine);
 
-        // TODO: get factory from config
-//        IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
-//        EntityFactory.initialize(engine, drawableComponentFactory);
-
-        // TODO: figure out camera/viewport/stage stuff
         world = setupModel(engine);
         view = setupView(engine, world);
         world.run();
