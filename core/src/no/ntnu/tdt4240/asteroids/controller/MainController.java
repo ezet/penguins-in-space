@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.view.IMainView;
+import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.MainView;
 
 public class MainController extends ScreenAdapter implements IMainController {
@@ -51,4 +51,6 @@ public class MainController extends ScreenAdapter implements IMainController {
     }
 
 
+    public interface IMainView extends IView {
+    }
 }
