@@ -61,7 +61,7 @@ project(":android") {
     dependencies {
         compile project(":core")
         compile project(":BaseGameUtils")
-        compile 'com.google.android.gms:play-services-games:10.2.0'
+        compile 'com.google.android.gms:play-services-games:10.2.1'
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -103,12 +103,15 @@ project(":android") {
 project(":core") {
     apply plugin: "java"
     apply plugin: "net.ltgt.apt"
+    sourceSets.test.java.srcDirs = ["test/"]
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.google.dagger:dagger:2.9"
         apt "com.google.dagger:dagger-compiler:2.9"
         compileOnly 'javax.annotation:jsr250-api:1.0'
+        testCompile "org.mockito:mockito-core:2.+"
+        testCompile "junit:junit:4.12"
     }
 }
 

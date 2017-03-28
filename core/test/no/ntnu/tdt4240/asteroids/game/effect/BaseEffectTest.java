@@ -1,0 +1,63 @@
+package no.ntnu.tdt4240.asteroids.game.effect;
+
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.PooledEngine;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import no.ntnu.tdt4240.asteroids.GameComponent;
+import no.ntnu.tdt4240.asteroids.entity.EntityComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+public class BaseEffectTest {
+
+    private PooledEngine engine;
+    private Entity entity;
+    private BaseEffect fixture;
+    private EffectComponent effectComponent;
+    private AudioManager audioManager;
+
+    @Before
+    public void setup() {
+        engine = mock(PooledEngine.class);
+        when(engine.createComponent(HealthComponent.class)).thenReturn(new HealthComponent());
+        when(engine.createComponent(DamageComponent.class)).thenReturn(new DamageComponent());
+        ServiceLocator.gameComponent = mock(GameComponent.class);
+        audioManager = mock(AudioManager.class);
+        when(ServiceLocator.gameComponent.getAudioManager()).thenReturn(audioManager);
+        ServiceLocator.entityComponent = mock(EntityComponent.class);
+        when(ServiceLocator.entityComponent.getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
+        entity = mock(Entity.class);
+        fixture = spy(BaseEffect.class);
+        effectComponent = mock(EffectComponent.class);
+        when(fixture.getDuration()).thenReturn(5f);
+    }
+
+    @Test
+    public void lifecycle_validEffect_shouldSucceed() {
+        fixture.tick(engine, entity, effectComponent, 1);
+        verify(fixture).applyEffect(engine, entity, effectComponent);
+        verify(audioManager).playPowerup();
+
+        fixture.tick(engine, entity, effectComponent, 1);
+
+        fixture.tick(engine, entity, effectComponent, 10);
+        verify(fixture).removeEffect(any(PooledEngine.class), any(Entity.class), any(EffectComponent.class));
+
+        verify(fixture, times(2)).tick(engine, entity, effectComponent, 1);
+    }
+
+}
