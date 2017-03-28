@@ -1,7 +1,5 @@
 package no.ntnu.tdt4240.asteroids;
 
-import com.badlogic.gdx.assets.AssetManager;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -18,14 +16,14 @@ public class GameModule {
 
     @Provides
     @Singleton
-    AssetLoader provideAssetLoader() {
-        return new AssetLoader();
+    Assets provideAssetLoader() {
+        return new Assets();
     }
 
     @Provides
     @Singleton
-    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(AssetLoader assetLoader) {
-        return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assetLoader);
+    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(Assets assets) {
+        return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assets);
     }
 
 

@@ -6,7 +6,7 @@ public interface IDrawableComponentFactory {
 
     DrawableComponent getPlayer();
 
-    DrawableComponent getBullet();
+    DrawableComponent getProjectile();
 
     DrawableComponent getObstacle();
 

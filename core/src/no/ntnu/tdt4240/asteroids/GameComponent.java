@@ -8,10 +8,10 @@ import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 @Component(modules = GameModule.class)
 @Singleton
 public interface GameComponent {
-    AudioManager provideAudioManager();
+    AudioManager getAudioManager();
 
-    GameSettings provideGameSettings();
+    GameSettings getGameSettings();
 
-    AssetLoader provideAssetLoader();
+    Assets getAssetLoader();
 
 }

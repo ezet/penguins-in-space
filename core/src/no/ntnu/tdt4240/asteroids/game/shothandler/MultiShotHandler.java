@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.PooledEngine;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
@@ -25,10 +24,10 @@ public class MultiShotHandler implements IShotHandler {
 
     private long lastShot;
 
-    private AudioManager audioManager = ServiceLocator.gameComponent.provideAudioManager();
+    private AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
 
     @Inject
-    EntityFactory entityFactory = ServiceLocator.entityComponent.provideEntityFactory();
+    EntityFactory entityFactory = ServiceLocator.entityComponent.getEntityFactory();
 
     public MultiShotHandler(int bulletSpeed, int numBullets, int spread) {
         this.BULLET_SPEED = bulletSpeed;

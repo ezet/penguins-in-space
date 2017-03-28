@@ -5,24 +5,24 @@ import com.badlogic.gdx.audio.Sound;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
+import no.ntnu.tdt4240.asteroids.Assets;
 
 public class AudioManager {
 
-    private AssetLoader assetLoader;
+    private Assets assets;
     private Music backgroundMusic;
     private Sound explosion;
     private Sound powerup;
     private Sound shoot;
 
     @Inject
-    public AudioManager(AssetLoader assetLoader) {
-        this.assetLoader = assetLoader;
+    public AudioManager(Assets assets) {
+        this.assets = assets;
     }
 
     public void playBackgroundMusic() {
         if (backgroundMusic == null) {
-            backgroundMusic = assetLoader.getBackgroundMusic();
+            backgroundMusic = assets.getBackgroundMusic();
             backgroundMusic.setLooping(true);
         }
         if (!backgroundMusic.isPlaying())
@@ -30,17 +30,17 @@ public class AudioManager {
     }
 
     public void playShoot() {
-        if (shoot == null) shoot = assetLoader.getShoot();
+        if (shoot == null) shoot = assets.getShoot();
         shoot.play();
     }
 
     public void playExplosion() {
-        if (explosion == null) explosion = assetLoader.getExplosion();
+        if (explosion == null) explosion = assets.getExplosion();
         explosion.play();
     }
 
     public void playPowerup() {
-        if (powerup == null) powerup = assetLoader.getPowerup();
+        if (powerup == null) powerup = assets.getPowerup();
         powerup.play();
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.GameSettings;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
@@ -29,34 +30,31 @@ public class EntityFactory {
 
     private static final Family POWERUP_COLLISION_IGNORE = Family.one(ObstacleClass.class, BulletClass.class).get();
     private static final Family BULLET_COLLISION_IGNORE = Family.one(BulletClass.class, PlayerClass.class).get();
-    // TODO: add config
-    private static final float GRAVITY = 0.01f;
-    private static final int ACCELERATION_SCALAR = 500;
-    private static final int POSITION_X = Asteroids.VIRTUAL_WIDTH / 2;
-    private static final int POSITION_Y = Asteroids.VIRTUAL_HEIGHT / 2;
-    private static final int ROTATION_X = 1;
-    private static final int ROTATION_Y = 0;
-    // TODO: find a better place for this
-    private static final CollisionSystem.ICollisionHandler bulletCollisionHandler = new BulletCollisionHandler();
     private static final Family OBSTACLE_COLLISION_IGNORE = Family.one(ObstacleClass.class).get();
+    private static final CollisionSystem.ICollisionHandler bulletCollisionHandler = new BulletCollisionHandler();
     private static final PowerupCollisionHandler POWERUP_COLLISION_HANDLER = new PowerupCollisionHandler();
     private final PooledEngine engine;
-    private IDrawableComponentFactory drawableComponentFactory;
+    private final IDrawableComponentFactory drawableComponentFactory;
+    private final GameSettings gameSettings;
 
     @Inject
-    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
+    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, GameSettings gameSettings) {
         this.engine = engine;
         this.drawableComponentFactory = drawableComponentFactory;
+        this.gameSettings = gameSettings;
     }
 
     public Entity initPlayer(Entity player) {
         player.add(new PlayerClass());
-        //// TODO: 3/23/2017  Change to constant width/height
-        player.add(new TransformComponent(POSITION_X, POSITION_Y, ROTATION_X, ROTATION_Y));
+        int rotationX = 1;
+        int rotationY = 0;
+        int positionX = Asteroids.VIRTUAL_WIDTH / 2;
+        int positionY = Asteroids.VIRTUAL_HEIGHT / 2;
+        player.add(new TransformComponent(positionX, positionY, rotationX, rotationY));
         MovementComponent movementComponent = new MovementComponent();
-        movementComponent.accelerationScalar = ACCELERATION_SCALAR;
+        movementComponent.accelerationScalar = gameSettings.accelerationScalar;
         player.add(movementComponent);
-        player.add(new GravityComponent(GRAVITY));
+        player.add(new GravityComponent(gameSettings.playerGravity));
         player.add(new CircularBoundsComponent());
         player.add(new ShootComponent());
         player.add(new HealthComponent());
@@ -75,7 +73,7 @@ public class EntityFactory {
         entity.add(engine.createComponent(MovementComponent.class));
         entity.add(engine.createComponent(CircularBoundsComponent.class));
         entity.add(engine.createComponent(DamageComponent.class));
-        entity.add(drawableComponentFactory.getBullet());
+        entity.add(drawableComponentFactory.getProjectile());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         collisionComponent.collisionHandler = bulletCollisionHandler;
         collisionComponent.ignoreComponents = BULLET_COLLISION_IGNORE;

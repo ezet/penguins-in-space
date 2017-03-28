@@ -6,6 +6,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import no.ntnu.tdt4240.asteroids.Assets;
+import no.ntnu.tdt4240.asteroids.GameSettings;
 import no.ntnu.tdt4240.asteroids.entity.util.DefaultDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
@@ -22,32 +24,32 @@ public class EntityModule {
     }
 
     @Provides
-    @Singleton
+    @EntityComponent.GameScope
     public PooledEngine providesEngine() {
         return engine;
     }
 
     @Provides
-    @Singleton
-    public IDrawableComponentFactory provideDrawableComponentFactory(PooledEngine engine) {
-        return new DefaultDrawableComponentFactory(engine);
+    @EntityComponent.GameScope
+    public IDrawableComponentFactory provideDrawableComponentFactory(PooledEngine engine, Assets assets) {
+        return new DefaultDrawableComponentFactory(engine, assets);
     }
 
     @Provides
-    @Singleton
+    @EntityComponent.GameScope
     public EffectFactory provideEffectFactory() {
         return new EffectFactory();
     }
 
     @Provides
-    @Singleton
+    @EntityComponent.GameScope
     public EffectTextureFactory provideEffectTextureFactory() {
         return new EffectTextureFactory();
     }
 
     @Provides
-    @Singleton
-    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
-        return new EntityFactory(engine, drawableComponentFactory);
+    @EntityComponent.GameScope
+    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, GameSettings gameSettings) {
+        return new EntityFactory(engine, drawableComponentFactory, gameSettings);
     }
 }
