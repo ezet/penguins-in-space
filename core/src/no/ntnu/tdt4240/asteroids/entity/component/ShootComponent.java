@@ -3,12 +3,13 @@ package no.ntnu.tdt4240.asteroids.entity.component;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.utils.Pool;
 
 import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.game.shothandler.IShotHandler;
 import no.ntnu.tdt4240.asteroids.game.shothandler.StandardShotHandler;
 
-public class ShootComponent implements Component {
+public class ShootComponent implements Component, Pool.Poolable {
 
     public IShotHandler handler;
 
@@ -17,5 +18,8 @@ public class ShootComponent implements Component {
         handler.fire(engine, controlledEntity);
     }
 
-
+    @Override
+    public void reset() {
+        handler = null;
+    }
 }

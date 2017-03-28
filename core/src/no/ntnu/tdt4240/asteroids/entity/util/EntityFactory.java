@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 
+import javax.inject.Inject;
+
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
@@ -38,21 +40,13 @@ public class EntityFactory {
     private static final CollisionSystem.ICollisionHandler bulletCollisionHandler = new BulletCollisionHandler();
     private static final Family OBSTACLE_COLLISION_IGNORE = Family.one(ObstacleClass.class).get();
     private static final PowerupCollisionHandler POWERUP_COLLISION_HANDLER = new PowerupCollisionHandler();
-    private static EntityFactory instance;
     private final PooledEngine engine;
     private IDrawableComponentFactory drawableComponentFactory;
 
-    private EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
+    @Inject
+    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory) {
         this.engine = engine;
         this.drawableComponentFactory = drawableComponentFactory;
-    }
-
-    public static void initialize(PooledEngine engine, IDrawableComponentFactory factory) {
-        instance = new EntityFactory(engine, factory);
-    }
-
-    public static EntityFactory getInstance() {
-        return instance;
     }
 
     public Entity initPlayer(Entity player) {

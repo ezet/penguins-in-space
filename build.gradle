@@ -2,11 +2,18 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 //        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
 //        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
     }
@@ -95,10 +102,13 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java"
+    apply plugin: "net.ltgt.apt"
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-
+        compile "com.google.dagger:dagger:2.9"
+        apt "com.google.dagger:dagger-compiler:2.9"
+        compileOnly 'javax.annotation:jsr250-api:1.0'
     }
 }
 

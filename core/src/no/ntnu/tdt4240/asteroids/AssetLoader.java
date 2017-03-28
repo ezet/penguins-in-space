@@ -1,31 +1,57 @@
 package no.ntnu.tdt4240.asteroids;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 
 public class AssetLoader {
-    // TODO: Implement AssetLoader helper class using AssetManager, possibly make AssetLoader a singleton
 
-    //public AssetManager assetManager;
+    private AssetManager assetManager;
+    private boolean loaded = false;
 
-    public static Music backgroundMusic;
-    public static Sound explosion, shot, die, powerup;
-
-    void loadAssets() {
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sounds/music.mp3"));
-        explosion = Gdx.audio.newSound(Gdx.files.internal("Sounds/explosion.wav"));
-        shot = Gdx.audio.newSound(Gdx.files.internal("Sounds/shoot.wav"));
-        powerup = Gdx.audio.newSound(Gdx.files.internal("Sounds/powerup.wav"));
-        //die = Gdx.audio.newMusic(Gdx.files.internal("Sounds/music.mp3"));
+    public AssetLoader() {
+        assetManager = new AssetManager();
     }
 
-    void dispose(){
-        backgroundMusic.dispose();
-
+    void loadAudio() {
+        loaded = false;
+        assetManager.load("sound/music.mp3", Music.class);
+        assetManager.load("sound/explosion.wav", Sound.class);
+        assetManager.load("sound/shoot.wav", Sound.class);
+        assetManager.load("sound/powerup.wav", Sound.class);
+        assetManager.finishLoading();
+//        assetManager.update(500);
+//        assetManager.load("sound/music.mp3", Sound.class);
     }
 
+    public Music getBackgroundMusic() {
+        if (!assetManager.isLoaded("sound/music.mp3")) {
+//            assetManager.load("sound/music.mp3", Music.class);
+            loadAudio();
+            assetManager.finishLoading();
+        }
+        return assetManager.get("sound/music.mp3");
+    }
+
+    public Sound getExplosion() {
+        return assetManager.get("sound/explosion.wav", Sound.class);
+    }
+
+    public Sound getShoot() {
+        return assetManager.get("sound/shoot.wav", Sound.class);
+    }
+
+    public Sound getPowerup() {
+        return assetManager.get("sound/powerup.wav", Sound.class);
+    }
+
+    void dispose() {
+//        assetManager.clear();
+    }
+
+    public boolean update() {
+        if (loaded) return loaded;
+        loaded = assetManager.update();
+        return loaded;
+    }
 }
