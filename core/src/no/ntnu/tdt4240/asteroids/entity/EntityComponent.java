@@ -1,20 +1,35 @@
 package no.ntnu.tdt4240.asteroids.entity;
 
-import javax.inject.Singleton;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Scope;
+
+
 
 import dagger.Component;
+import no.ntnu.tdt4240.asteroids.GameComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 
-@Component(modules = EntityModule.class)
-@Singleton
+@EntityComponent.GameScope
+@Component(modules = EntityModule.class, dependencies = GameComponent.class)
 public interface EntityComponent {
 
-    EntityFactory provideEntityFactory();
+    EntityFactory getEntityFactory();
 
-    EffectTextureFactory provideEffectTextureFactory();
+    EffectTextureFactory getEffectTextureFactory();
 
-    EffectFactory provideEffectFactory();
+    EffectFactory getEffectFactory();
+
+
+    @Scope
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface GameScope {
+
+    }
 
 }

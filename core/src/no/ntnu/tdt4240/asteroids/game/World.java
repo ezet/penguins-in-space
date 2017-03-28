@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Vector;
 
 import javax.inject.Inject;
-import javax.xml.ws.Service;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.GameSettings;
@@ -68,7 +67,7 @@ public class World {
     @Inject
     GameSettings gameSettings;
     @Inject
-    EntityFactory entityFactory = ServiceLocator.entityComponent.provideEntityFactory();
+    EntityFactory entityFactory = ServiceLocator.entityComponent.getEntityFactory();
     private final EntityListener resetListener = new EntityListener() {
         @Override
         public void entityAdded(Entity entity) {
@@ -83,7 +82,7 @@ public class World {
         }
     };
     @Inject
-    AudioManager audioManager = ServiceLocator.gameComponent.provideAudioManager();
+    AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
     private int state = STATE_READY;
     private int score = 0;
     private int level = 0;
@@ -98,13 +97,13 @@ public class World {
         setupEngineSystems();
         initExplosions();
         registerEffects();
-        gameSettings = ServiceLocator.gameComponent.provideGameSettings();
+        gameSettings = ServiceLocator.gameComponent.getGameSettings();
     }
 
     @SuppressWarnings("unchecked")
     private void registerEffects() {
-        ServiceLocator.entityComponent.provideEffectFactory().registerEffect(InvulnerabilityEffect.class);
-        ServiceLocator.entityComponent.provideEffectFactory().registerEffect(MultishotEffect.class);
+        ServiceLocator.entityComponent.getEffectFactory().registerEffect(InvulnerabilityEffect.class);
+        ServiceLocator.entityComponent.getEffectFactory().registerEffect(MultishotEffect.class);
     }
 
     private void increaseScore() {
@@ -185,7 +184,7 @@ public class World {
     }
 
     private IEffect getEffect() {
-        return ServiceLocator.entityComponent.provideEffectFactory().getRandomEffect();
+        return ServiceLocator.entityComponent.getEffectFactory().getRandomEffect();
     }
 
     private Entity createObstacle() {

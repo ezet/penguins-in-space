@@ -3,7 +3,6 @@ package no.ntnu.tdt4240.asteroids.game.shothandler;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
@@ -15,8 +14,8 @@ public class StandardShotHandler implements IShotHandler {
 
     public int BULLET_SPEED = 800;
 
-    private EntityFactory factory = ServiceLocator.entityComponent.provideEntityFactory();
-    private AudioManager audioManager = ServiceLocator.gameComponent.provideAudioManager();
+    private EntityFactory factory = ServiceLocator.entityComponent.getEntityFactory();
+    private AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
 
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {

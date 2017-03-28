@@ -17,7 +17,7 @@ public abstract class ServiceLocator {
     public static INetworkService networkService;
 
     public static void initializeEntityComponent(PooledEngine engine) {
-        entityComponent = DaggerEntityComponent.builder().entityModule(new EntityModule(engine)).build();
+        entityComponent = DaggerEntityComponent.builder().entityModule(new EntityModule(engine)).gameComponent(gameComponent).build();
     }
 
     public static void initializeGameComponent(INetworkService networkService) {

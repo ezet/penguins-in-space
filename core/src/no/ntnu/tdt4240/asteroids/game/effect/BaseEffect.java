@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -31,7 +30,7 @@ abstract class BaseEffect implements IEffect {
     protected abstract void removeEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent);
 
     @Inject
-    protected AudioManager audioManager = ServiceLocator.gameComponent.provideAudioManager();
+    protected AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
 
     @Override
     public void tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
