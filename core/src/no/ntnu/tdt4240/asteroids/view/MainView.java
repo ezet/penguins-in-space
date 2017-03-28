@@ -19,9 +19,10 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.controller.IMainController;
+import no.ntnu.tdt4240.asteroids.controller.MainController;
 
 
-public class MainView extends Stage implements IMainView {
+public class MainView extends Stage implements MainController.IMainView {
 
     private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

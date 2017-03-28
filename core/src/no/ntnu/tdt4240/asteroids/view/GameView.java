@@ -23,10 +23,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.controller.GameController;
 import no.ntnu.tdt4240.asteroids.controller.IGameController;
 
 
-public class GameView extends Stage implements IGameView {
+public class GameView extends Stage implements GameController.IGameView {
 
     private static final String TAG = GameView.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.
