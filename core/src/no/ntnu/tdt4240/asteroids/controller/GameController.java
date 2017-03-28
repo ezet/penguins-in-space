@@ -43,7 +43,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         super.resize(width, height);
         engine.getSystem(RenderSystem.class).resize(width, height);
         view.resize(width, height);
-
     }
 
     private IGameView setupView(PooledEngine engine, World world) {

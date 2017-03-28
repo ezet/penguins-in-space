@@ -6,11 +6,8 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Array;
 
-import javax.inject.Inject;
-
 import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.damageMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
@@ -30,9 +27,9 @@ public class DamageSystem extends EntitySystem implements CollisionSystem.IColli
         DamageComponent damageComponent = damageMapper.get(source);
         HealthComponent healthComponent = healthMapper.get(target);
         if (healthComponent == null || damageComponent == null) return;
-        if (damageComponent.ignoreComponents != null && damageComponent.ignoreComponents.matches(target))
+        if (damageComponent.ignoredEntities != null && damageComponent.ignoredEntities.matches(target))
             return;
-        if (healthComponent.ignoreComponents != null && healthComponent.ignoreComponents.matches(source))
+        if (healthComponent.ignoredEntities != null && healthComponent.ignoredEntities.matches(source))
             return;
 
 

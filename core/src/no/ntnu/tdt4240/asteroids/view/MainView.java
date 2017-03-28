@@ -95,4 +95,9 @@ public class MainView extends Stage implements MainController.IMainView {
     public InputProcessor getInputProcessor() {
         return this;
     }
+
+    @Override
+    public void resize(int width, int height) {
+        getViewport().update(width, height);
+    }
 }

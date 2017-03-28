@@ -8,9 +8,8 @@ import com.badlogic.gdx.utils.Pool;
 
 public class DamageComponent implements Component, Pool.Poolable {
 
-    final public Array<Component> ignoredComponents = new Array<>();
     public int damage = 1;
-    public Family ignoreComponents;
+    public Family ignoredEntities;
 
     @Override
     public void reset() {

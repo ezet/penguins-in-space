@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Pool;
 import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 
 
-public class HealthComponent implements Component, Pool.Poolable, Cloneable {
+public class HealthComponent implements Component, Pool.Poolable {
 
     public int hitPoints = 0;
 
@@ -15,7 +15,7 @@ public class HealthComponent implements Component, Pool.Poolable, Cloneable {
 
     public DamageSystem.IEntityDestroyedListener entityDestroyedHandler;
 
-    public Family ignoreComponents;
+    public Family ignoredEntities;
 
     @Override
     public void reset() {

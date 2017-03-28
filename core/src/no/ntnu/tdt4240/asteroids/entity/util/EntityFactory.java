@@ -61,7 +61,7 @@ public class EntityFactory {
         player.add(new BoundaryComponent(BoundaryComponent.MODE_WRAP));
         player.add(drawableComponentFactory.getPlayer());
         CollisionComponent collisionComponent = new CollisionComponent();
-        collisionComponent.ignoreComponents = Family.all(BulletClass.class).get();
+        collisionComponent.ignoredEntities = Family.all(BulletClass.class).get();
         player.add(collisionComponent);
         return player;
     }
@@ -76,7 +76,7 @@ public class EntityFactory {
         entity.add(drawableComponentFactory.getProjectile());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         collisionComponent.collisionHandler = bulletCollisionHandler;
-        collisionComponent.ignoreComponents = BULLET_COLLISION_IGNORE;
+        collisionComponent.ignoredEntities = BULLET_COLLISION_IGNORE;
         entity.add(collisionComponent);
         return entity;
     }
@@ -91,7 +91,7 @@ public class EntityFactory {
         entity.add(engine.createComponent(DamageComponent.class));
         entity.add(drawableComponentFactory.getObstacle());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
-        collisionComponent.ignoreComponents = OBSTACLE_COLLISION_IGNORE;
+        collisionComponent.ignoredEntities = OBSTACLE_COLLISION_IGNORE;
         entity.add(collisionComponent);
         return entity;
     }
@@ -104,7 +104,7 @@ public class EntityFactory {
         entity.add(engine.createComponent(CircularBoundsComponent.class));
         entity.add(drawableComponentFactory.getPowerup());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
-        collisionComponent.ignoreComponents = POWERUP_COLLISION_IGNORE;
+        collisionComponent.ignoredEntities = POWERUP_COLLISION_IGNORE;
         collisionComponent.collisionHandler = POWERUP_COLLISION_HANDLER;
         entity.add(collisionComponent);
         entity.add(engine.createComponent(MovementComponent.class));
