@@ -30,6 +30,12 @@ public class MainController extends ScreenAdapter implements IMainController {
         draw();
     }
 
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        view.resize(width, height);
+    }
+
     private void update(float delta) {
         view.update(delta);
         // TODO: handle input and process events
@@ -52,5 +58,6 @@ public class MainController extends ScreenAdapter implements IMainController {
 
 
     public interface IMainView extends IView {
+        void resize(int width, int height);
     }
 }

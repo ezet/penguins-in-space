@@ -31,8 +31,8 @@ public class CollisionSystem extends IteratingSystem {
         if (collisionComponent == null || bounds == null) return;
         for (Entity other : getEntities()) {
             if (other.isScheduledForRemoval()) continue;
-            if (collisionComponent.ignoreComponents != null
-                    && collisionComponent.ignoreComponents.matches(other)) continue;
+            if (collisionComponent.ignoredEntities != null
+                    && collisionComponent.ignoredEntities.matches(other)) continue;
             if (entity == other) continue;
             BoundsComponent otherBounds = boundsMapper.get(other);
             if (bounds.overlaps(otherBounds)) {
