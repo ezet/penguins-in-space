@@ -10,4 +10,6 @@ public interface IView {
 
     InputProcessor getInputProcessor();
 
+    void resize(int width, int height);
+
 }

@@ -24,6 +24,7 @@ import no.ntnu.tdt4240.asteroids.controller.MainController;
 
 public class MainView extends Stage implements MainController.IMainView {
 
+    @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));

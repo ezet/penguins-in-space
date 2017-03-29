@@ -27,12 +27,10 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     private IGameView view;
     private World world;
 
-
     GameController(Asteroids game) {
         this.game = game;
         engine = setupEngine(game.getBatch());
         ServiceLocator.initializeEntityComponent(engine);
-
         world = setupModel(engine);
         view = setupView(engine, world);
         world.run();
@@ -84,7 +82,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());
-
         return engine;
     }
 
