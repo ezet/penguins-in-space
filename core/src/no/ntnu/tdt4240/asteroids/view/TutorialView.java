@@ -95,5 +95,10 @@ public class TutorialView extends Stage implements ITutorialView {
         return this;
     }
 
+    @Override
+    public void resize(int width, int height) {
+        
+    }
+
 
 }
