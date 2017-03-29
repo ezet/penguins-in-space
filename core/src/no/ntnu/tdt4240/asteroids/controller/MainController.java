@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.view.IMainView;
 import no.ntnu.tdt4240.asteroids.view.MainView;
+import sun.rmi.runtime.Log;
 
 public class MainController extends ScreenAdapter implements IMainController {
 
@@ -18,10 +19,26 @@ public class MainController extends ScreenAdapter implements IMainController {
     public MainController(final Asteroids game) {
         this.game = game;
         view = new MainView(game.getBatch(), this);
-        Gdx.input.setInputProcessor(view.getInputProcessor());
 
 
         // TODO: set touch points
+    }
+    @Override
+    public void show() {
+        super.show();
+        Gdx.input.setInputProcessor(view.getInputProcessor());
+        Gdx.app.debug(TAG, "Show");
+
+
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        Gdx.input.setInputProcessor(null);
+        Gdx.app.debug(TAG, "HIDE");
+
+
     }
 
     @Override
@@ -41,13 +58,20 @@ public class MainController extends ScreenAdapter implements IMainController {
 
     @Override
     public void onPlay() {
-        game.setScreen(new GameController(game));
+        game.setScreen(new GameController(game, this));
 
     }
 
     @Override
     public void onQuit() {
         Gdx.app.exit();
+    }
+
+    @Override
+    public void onTutorial() {
+        game.setScreen(new TutorialController(game,this));
+
+
     }
 
 

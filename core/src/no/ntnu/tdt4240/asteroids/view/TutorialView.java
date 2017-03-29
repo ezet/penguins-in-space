@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,27 +17,32 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import no.ntnu.tdt4240.asteroids.controller.IMainController;
+import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
 
+/**
+ * Created by morte on 3/28/2017.
+ */
 
-public class MainView extends Stage implements IMainView {
+public class TutorialView extends Stage implements ITutorialView {
 
     private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
-    private final TextButton play = new TextButton("PLAY", buttonSkin);
-    private final TextButton quit = new TextButton("QUIT", buttonSkin);
-    private final TextButton tutorial = new TextButton("Tutorial", buttonSkin);
+    private final TextButton back = new TextButton("QUIT", buttonSkin);
     private final Table table = new Table();
+
     private final BitmapFont defaultFont = new BitmapFont();
     private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-    private final IMainController controller;
-    private boolean active = true;
-    // TODO: implement main screen gui
+    private final Label label1 = new Label("Use the analog stick to the left to move around. " +
+            "Use the right button to shoot.", defaultLabelStyle);
+    private final Label label2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", defaultLabelStyle);
+    private final Label label3 = new Label("When you shoot the snowballs, they might drop new abilities...", defaultLabelStyle);
+
+    private final ITutorialController controller;
 
 
-    public MainView(Batch batch, IMainController controller) {
+    public TutorialView(Batch batch, ITutorialController controller) {
         super(viewport, batch);
         this.controller = controller;
         setDebugAll(true);
@@ -49,74 +53,47 @@ public class MainView extends Stage implements IMainView {
     }
 
     private void init() {
-        Gdx.app.log("Mytag", "init");
-
-        play.getLabel().setFontScale(3);
-        quit.getLabel().setFontScale(3);
-        tutorial.getLabel().setFontScale(3);
-
+        back.getLabel().setFontScale(3);
+        label1.setFontScale(3);
+        label2.setFontScale(3);
+        label3.setFontScale(3);
         table.setFillParent(true);
-        table.add(play).pad(30);
+        //Labels
         table.row();
-        table.add(quit).pad(30);
+        table.add(label1).pad(30);
         table.row();
-        table.add(tutorial).pad(30);
+        table.add(label2).pad(30);
         table.row();
-        play.addListener(new ClickListener() {
+        table.add(label3).pad(30);
+
+        //BACK button
+        table.row();
+        table.add(back).pad(30);
+
+        back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                table.addAction(Actions.sequence(Actions.fadeOut(1), new RunnableAction() {
-                    @Override
-                    public void run() {
-                        active = !active;
-                        controller.onPlay();
-                    }
-                }));
-            }
-        });
-        quit.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                controller.onQuit();
-            }
-        });
-        tutorial.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                controller.onTutorial();
+                controller.onQuitLevel();
             }
         });
     }
+
 
     @Override
     public void update(float delta) {
         act(delta);
-        if(!active){
-            active = !active;
-            table.addAction(Actions.sequence(Actions.fadeIn(1), new RunnableAction() {
-                @Override
-                public void run() {
-                }
-            }));
-        }
     }
-
-
-
 
     @Override
     public void draw() {
-//        Batch batch = getBatch();
-//        batch.disableBlending();
-//        batch.begin();
-//         TODO: draw background
-//        batch.end();
-//        batch.enableBlending();
         super.draw();
+
     }
 
     @Override
     public InputProcessor getInputProcessor() {
         return this;
     }
+
+
 }
