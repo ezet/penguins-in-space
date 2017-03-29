@@ -30,12 +30,13 @@ public class MainView extends Stage implements MainController.IMainView {
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
     private final TextButton play = new TextButton("PLAY", buttonSkin);
     private final TextButton quit = new TextButton("QUIT", buttonSkin);
+    private final TextButton tutorial = new TextButton("Tutorial", buttonSkin);
     private final Table table = new Table();
     private final BitmapFont defaultFont = new BitmapFont();
     private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
     private final IMainController controller;
-
+    private boolean active = true;
     // TODO: implement main screen gui
 
 
@@ -50,12 +51,18 @@ public class MainView extends Stage implements MainController.IMainView {
     }
 
     private void init() {
+        Gdx.app.log("Mytag", "init");
+
         play.getLabel().setFontScale(3);
         quit.getLabel().setFontScale(3);
+        tutorial.getLabel().setFontScale(3);
+
         table.setFillParent(true);
         table.add(play).pad(30);
         table.row();
         table.add(quit).pad(30);
+        table.row();
+        table.add(tutorial).pad(30);
         table.row();
         play.addListener(new ClickListener() {
             @Override
@@ -63,6 +70,7 @@ public class MainView extends Stage implements MainController.IMainView {
                 table.addAction(Actions.sequence(Actions.fadeOut(1), new RunnableAction() {
                     @Override
                     public void run() {
+                        active = !active;
                         controller.onPlay();
                     }
                 }));
@@ -74,12 +82,29 @@ public class MainView extends Stage implements MainController.IMainView {
                 controller.onQuit();
             }
         });
+        tutorial.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.onTutorial();
+            }
+        });
     }
 
     @Override
     public void update(float delta) {
         act(delta);
+        if(!active){
+            active = !active;
+            table.addAction(Actions.sequence(Actions.fadeIn(1), new RunnableAction() {
+                @Override
+                public void run() {
+                }
+            }));
+        }
     }
+
+
+
 
     @Override
     public void draw() {

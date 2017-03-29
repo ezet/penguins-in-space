@@ -5,4 +5,6 @@ public interface IMainController {
     void onPlay();
 
     void onQuit();
+
+    void onTutorial();
 }

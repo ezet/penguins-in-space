@@ -2,6 +2,7 @@ package no.ntnu.tdt4240.asteroids.controller;
 
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -17,7 +18,7 @@ import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
-public class GameController extends ScreenAdapter implements World.IGameListener {
+public class GameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
     @SuppressWarnings("unused")
     private static final String TAG = GameController.class.getSimpleName();
@@ -26,8 +27,12 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     private final PooledEngine engine;
     private IGameView view;
     private World world;
+    private Screen parent;
 
-    GameController(Asteroids game) {
+
+    GameController(Asteroids game, Screen parent) {
+        this.parent = parent;
+
         this.game = game;
         engine = setupEngine(game.getBatch());
         ServiceLocator.initializeEntityComponent(engine);
@@ -46,10 +51,24 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     private IGameView setupView(PooledEngine engine, World world) {
         ControllerInputHandler controllerInputHandler = new ControllerInputHandler(engine);
         controllerInputHandler.setControlledEntity(world.getPlayer());
-        view = new GameView(game.getBatch(), new InputHandler());
+        view = new GameView(game.getBatch(), this);
         view.setInputController(new GamepadController(controllerInputHandler));
-        Gdx.input.setInputProcessor(view.getInputProcessor());
+        //Gdx.input.setInputProcessor(view.getInputProcessor());
         return view;
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        Gdx.input.setInputProcessor(view.getInputProcessor());
+
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        Gdx.input.setInputProcessor(null);
+
     }
 
     private World setupModel(PooledEngine engine) {
@@ -120,9 +139,11 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         world.run();
     }
 
+
     private void onUpdateScore() {
         view.updateScore(world.getScore());
     }
+
 
     public interface IGameView extends IView {
 
@@ -137,7 +158,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         void resize(int width, int height);
     }
 
-    private class InputHandler implements IGameController {
+
 
         @Override
         public void onPause() {
@@ -151,7 +172,8 @@ public class GameController extends ScreenAdapter implements World.IGameListener
 
         @Override
         public void onQuitLevel() {
-            GameController.this.game.setScreen(new MainController(game));
+            //GameController.this.game.setScreen(new MainController(game));
+            game.setScreen(parent);
         }
 
         @Override
@@ -159,6 +181,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
             Gdx.app.exit();
         }
 
-    }
+
 
 }
