@@ -5,18 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
-import no.ntnu.tdt4240.asteroids.entity.util.DefaultDrawableComponentFactory;
-import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
-import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
-import no.ntnu.tdt4240.asteroids.view.IGameView;
+import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 public class GameController extends ScreenAdapter implements World.IGameListener, IGameController {
@@ -33,14 +32,10 @@ public class GameController extends ScreenAdapter implements World.IGameListener
 
     GameController(Asteroids game, Screen parent) {
         this.parent = parent;
+
         this.game = game;
         engine = setupEngine(game.getBatch());
-
-        // TODO: get factory from config
-        IDrawableComponentFactory drawableComponentFactory = new DefaultDrawableComponentFactory(engine);
-        EntityFactory.initialize(engine, drawableComponentFactory);
-
-        // TODO: figure out camera/viewport/stage stuff
+        ServiceLocator.initializeEntityComponent(engine);
         world = setupModel(engine);
         view = setupView(engine, world);
         world.run();
@@ -51,7 +46,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         super.resize(width, height);
         engine.getSystem(RenderSystem.class).resize(width, height);
         view.resize(width, height);
-
     }
 
     private IGameView setupView(PooledEngine engine, World world) {
@@ -107,7 +101,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());
-
         return engine;
     }
 
@@ -151,6 +144,19 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         view.updateScore(world.getScore());
     }
 
+
+    public interface IGameView extends IView {
+
+        void setInputController(Actor inputController);
+
+        void updateScore(int score);
+
+        void updateLevel(int level);
+
+        void setDebug(boolean debug);
+
+        void resize(int width, int height);
+    }
 
 
 

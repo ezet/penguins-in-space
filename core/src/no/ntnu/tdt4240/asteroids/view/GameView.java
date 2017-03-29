@@ -2,6 +2,7 @@ package no.ntnu.tdt4240.asteroids.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -23,10 +24,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.controller.GameController;
 import no.ntnu.tdt4240.asteroids.controller.IGameController;
 
 
-public class GameView extends Stage implements IGameView {
+public class GameView extends Stage implements GameController.IGameView {
 
     private static final String TAG = GameView.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.

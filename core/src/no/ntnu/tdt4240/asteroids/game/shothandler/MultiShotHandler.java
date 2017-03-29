@@ -3,11 +3,14 @@ package no.ntnu.tdt4240.asteroids.game.shothandler;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
+import javax.inject.Inject;
+
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 public class MultiShotHandler implements IShotHandler {
 
@@ -20,6 +23,11 @@ public class MultiShotHandler implements IShotHandler {
     private int fireDelay = 100 * numBullets;
 
     private long lastShot;
+
+    private AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+
+    @Inject
+    EntityFactory entityFactory = ServiceLocator.entityComponent.getEntityFactory();
 
     public MultiShotHandler(int bulletSpeed, int numBullets, int spread) {
         this.BULLET_SPEED = bulletSpeed;
@@ -35,12 +43,11 @@ public class MultiShotHandler implements IShotHandler {
 
             return;
         }
-        AssetLoader.shot.play();
+        audioManager.playShoot();
         lastShot = currentTimeMillis;
 
-        EntityFactory factory = EntityFactory.getInstance();
         for (int i = 0; i < numBullets; ++i) {
-            Entity bullet = factory.createPlayerBullet();
+            Entity bullet = entityFactory.createPlayerBullet();
             TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
             TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
             bulletPosition.position.set(playerPosition.position);

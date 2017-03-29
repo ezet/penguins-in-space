@@ -19,10 +19,12 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.controller.IMainController;
+import no.ntnu.tdt4240.asteroids.controller.MainController;
 
 
-public class MainView extends Stage implements IMainView {
+public class MainView extends Stage implements MainController.IMainView {
 
+    @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -118,5 +120,10 @@ public class MainView extends Stage implements IMainView {
     @Override
     public InputProcessor getInputProcessor() {
         return this;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        getViewport().update(width, height);
     }
 }

@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Array;
 
-import no.ntnu.tdt4240.asteroids.AssetLoader;
 import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 
@@ -28,9 +27,9 @@ public class DamageSystem extends EntitySystem implements CollisionSystem.IColli
         DamageComponent damageComponent = damageMapper.get(source);
         HealthComponent healthComponent = healthMapper.get(target);
         if (healthComponent == null || damageComponent == null) return;
-        if (damageComponent.ignoreComponents != null && damageComponent.ignoreComponents.matches(target))
+        if (damageComponent.ignoredEntities != null && damageComponent.ignoredEntities.matches(target))
             return;
-        if (healthComponent.ignoreComponents != null && healthComponent.ignoreComponents.matches(source))
+        if (healthComponent.ignoredEntities != null && healthComponent.ignoredEntities.matches(source))
             return;
 
 
@@ -40,9 +39,7 @@ public class DamageSystem extends EntitySystem implements CollisionSystem.IColli
         notifyDamageListeners(target, healthComponent.hitPoints);
         if (healthComponent.hitPoints <= 0) {
             if (healthComponent.entityDestroyedHandler != null)
-                //TODO Again, move sound somewhere else?
-                AssetLoader.explosion.play();
-                healthComponent.entityDestroyedHandler.onEntityDestroyed(getEngine(), source, target);
+            healthComponent.entityDestroyedHandler.onEntityDestroyed(getEngine(), source, target);
             notifyDestroyedListeners(source, target);
         }
     }

@@ -11,16 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
 
-    private static final int BUTTON_SIZE = 50;
-    private static final int BUTTON_MARGIN = 30;
+    private static final int NO_CLICK_MARGIN = 50;
+    private static final int TOUCHPAD_MARGIN = 30;
+    private static final int TOUCHPAD_SIZE = 100;
+    private static final int BUTTON_SIZE = 60;
+    private static final int BUTTON_MARGIN = TOUCHPAD_MARGIN + TOUCHPAD_SIZE / 2 - BUTTON_SIZE / 2;
     @SuppressWarnings("unused")
     private static final String TAG = GamepadController.class.getSimpleName();
-    public static final int NO_CLICK_MARGIN = 50;
     private Touchpad touchPad;
     private GamepadButton button;
 
@@ -28,16 +31,6 @@ public class GamepadController extends WidgetGroup {
         initTouchpad();
         touchPad.addListener(new GamepadJoystickListener(controllerInputHandler));
         button.addListener(new GamepadButtonListener(controllerInputHandler));
-    }
-
-    @Override
-    public void layout() {
-        super.layout();
-    }
-
-    @Override
-    public float getPrefWidth() {
-        return getParent().getWidth();
     }
 
     @Override
@@ -53,11 +46,14 @@ public class GamepadController extends WidgetGroup {
         touchpadSkin.add("touchBackground", new Texture("data/touchBackground.png"));
         touchpadSkin.add("touchKnob", new Texture("data/touchKnob.png"));
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
+
         style.background = touchpadSkin.getDrawable("touchBackground");
         style.knob = touchpadSkin.getDrawable("touchKnob");
-        
-        touchPad = new Touchpad(10, style);
-        touchPad.setBounds(30, 30, 200/2, 200/2);
+        style.knob.setMinHeight(TOUCHPAD_SIZE/2);
+        style.knob.setMinWidth(TOUCHPAD_SIZE/2);
+
+        touchPad = new Touchpad(15, style);
+        touchPad.setBounds(TOUCHPAD_MARGIN, TOUCHPAD_MARGIN, TOUCHPAD_SIZE, TOUCHPAD_SIZE);
 
         addListener(new ClickListener() {
             @Override
@@ -68,7 +64,6 @@ public class GamepadController extends WidgetGroup {
         NoClickZone padZone = new NoClickZone(touchPad, NO_CLICK_MARGIN);
         addActor(padZone);
 
-//        addActor(touchPad);
         touchpadSkin.add("touchButton", new Texture("data/touchKnob.png"));
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
@@ -97,7 +92,6 @@ public class GamepadController extends WidgetGroup {
         }
     }
 
-    // TODO: refactor use command pattern
     private static class GamepadJoystickListener extends ChangeListener {
 
         @SuppressWarnings("unused")

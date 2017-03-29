@@ -10,7 +10,7 @@ public class CollisionComponent implements Component, Pool.Poolable {
 
     public CollisionSystem.ICollisionHandler collisionHandler;
 
-    public Family ignoreComponents;
+    public Family ignoredEntities;
 
     @Override
     public void reset() {

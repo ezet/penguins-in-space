@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.view.IMainView;
+import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.MainView;
 import sun.rmi.runtime.Log;
 
@@ -47,6 +47,12 @@ public class MainController extends ScreenAdapter implements IMainController {
         draw();
     }
 
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        view.resize(width, height);
+    }
+
     private void update(float delta) {
         view.update(delta);
         // TODO: handle input and process events
@@ -75,4 +81,7 @@ public class MainController extends ScreenAdapter implements IMainController {
     }
 
 
+    public interface IMainView extends IView {
+        void resize(int width, int height);
+    }
 }
