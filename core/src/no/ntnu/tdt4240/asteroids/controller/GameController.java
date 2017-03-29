@@ -128,7 +128,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
 //        stage.setScore(0);
 //        world.initialize();
 //        world.run();
-        game.setScreen(new MainController(game));
+        game.setScreen(parent);
     }
 
     private void onLevelComplete() {
