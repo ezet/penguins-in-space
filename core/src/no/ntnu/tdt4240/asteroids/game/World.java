@@ -95,7 +95,7 @@ public class World {
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
         player = new Entity();
         setupEngineSystems();
-        initExplosions();
+        explosions.addAll(ServiceLocator.gameComponent.getAssetLoader().getExplosions());
         registerEffects();
         gameSettings = ServiceLocator.gameComponent.getGameSettings();
     }
@@ -120,15 +120,7 @@ public class World {
         engine.addSystem(new MovementSystem());
     }
 
-    // TODO: move this
-    private void initExplosions() {
-        Texture texture = new Texture("explosion.png");
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                explosions.add(new TextureRegion(texture, j * 64, i * 64, 64, 64));
-            }
-        }
-    }
+
 
     public Entity getPlayer() {
         return player;

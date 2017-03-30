@@ -47,6 +47,17 @@ public class Assets {
     }
 
 
+    public Array<TextureRegion> getExplosions() {
+        Array<TextureRegion> explosions = new Array<>();
+        Texture texture = new Texture("explosion.png");
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                explosions.add(new TextureRegion(texture, j * 64, i * 64, 64, 64));
+            }
+        }
+        return explosions;
+    }
+
     public Array<TextureRegion> getPowerupPickupAnimationSequence(){
         Array<TextureRegion> animationSequence = new Array<>();
         for (int i = 0; i < 8; i++) {
