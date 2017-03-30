@@ -4,6 +4,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 public class Assets {
 
@@ -21,6 +23,10 @@ public class Assets {
         assetManager.load("obstacle.png", Texture.class);
         assetManager.load("projectile.png", Texture.class);
         assetManager.load("explosion.png", Texture.class);
+        assetManager.load("playerRed.png", Texture.class);
+        assetManager.load("playerBlue.png", Texture.class);
+        assetManager.load("playerGreen.png", Texture.class);
+        assetManager.load("playerYellow.png", Texture.class);
         assetManager.update();
     }
 
@@ -38,6 +44,25 @@ public class Assets {
 
     public Texture getEffect() {
         return assetManager.get("powerup.png");
+    }
+
+
+    public Array<TextureRegion> getPowerupPickupAnimationSequence(){
+        Array<TextureRegion> animationSequence = new Array<>();
+        for (int i = 0; i < 8; i++) {
+            Texture texture;
+            if (i < 2){
+                texture = assetManager.get("playerRed.png");
+            } else if (i < 4){
+                texture = assetManager.get("playerGreen.png");
+            } else if (i < 6){
+                texture = assetManager.get("playerBlue.png");
+            } else {
+                texture = assetManager.get("playerYellow.png");
+            }
+            animationSequence.add(new TextureRegion(texture));
+        }
+        return animationSequence;
     }
 
 
