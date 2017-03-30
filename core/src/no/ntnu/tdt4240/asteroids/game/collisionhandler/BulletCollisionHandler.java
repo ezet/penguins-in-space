@@ -10,7 +10,6 @@ public class BulletCollisionHandler implements CollisionSystem.ICollisionHandler
     @Override
     public void onCollision(PooledEngine engine, Entity source, Entity target) {
         if (ComponentMappers.obstacleMapper.has(target)) {
-            //TODO: we hit an obstacle, MISSION ACCOMPLISHED!
             engine.removeEntity(source);
         }
     }
