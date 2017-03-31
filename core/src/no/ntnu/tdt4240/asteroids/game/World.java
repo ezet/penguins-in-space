@@ -8,7 +8,9 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Vector;
@@ -18,6 +20,9 @@ import javax.inject.Inject;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.GameSettings;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
@@ -54,7 +59,9 @@ public class World {
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
     public static final int STATE_GAME_OVER = 4;
-    private final static int EDGE_LEFT = 0;
+    // TWEAK RADIUS FOR GAMEPLAY LATER ON, DUNNO IF THIS IS A GOOD STAETING POINT OR NOT.
+    private static final int PLAYER_SAFETY_RADIUS = 15;
+    private static final int EDGE_LEFT = 0;
     private static final int EDGE_TOP = 1;
     private static final int EDGE_RIGHT = 2;
     private static final int EDGE_BOTTOM = 3;
@@ -162,8 +169,6 @@ public class World {
         }
     }
 
-    // TODO: improve spawn position and direction
-
     private Entity createPowerup(Entity source) {
         MovementComponent sourceMovement = movementMapper.get(source);
         TransformComponent sourceTransform = transformMapper.get(source);
@@ -184,8 +189,6 @@ public class World {
         DrawableComponent drawable = drawableMapper.get(entity);
         HealthComponent healthComponent = healthMapper.get(entity);
         healthComponent.entityDestroyedHandler = obstacleDestroyedHandler;
-
-        // TODO: consider not spawning obstacles close to the player
 
         int edge = MathUtils.random(3);
         int x = 0;
@@ -224,6 +227,15 @@ public class World {
                 xVec = -1 * MathUtils.random() * gameSettings.obstacleMaxSpeed;
                 x = graphicsWidth + halfRegionWidth;
                 break;
+        }
+
+        Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
+        if (playerBounds.radius > 0) {
+            Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius * PLAYER_SAFETY_RADIUS);
+            if (spawnCircle.contains(x, y)) {
+                // The obstacle is spawning too close, compute again!
+                return createObstacle();
+            }
         }
 
         MovementComponent movement = entity.getComponent(MovementComponent.class);
