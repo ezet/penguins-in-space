@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.Array;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.SettingsView;
 
 
@@ -77,4 +78,6 @@ public class SettingsController extends ScreenAdapter implements ISettingsContro
         view.draw();
     }
 
+    public interface ISettingsView extends IView {
+    }
 }

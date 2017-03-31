@@ -18,12 +18,13 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
+import no.ntnu.tdt4240.asteroids.controller.TutorialController;
 
 /**
  * Created by morte on 3/28/2017.
  */
 
-public class TutorialView extends Stage implements ITutorialView {
+public class TutorialView extends Stage implements TutorialController.ITutorialView {
 
     private static final String TAG = MainView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

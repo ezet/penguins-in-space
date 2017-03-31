@@ -7,9 +7,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 public class Assets {
+
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
 
     private AssetManager assetManager;
     private boolean loaded = false;
@@ -54,35 +61,9 @@ public class Assets {
         return new Array(pngs);
     }
 
-    public Array<TextureRegion> getExplosions() {
-        Array<TextureRegion> explosions = new Array<>();
-        Texture texture = new Texture("explosion.png");
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                explosions.add(new TextureRegion(texture, j * 64, i * 64, 64, 64));
-            }
-        }
-        return explosions;
+    public Texture getObstacleExplosion() {
+        return assetManager.get("explosion.png", Texture.class);
     }
-
-    public Array<TextureRegion> getPowerupPickupAnimationSequence(){
-        Array<TextureRegion> animationSequence = new Array<>();
-        for (int i = 0; i < 8; i++) {
-            Texture texture;
-            if (i < 2){
-                texture = assetManager.get("playerRed.png");
-            } else if (i < 4){
-                texture = assetManager.get("playerGreen.png");
-            } else if (i < 6){
-                texture = assetManager.get("playerBlue.png");
-            } else {
-                texture = assetManager.get("playerYellow.png");
-            }
-            animationSequence.add(new TextureRegion(texture));
-        }
-        return animationSequence;
-    }
-
 
     public void loadAudio() {
         loaded = false;

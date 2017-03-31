@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import no.ntnu.tdt4240.asteroids.Assets;
 
@@ -15,7 +16,6 @@ public class AudioManager {
     private Sound powerup;
     private Sound shoot;
 
-    @Inject
     public AudioManager(Assets assets) {
         this.assets = assets;
     }

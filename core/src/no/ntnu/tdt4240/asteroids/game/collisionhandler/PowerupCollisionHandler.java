@@ -30,7 +30,7 @@ public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandle
 
     private AnimationComponent createAnimationComponent(){
         AnimationComponent animationComponent = new AnimationComponent();
-        Array<TextureRegion> textureRegions = ServiceLocator.gameComponent.getAssetLoader().getPowerupPickupAnimationSequence();
+        Array<TextureRegion> textureRegions = ServiceLocator.gameComponent.getAnimationFactory().getPowerupPickupAnimation();
         animationComponent.frames.addAll(textureRegions);
         return animationComponent;
     }

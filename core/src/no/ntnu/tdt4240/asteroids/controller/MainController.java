@@ -76,8 +76,6 @@ public class MainController extends ScreenAdapter implements IMainController {
     @Override
     public void onTutorial() {
         game.setScreen(new TutorialController(game,this));
-
-
     }
 
 

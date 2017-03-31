@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 @Component(modules = GameModule.class)
@@ -13,5 +14,7 @@ public interface GameComponent {
     GameSettings getGameSettings();
 
     Assets getAssetLoader();
+
+    AnimationFactory getAnimationFactory();
 
 }

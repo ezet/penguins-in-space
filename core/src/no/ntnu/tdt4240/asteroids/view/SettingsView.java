@@ -12,20 +12,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.sun.scenario.Settings;
 
 import no.ntnu.tdt4240.asteroids.controller.ISettingsController;
+import no.ntnu.tdt4240.asteroids.controller.SettingsController;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class SettingsView extends Stage implements ISettingsView {
+public class SettingsView extends Stage implements SettingsController.ISettingsView {
 
-    private static final String TAG = MainView.class.getSimpleName();
+    private static final String TAG = SettingsView.class.getSimpleName();
     private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
     private final TextButton backButton = new TextButton("Save Settings", buttonSkin);
@@ -67,7 +67,7 @@ public class SettingsView extends Stage implements ISettingsView {
         rightButton.getLabel().setFontScale(4);
 
         table.setFillParent(true);
-        //Labels
+
         table.row();
         table.add(headlineLablel).pad(30);
         table.row();
@@ -79,7 +79,7 @@ public class SettingsView extends Stage implements ISettingsView {
         table.row();
         table.add(rightButton).pad(30);
 
-        //BACK button
+
         table.row();
         table.add(backButton).pad(30);
 

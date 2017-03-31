@@ -6,12 +6,8 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.Vector;
 
@@ -20,8 +16,6 @@ import javax.inject.Inject;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.GameSettings;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
@@ -93,8 +87,6 @@ public class World {
     private int state = STATE_READY;
     private int score = 0;
     private int level = 0;
-    // TODO: use texture packer and atlas
-    private Array<TextureRegion> explosions = new Array<>();
 
     public World(PooledEngine engine) {
         this.engine = engine;
@@ -102,7 +94,6 @@ public class World {
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
         player = new Entity();
         setupEngineSystems();
-        explosions.addAll(ServiceLocator.gameComponent.getAssetLoader().getExplosions());
         registerEffects();
         gameSettings = ServiceLocator.gameComponent.getGameSettings();
     }
@@ -126,7 +117,6 @@ public class World {
         engine.addSystem(new GravitySystem());
         engine.addSystem(new MovementSystem());
     }
-
 
 
     public Entity getPlayer() {
@@ -344,8 +334,10 @@ public class World {
             world.spawnPowerup(target);
             AnimationComponent animation = new AnimationComponent();
             target.remove(CollisionComponent.class);
+            target.remove(MovementComponent.class);
             animation.removeOnAnimationComplete = true;
-            animation.frames.addAll(world.explosions);
+            // TODO: get explosion from Assets
+            animation.frames.addAll(ServiceLocator.gameComponent.getAnimationFactory().getObstacleDestroyedAnimation());
             target.add(animation);
             world.increaseScore();
             world.audioManager.playExplosion();
