@@ -26,7 +26,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
 
     @SuppressWarnings("unused")
     private static final String TAG = GameController.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private final Asteroids game;
     private final PooledEngine engine;
     private IGameView view;
@@ -56,8 +56,8 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         ControllerInputHandler controllerInputHandler = new ControllerInputHandler(engine);
         controllerInputHandler.setControlledEntity(world.getPlayer());
         view = new GameView(game.getBatch(), this);
+        view.setDebug(DEBUG);
         view.setInputController(new GamepadController(controllerInputHandler));
-        //Gdx.input.setInputProcessor(view.getInputProcessor());
         return view;
     }
 

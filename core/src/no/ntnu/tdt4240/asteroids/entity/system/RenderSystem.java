@@ -3,8 +3,6 @@ package no.ntnu.tdt4240.asteroids.entity.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -38,10 +35,7 @@ public class RenderSystem extends IteratingSystem {
     private Viewport viewport;
 
     public RenderSystem(Batch batch) {
-        //noinspection unchecked
-
         super(FAMILY);
-        // TODO: camera config
         this.camera = new OrthographicCamera();
         viewport = new FitViewport(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT, camera);
         viewport.apply();
@@ -50,39 +44,29 @@ public class RenderSystem extends IteratingSystem {
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setColor(Color.RED);
-        //shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
     }
 
     @Override
     public void update(float deltaTime) {
         batch.setProjectionMatrix(camera.combined);
+        if (debug) shapeRenderer.setProjectionMatrix(camera.combined);
         camera.update();
+        if (debug) shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         batch.begin();
         super.update(deltaTime);
+        shapeRenderer.end();
         batch.end();
-
-        if (debug) {
-            shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-
-            drawBounds();
-        }
-
     }
 
-    private void drawBounds() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (Entity entity : getEntities()) {
-            Shape2D bounds = boundsMapper.get(entity).getBounds();
-            if (bounds instanceof Rectangle) {
-                Rectangle region = (Rectangle) bounds;
-                shapeRenderer.rect(region.x, region.y, region.width, region.height);
-            } else if (bounds instanceof Circle) {
-                Circle region = (Circle) bounds;
-                shapeRenderer.circle(region.x, region.y, region.radius);
-            }
+    private void drawBounds(Entity entity) {
+        Shape2D bounds = boundsMapper.get(entity).getBounds();
+        if (bounds instanceof Rectangle) {
+            Rectangle region = (Rectangle) bounds;
+            shapeRenderer.rect(region.x, region.y, region.width, region.height);
+        } else if (bounds instanceof Circle) {
+            Circle region = (Circle) bounds;
+            shapeRenderer.circle(region.x, region.y, region.radius);
         }
-        shapeRenderer.end();
-
     }
 
     @Override
@@ -97,14 +81,15 @@ public class RenderSystem extends IteratingSystem {
         float x = transform.position.x - originX;
         float y = transform.position.y - originY;
         batch.draw(drawable.texture, x, y, originX, originY, width, height, transform.scaleX, transform.scaleY, transform.rotation.angle());
+        if (debug) drawBounds(entity);
     }
 
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
-    public void resize(int width, int height){
+    public void resize(int width, int height) {
         viewport.update(width, height, true);
-        camera.position.set((Asteroids.VIRTUAL_WIDTH ) / 2, (Asteroids.VIRTUAL_HEIGHT) / 2, 0);
+        camera.position.set((Asteroids.VIRTUAL_WIDTH) / 2, (Asteroids.VIRTUAL_HEIGHT) / 2, 0);
     }
 }

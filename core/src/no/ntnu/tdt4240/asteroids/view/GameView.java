@@ -61,7 +61,6 @@ public class GameView extends Stage implements GameController.IGameView {
         this.inputHandler = inputHandler;
         this.addActor(table);
         initGui();
-        setDebugAll(true);
     }
 
     @Override
