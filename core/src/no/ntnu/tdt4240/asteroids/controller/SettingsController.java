@@ -40,20 +40,20 @@ public class SettingsController extends ScreenAdapter implements ISettingsContro
 
     @Override
     public void previousCharacter() {
-        Array<String> characters = ServiceLocator.gameComponent.getAssetLoader().getCharacters();
-        int index = characters.indexOf(ServiceLocator.gameComponent.getGameSettings().playerAppearance, false);
+        Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
+        int index = characters.indexOf(ServiceLocator.getAppComponent().getGameSettings().playerAppearance, false);
         if (index == 0) return;
-        ServiceLocator.gameComponent.getGameSettings().playerAppearance = characters.get(index-1);
-        view.setCurrentCharacter(ServiceLocator.gameComponent.getGameSettings().playerAppearance);
+        ServiceLocator.getAppComponent().getGameSettings().playerAppearance = characters.get(index-1);
+        view.setCurrentCharacter(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
     }
 
     @Override
     public void nextCharacter() {
-        Array<String> characters = ServiceLocator.gameComponent.getAssetLoader().getCharacters();
-        int index = characters.indexOf(ServiceLocator.gameComponent.getGameSettings().playerAppearance, false);
+        Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
+        int index = characters.indexOf(ServiceLocator.getAppComponent().getGameSettings().playerAppearance, false);
         if (index == characters.size-1) return;
-        ServiceLocator.gameComponent.getGameSettings().playerAppearance = characters.get(index+1);
-        view.setCurrentCharacter(ServiceLocator.gameComponent.getGameSettings().playerAppearance);
+        ServiceLocator.getAppComponent().getGameSettings().playerAppearance = characters.get(index+1);
+        view.setCurrentCharacter(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
     }
 
     @Override

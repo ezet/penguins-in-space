@@ -24,10 +24,10 @@ public class MultiShotHandler implements IShotHandler {
 
     private long lastShot;
 
-    private AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+    private AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
 
     @Inject
-    EntityFactory entityFactory = ServiceLocator.entityComponent.getEntityFactory();
+    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
 
     public MultiShotHandler(int bulletSpeed, int numBullets, int spread) {
         this.BULLET_SPEED = bulletSpeed;

@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import no.ntnu.tdt4240.asteroids.Assets;
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.GameSettings;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
@@ -174,7 +172,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
             // Update the player's texture,
             // might want to update more things once settings consists of more options.
             world.getPlayer().getComponent(DrawableComponent.class).texture
-                    = new TextureRegion(ServiceLocator.gameComponent.getAssetLoader().getPlayer());
+                    = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
             world.run();
         }
 

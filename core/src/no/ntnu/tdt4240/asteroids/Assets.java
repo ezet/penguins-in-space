@@ -4,11 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
@@ -41,7 +37,7 @@ public class Assets {
 
 
     public Texture getPlayer(){
-        return assetManager.get(ServiceLocator.gameComponent.getGameSettings().playerAppearance);
+        return assetManager.get(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
     }
 
     public Texture getProjectile() {
@@ -71,7 +67,6 @@ public class Assets {
         assetManager.load("sound/explosion.wav", Sound.class);
         assetManager.load("sound/shoot.wav", Sound.class);
         assetManager.load("sound/powerup.wav", Sound.class);
-        assetManager.finishLoading();
         assetManager.update();
     }
 

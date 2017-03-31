@@ -20,13 +20,13 @@ public class Asteroids extends Game {
     private Assets assets;
 
     Asteroids(INetworkService networkService) {
-        ServiceLocator.initializeGameComponent(networkService);
+        ServiceLocator.initializeAppComponent(networkService);
     }
 
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        assets = ServiceLocator.gameComponent.getAssetLoader();
+        assets = ServiceLocator.getAppComponent().getAssetLoader();
 
         assets.loadAudio();
         assets.loadTextures();
@@ -40,7 +40,7 @@ public class Asteroids extends Game {
     public void render() {
         boolean loaded = assets.update();
         if (loaded) {
-            ServiceLocator.gameComponent.getAudioManager().playBackgroundMusic();
+            ServiceLocator.getAppComponent().getAudioManager().playBackgroundMusic();
         }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         super.render();

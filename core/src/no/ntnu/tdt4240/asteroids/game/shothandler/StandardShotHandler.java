@@ -14,8 +14,8 @@ public class StandardShotHandler implements IShotHandler {
 
     public int BULLET_SPEED = 800;
 
-    private EntityFactory factory = ServiceLocator.entityComponent.getEntityFactory();
-    private AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+    private EntityFactory factory = ServiceLocator.getEntityComponent().getEntityFactory();
+    private AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
 
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {

@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import org.junit.Before;
 import org.junit.Test;
 
-import no.ntnu.tdt4240.asteroids.GameComponent;
+import no.ntnu.tdt4240.asteroids.AppComponent;
 import no.ntnu.tdt4240.asteroids.entity.EntityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
@@ -35,11 +35,11 @@ public class BaseEffectTest {
         engine = mock(PooledEngine.class);
         when(engine.createComponent(HealthComponent.class)).thenReturn(new HealthComponent());
         when(engine.createComponent(DamageComponent.class)).thenReturn(new DamageComponent());
-        ServiceLocator.gameComponent = mock(GameComponent.class);
+        ServiceLocator.appComponent = mock(AppComponent.class);
         audioManager = mock(AudioManager.class);
-        when(ServiceLocator.gameComponent.getAudioManager()).thenReturn(audioManager);
+        when(ServiceLocator.getAppComponent().getAudioManager()).thenReturn(audioManager);
         ServiceLocator.entityComponent = mock(EntityComponent.class);
-        when(ServiceLocator.entityComponent.getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
+        when(ServiceLocator.getEntityComponent().getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
         entity = mock(Entity.class);
         fixture = spy(BaseEffect.class);
         effectComponent = mock(EffectComponent.class);

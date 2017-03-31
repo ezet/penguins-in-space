@@ -16,7 +16,7 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMap
 public abstract class BaseEffect implements IEffect {
 
     @Inject
-    AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+    AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
     private TextureRegion oldRegion;
     private boolean applied;
     private float remainingDuration;

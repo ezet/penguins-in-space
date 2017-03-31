@@ -68,7 +68,7 @@ public class World {
     @Inject
     GameSettings gameSettings;
     @Inject
-    EntityFactory entityFactory = ServiceLocator.entityComponent.getEntityFactory();
+    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
     private final EntityListener resetListener = new EntityListener() {
         @Override
         public void entityAdded(Entity entity) {
@@ -83,7 +83,7 @@ public class World {
         }
     };
     @Inject
-    AudioManager audioManager = ServiceLocator.gameComponent.getAudioManager();
+    AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
     private int state = STATE_READY;
     private int score = 0;
     private int level = 0;
@@ -95,13 +95,13 @@ public class World {
         player = new Entity();
         setupEngineSystems();
         registerEffects();
-        gameSettings = ServiceLocator.gameComponent.getGameSettings();
+        gameSettings = ServiceLocator.getAppComponent().getGameSettings();
     }
 
     @SuppressWarnings("unchecked")
     private void registerEffects() {
-        ServiceLocator.entityComponent.getEffectFactory().registerEffect(InvulnerabilityEffect.class);
-        ServiceLocator.entityComponent.getEffectFactory().registerEffect(MultishotEffect.class);
+        ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(InvulnerabilityEffect.class);
+        ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(MultishotEffect.class);
     }
 
     private void increaseScore() {
@@ -171,7 +171,7 @@ public class World {
     }
 
     private IEffect getEffect() {
-        return ServiceLocator.entityComponent.getEffectFactory().getRandomEffect();
+        return ServiceLocator.getEntityComponent().getEffectFactory().getRandomEffect();
     }
 
     private Entity createObstacle() {
@@ -337,7 +337,7 @@ public class World {
             target.remove(MovementComponent.class);
             animation.removeOnAnimationComplete = true;
             // TODO: get explosion from Assets
-            animation.frames.addAll(ServiceLocator.gameComponent.getAnimationFactory().getObstacleDestroyedAnimation());
+            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
             target.add(animation);
             world.increaseScore();
             world.audioManager.playExplosion();

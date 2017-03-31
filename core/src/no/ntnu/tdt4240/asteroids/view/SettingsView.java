@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.sun.scenario.Settings;
 
 import no.ntnu.tdt4240.asteroids.controller.ISettingsController;
 import no.ntnu.tdt4240.asteroids.controller.SettingsController;
@@ -39,7 +38,7 @@ public class SettingsView extends Stage implements SettingsController.ISettingsV
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
     private final Label headlineLablel = new Label("Settings", defaultLabelStyle);
     private final Label changeCharacterLabel = new Label("Change the appearance of your character:", defaultLabelStyle);
-    private Label currentCharacterTextField = new Label(ServiceLocator.gameComponent.getGameSettings().playerAppearance.replace(".png", ""), defaultLabelStyle);
+    private Label currentCharacterTextField = new Label(ServiceLocator.getAppComponent().getGameSettings().playerAppearance.replace(".png", ""), defaultLabelStyle);
 
     private final ISettingsController controller;
 

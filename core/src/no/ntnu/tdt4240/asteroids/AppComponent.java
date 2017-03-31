@@ -5,10 +5,14 @@ import javax.inject.Singleton;
 import dagger.Component;
 import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-@Component(modules = GameModule.class)
+@Component(modules = AppModule.class)
 @Singleton
-public interface GameComponent {
+public interface AppComponent {
+
+    INetworkService getNetworkService();
+
     AudioManager getAudioManager();
 
     GameSettings getGameSettings();
