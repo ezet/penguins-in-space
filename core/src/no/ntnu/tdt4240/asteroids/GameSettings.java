@@ -8,4 +8,5 @@ public class GameSettings {
     public float playerGravity = 0.01f;
     public int obstacleMaxSpeed = 200;
     public float accelerationScalar = 500;
+    public String playerAppearance = "playerBlack.png";
 }

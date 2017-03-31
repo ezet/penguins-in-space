@@ -9,4 +9,6 @@ public interface IGameController {
 
     void onQuit();
 
+    void onSettings();
+
 }

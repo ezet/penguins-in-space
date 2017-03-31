@@ -5,9 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import no.ntnu.tdt4240.asteroids.Assets;
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.GameSettings;
+import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -167,12 +171,15 @@ public class GameController extends ScreenAdapter implements World.IGameListener
 
         @Override
         public void onResume() {
+            // Update the player's texture,
+            // might want to update more things once settings consists of more options.
+            world.getPlayer().getComponent(DrawableComponent.class).texture
+                    = new TextureRegion(ServiceLocator.gameComponent.getAssetLoader().getPlayer());
             world.run();
         }
 
         @Override
         public void onQuitLevel() {
-            //GameController.this.game.setScreen(new MainController(game));
             game.setScreen(parent);
         }
 
@@ -181,6 +188,8 @@ public class GameController extends ScreenAdapter implements World.IGameListener
             Gdx.app.exit();
         }
 
-
-
+    @Override
+    public void onSettings() {
+        game.setScreen(new SettingsController(game, this));
+    }
 }

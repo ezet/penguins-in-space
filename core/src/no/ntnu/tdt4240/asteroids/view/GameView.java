@@ -143,7 +143,7 @@ public class GameView extends Stage implements GameController.IGameView {
     }
 
     private void settings() {
-
+        inputHandler.onSettings();
     }
 
     private void quit() {

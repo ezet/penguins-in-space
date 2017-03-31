@@ -41,7 +41,6 @@ public class TutorialController  extends ScreenAdapter implements ITutorialContr
     public void onQuitLevel() {
         game.setScreen(this.parent);
         dispose();
-
     }
 
     @Override
