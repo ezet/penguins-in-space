@@ -24,6 +24,5 @@ public class MovementComponent implements Component, Pool.Poolable {
     public void reset() {
         acceleration.setZero();
         velocity.setZero();
-
     }
 }

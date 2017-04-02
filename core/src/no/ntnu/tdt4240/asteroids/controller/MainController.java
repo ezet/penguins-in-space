@@ -27,18 +27,12 @@ public class MainController extends ScreenAdapter implements IMainController {
     public void show() {
         super.show();
         Gdx.input.setInputProcessor(view.getInputProcessor());
-        Gdx.app.debug(TAG, "Show");
-
-
     }
 
     @Override
     public void hide() {
         super.hide();
         Gdx.input.setInputProcessor(null);
-        Gdx.app.debug(TAG, "HIDE");
-
-
     }
 
     @Override

@@ -27,4 +27,9 @@ public class CircularBoundsComponent extends BoundsComponent {
     public void setSize(int width, int height) {
         bounds.setRadius(Math.min(width / 2, height / 2));
     }
+
+    @Override
+    public Vector2 getCenter(Vector2 result) {
+        return result.set(bounds.x, bounds.y);
+    }
 }

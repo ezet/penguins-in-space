@@ -10,9 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
+import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -40,6 +42,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         ServiceLocator.initializeEntityComponent(engine);
         world = setupModel(engine);
         view = setupView(engine, world);
+        updatePlayerHitpoints();
         world.run();
     }
 
@@ -110,7 +113,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     public void handle(World model, int event) {
         switch (event) {
             case World.EVENT_SCORE: {
-                onUpdateScore();
+                updateScore();
                 break;
             }
             case World.EVENT_LEVEL_COMPLETE: {
@@ -121,7 +124,18 @@ public class GameController extends ScreenAdapter implements World.IGameListener
                 onGameOver();
                 break;
             }
+            case World.EVENT_PLAYER_DAMAGE: {
+                updatePlayerHitpoints();
+                break;
+
+            }
         }
+    }
+
+    private void updatePlayerHitpoints() {
+        HealthComponent healthComponent = ComponentMappers.healthMapper.get(world.getPlayer());
+        if (healthComponent != null)
+            view.updateHitpoints(healthComponent.hitPoints);
     }
 
     private void onGameOver() {
@@ -142,10 +156,38 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     }
 
 
-    private void onUpdateScore() {
+    private void updateScore() {
         view.updateScore(world.getScore());
     }
 
+    @Override
+    public void onPause() {
+        world.pause();
+    }
+
+    @Override
+    public void onResume() {
+        // Update the player's texture,
+        // might want to update more things once settings consists of more options.
+        world.getPlayer().getComponent(DrawableComponent.class).texture
+                = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
+        world.run();
+    }
+
+    @Override
+    public void onQuitLevel() {
+        game.setScreen(parent);
+    }
+
+    @Override
+    public void onQuit() {
+        Gdx.app.exit();
+    }
+
+    @Override
+    public void onSettings() {
+        game.setScreen(new SettingsController(game, this));
+    }
 
     public interface IGameView extends IView {
 
@@ -158,36 +200,7 @@ public class GameController extends ScreenAdapter implements World.IGameListener
         void setDebug(boolean debug);
 
         void resize(int width, int height);
-    }
 
-
-
-        @Override
-        public void onPause() {
-            world.pause();
-        }
-
-        @Override
-        public void onResume() {
-            // Update the player's texture,
-            // might want to update more things once settings consists of more options.
-            world.getPlayer().getComponent(DrawableComponent.class).texture
-                    = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
-            world.run();
-        }
-
-        @Override
-        public void onQuitLevel() {
-            game.setScreen(parent);
-        }
-
-        @Override
-        public void onQuit() {
-            Gdx.app.exit();
-        }
-
-    @Override
-    public void onSettings() {
-        game.setScreen(new SettingsController(game, this));
+        void updateHitpoints(int hitpoints);
     }
 }

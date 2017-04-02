@@ -24,15 +24,13 @@ public class DamageSystem extends EntitySystem implements CollisionSystem.IColli
 
     @Override
     public void onCollision(PooledEngine engine, Entity source, Entity target) {
-        DamageComponent damageComponent = damageMapper.get(source);
-        HealthComponent healthComponent = healthMapper.get(target);
+        HealthComponent healthComponent = healthMapper.get(source);
+        DamageComponent damageComponent = damageMapper.get(target);
         if (healthComponent == null || damageComponent == null) return;
         if (damageComponent.ignoredEntities != null && damageComponent.ignoredEntities.matches(target))
             return;
         if (healthComponent.ignoredEntities != null && healthComponent.ignoredEntities.matches(source))
             return;
-
-
         healthComponent.hitPoints -= damageComponent.damage;
         if (healthComponent.damageTakenHandler != null)
             healthComponent.damageTakenHandler.onDamageTaken(getEngine(), source, damageComponent.damage);

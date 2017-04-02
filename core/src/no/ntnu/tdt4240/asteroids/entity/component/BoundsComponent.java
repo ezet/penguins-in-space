@@ -32,4 +32,6 @@ public abstract class BoundsComponent implements Component, Pool.Poolable {
     public abstract void setCenter(Vector2 vector);
 
     public abstract void setSize(int width, int height);
+
+    public abstract Vector2 getCenter(Vector2 result);
 }

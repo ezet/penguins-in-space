@@ -9,6 +9,13 @@ import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 
 public class HealthComponent implements Component, Pool.Poolable {
 
+    public HealthComponent() {
+    }
+
+    public HealthComponent(int hitPoints) {
+        this.hitPoints = hitPoints;
+    }
+
     public int hitPoints = 0;
 
     public DamageSystem.IDamageTakenListener damageTakenHandler;

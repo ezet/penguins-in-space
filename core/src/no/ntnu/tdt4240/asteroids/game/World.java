@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -53,8 +54,7 @@ public class World {
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
     public static final int STATE_GAME_OVER = 4;
-    // TWEAK RADIUS FOR GAMEPLAY LATER ON, DUNNO IF THIS IS A GOOD STAETING POINT OR NOT.
-    private static final int PLAYER_SAFETY_RADIUS = 15;
+    public static final int EVENT_PLAYER_DAMAGE = 3;
     private static final int EDGE_LEFT = 0;
     private static final int EDGE_TOP = 1;
     private static final int EDGE_RIGHT = 2;
@@ -65,6 +65,7 @@ public class World {
     private final DamageSystem.IEntityDestroyedListener playerDestroyedHandler = new PlayerDestroyedHandler(this);
     private final Entity player;
     private final DamageSystem.IEntityDestroyedListener obstacleDestroyedHandler = new ObstacleDestroyedHandler(this);
+    private final World.PlayerDamageTakenHandler playerDamageTakenHandler = new PlayerDamageTakenHandler(this);
     @Inject
     GameSettings gameSettings;
     @Inject
@@ -138,8 +139,11 @@ public class World {
 
     private void initPlayer() {
         entityFactory.initPlayer(player);
-        healthMapper.get(player).entityDestroyedHandler = playerDestroyedHandler;
-        player.getComponent(HealthComponent.class).entityDestroyedHandler = playerDestroyedHandler;
+        HealthComponent healthComponent = healthMapper.get(player);
+        if (healthComponent != null) {
+            healthComponent.entityDestroyedHandler = playerDestroyedHandler;
+            healthComponent.damageTakenHandler = playerDamageTakenHandler;
+        }
         engine.addEntity(player);
     }
 
@@ -221,7 +225,7 @@ public class World {
 
         Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
         if (playerBounds.radius > 0) {
-            Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius * PLAYER_SAFETY_RADIUS);
+            Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius * GameSettings.PLAYER_SAFETY_RADIUS);
             if (spawnCircle.contains(x, y)) {
                 // The obstacle is spawning too close, compute again!
                 return createObstacle();
@@ -307,6 +311,23 @@ public class World {
         }
     }
 
+    private static class PlayerDamageTakenHandler implements DamageSystem.IDamageTakenListener {
+
+        private static final String TAG = PlayerDamageTakenHandler.class.getSimpleName();
+        private World world;
+
+        public PlayerDamageTakenHandler(World world) {
+            this.world = world;
+        }
+
+        @Override
+        public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
+            Gdx.app.debug(TAG, "onDamageTaken: ");
+            world.notifyListeners(EVENT_PLAYER_DAMAGE);
+
+        }
+    }
+
     private static class PlayerDestroyedHandler implements DamageSystem.IEntityDestroyedListener {
 
         private World world;
@@ -334,9 +355,9 @@ public class World {
             world.spawnPowerup(target);
             AnimationComponent animation = new AnimationComponent();
             target.remove(CollisionComponent.class);
+            // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
             target.remove(MovementComponent.class);
             animation.removeOnAnimationComplete = true;
-            // TODO: get explosion from Assets
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
             target.add(animation);
             world.increaseScore();
