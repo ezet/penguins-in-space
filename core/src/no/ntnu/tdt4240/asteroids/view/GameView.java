@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -44,6 +45,7 @@ public class GameView extends Stage implements GameController.IGameView {
     private final TextButton settings = new TextButton("SETTINGS", buttonSkin);
     private final TextButton quitToMenu = new TextButton("QUIT TO MENU", buttonSkin);
     private final TextButton quit = new TextButton("QUIT", buttonSkin);
+    private final TextButton pauseButton = new TextButton("Pause", buttonSkin);
     private Cell mainMenuCell;
 
     private static Viewport guiViewport;
@@ -72,16 +74,19 @@ public class GameView extends Stage implements GameController.IGameView {
     // TODO: clean up
     private void initGui() {
         table.setFillParent(true);
-        table.top();
+        table.center().top();
         // TODO: use proper style, remove scaling
         scoreLabel.setFontScale(1);
         levelLabel.setFontScale(1);
+        table.add(pauseButton).colspan(3).center();
+        table.row();
         table.add(scoreLabel).space(20);
-        table.add(levelLabel).space(20);
+        table.add(levelLabel);
         table.row();
 
         resume.getLabel().setFontScale(1);
         settings.getLabel().setFontScale(1);
+        pauseButton.getLabel().setFontScale(1);
         quitToMenu.getLabel().setFontScale(1);
         quit.getLabel().setFontScale(1);
 
@@ -94,9 +99,13 @@ public class GameView extends Stage implements GameController.IGameView {
         verticalGroup.addActor(settings);
         verticalGroup.addActor(quit);
         verticalGroup.addActor(quitToMenu);
-        addListener(new ClickListener() {
+
+
+
+
+        pauseButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void changed(ChangeEvent event, Actor actor) {
                 if (event.isHandled()) return;
                 pauseGame();
                 event.handle();
@@ -150,11 +159,13 @@ public class GameView extends Stage implements GameController.IGameView {
     }
 
     private void pauseGame() {
+        pauseButton.addAction(Actions.sequence(Actions.visible(false), Actions.fadeOut(1)));
         inputHandler.onPause();
         mainMenuCell.getActor().addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(1)));
     }
 
     private void resumeGame() {
+        pauseButton.addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(1)));
         mainMenuCell.getActor().addAction(Actions.sequence(Actions.fadeOut(1), Actions.visible(false), new RunnableAction() {
             @Override
             public void run() {
