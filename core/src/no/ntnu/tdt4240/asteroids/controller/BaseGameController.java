@@ -19,6 +19,7 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
+import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -28,6 +29,9 @@ import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
+
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 
 public abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
@@ -152,11 +156,10 @@ public abstract class BaseGameController extends ScreenAdapter implements World.
     protected List<String> getPlayersAndScores() {
         ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
         List<String> playersAndScores = new ArrayList<>();
-        for (Entity e : entities) {
-            PlayerClass playerComponent = e.getComponent(PlayerClass.class);
-            // TODO: 05-Apr-17 get real scores
-//            playersAndScores.add(playerComponent.id + " " + String.valueOf(playerComponent.getScore()));
-            playersAndScores.add(playerComponent.displayName + " " + 0);
+        for (Entity entity : entities) {
+            PlayerClass playerComponent = playerMapper.get(entity);
+            ScoreComponent scoreComponent = scoreMapper.get(entity);
+            playersAndScores.add(playerComponent.displayName + " " + scoreComponent.score);
         }
         Collections.sort(playersAndScores, new Comparator<String>() {
             @Override

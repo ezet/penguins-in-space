@@ -91,7 +91,6 @@ public class RenderSystem extends IteratingSystem {
             font.draw(batch, playerClass.displayName, x, y, width*3, -1, true);
         }
         if (debug) drawBounds(entity);
-
     }
 
     public void setDebug(boolean debug) {

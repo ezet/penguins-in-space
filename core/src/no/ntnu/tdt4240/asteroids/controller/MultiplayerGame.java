@@ -62,6 +62,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
             if (player.isSelf) {
                 playerId = player.playerId;
                 world.addPlayer(player.playerId, player.displayName, true);
+                controllerInputHandler.setControlledEntity(world.getPlayer());
             } else {
                 world.addMultiplayer(player.playerId, player.displayName);
             }
