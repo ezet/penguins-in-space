@@ -428,7 +428,7 @@ public class World {
             ScoreComponent scoreComponent = scoreMapper.get(entity);
             PlayerClass playerClass = playerMapper.get(entity);
             for (IGameListener listener : world.listeners) {
-                listener.notifyScoreChanged(playerClass.id, oldScore, scoreComponent.score);
+                listener.notifyScoreChanged(playerClass.participantId, oldScore, scoreComponent.score);
             }
             world.notifyListeners(EVENT_SCORE);
         }

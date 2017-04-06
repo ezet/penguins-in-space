@@ -21,7 +21,7 @@ public class StandardShotHandler implements IShotHandler {
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {
         audioManager.playShoot();
-        Entity bullet = factory.createBullet(controlledEntity.getComponent(PlayerClass.class).id);
+        Entity bullet = factory.createBullet(controlledEntity.getComponent(PlayerClass.class).participantId);
         TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
         TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
         bulletPosition.position.set(playerPosition.position);

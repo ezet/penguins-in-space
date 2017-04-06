@@ -17,7 +17,7 @@ public class BulletCollisionHandler implements CollisionSystem.ICollisionHandler
         if (playerMapper.has(target)) {
             BulletClass sourceClass = bulletMapper.get(source);
             PlayerClass targetClass = playerMapper.get(target);
-            if ((sourceClass.id.equals(targetClass.id))) {
+            if ((sourceClass.id.equals(targetClass.participantId))) {
                 return false;
             } else {
                 engine.removeEntity(source);

@@ -48,7 +48,7 @@ public class MultiShotHandler implements IShotHandler {
         lastShot = currentTimeMillis;
 
         for (int i = 0; i < numBullets; ++i) {
-            Entity bullet = entityFactory.createBullet(controlledEntity.getComponent(PlayerClass.class).id);
+            Entity bullet = entityFactory.createBullet(controlledEntity.getComponent(PlayerClass.class).participantId);
             TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
             TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
             bulletPosition.position.set(playerPosition.position);

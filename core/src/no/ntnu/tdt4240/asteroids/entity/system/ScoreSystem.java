@@ -58,7 +58,7 @@ public class ScoreSystem extends EntitySystem implements DamageSystem.IDamageHan
         if (bulletClass != null) {
             for (Entity player : players) {
                 PlayerClass playerClass = playerMapper.get(player);
-                if (Objects.equals(playerClass.id, bulletClass.id)) {
+                if (Objects.equals(playerClass.participantId, bulletClass.id)) {
                     if (player.isScheduledForRemoval()) return;
                     ScoreComponent scoreComponent = scoreMapper.get(player);
                     int oldScore = scoreComponent.score;
