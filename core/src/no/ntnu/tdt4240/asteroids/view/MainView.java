@@ -27,8 +27,7 @@ public class MainView extends Stage implements MainMenu.IMainView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private static OrthographicCamera camera = new OrthographicCamera();
-    private static Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT, camera);
+    private static Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
     private final TextButton play = new TextButton("PLAY", buttonSkin);
     private final TextButton multiplayer = new TextButton("MULTIPLAYER", buttonSkin);

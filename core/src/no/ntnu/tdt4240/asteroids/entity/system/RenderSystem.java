@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -17,10 +19,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 public class RenderSystem extends IteratingSystem {
@@ -33,14 +37,14 @@ public class RenderSystem extends IteratingSystem {
     private final Batch batch;
     private boolean debug;
     private Viewport viewport;
+    private BitmapFont font = new BitmapFont();
+
 
     public RenderSystem(Batch batch) {
         super(FAMILY);
         this.camera = new OrthographicCamera();
         viewport = new FitViewport(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT, camera);
-        viewport.apply();
-        camera.position.set((Asteroids.VIRTUAL_WIDTH) / 2, (Asteroids.VIRTUAL_HEIGHT) / 2, 0);
-
+        viewport.apply(true);
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setColor(Color.RED);
@@ -81,7 +85,13 @@ public class RenderSystem extends IteratingSystem {
         float x = transform.position.x - originX;
         float y = transform.position.y - originY;
         batch.draw(drawable.texture, x, y, originX, originY, width, height, transform.scaleX, transform.scaleY, transform.rotation.angle());
+        PlayerClass playerClass = playerMapper.get(entity);
+
+        if (playerClass != null && !playerClass.isSelf) {
+            font.draw(batch, playerClass.displayName, x, y, width*3, -1, true);
+        }
         if (debug) drawBounds(entity);
+
     }
 
     public void setDebug(boolean debug) {
