@@ -66,7 +66,9 @@ public class World {
     private static final int EDGE_TOP = 1;
     private static final int EDGE_RIGHT = 2;
     private static final int EDGE_BOTTOM = 3;
+    private static final Family FAMILY_PLAYERS = Family.one(PlayerClass.class).get();
     private static final String TAG = World.class.getSimpleName();
+    final ImmutableArray<Entity> players;
     public final Vector<IGameListener> listeners = new Vector<>();
     // TODO: add config
     final PooledEngine engine;
@@ -98,8 +100,11 @@ public class World {
     public World(PooledEngine engine) {
         this.engine = engine;
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
+        engine.addEntityListener(FAMILY_PLAYERS, new PlayerListener(this));
+        players = engine.getEntitiesFor(FAMILY_PLAYERS);
         setupEngineSystems();
         registerEffects();
+
         gameSettings = ServiceLocator.getEntityComponent().getGameSettings();
     }
 
@@ -434,4 +439,23 @@ public class World {
         }
     }
 
+    private class PlayerListener implements EntityListener {
+        private World world;
+
+        public PlayerListener(World world) {
+            this.world = world;
+        }
+
+        @Override
+        public void entityAdded(Entity entity) {
+
+        }
+
+        @Override
+        public void entityRemoved(Entity entity) {
+            if (players.size() == 1) {
+                Gdx.app.debug(TAG, "entityRemoved: WIN");
+            }
+        }
+    }
 }
