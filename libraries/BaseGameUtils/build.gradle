@@ -19,7 +19,7 @@ dependencies {
         ext.support_library_version = '25.2.+'
     }
     if (!project.hasProperty('gms_library_version')) {
-        ext.gms_library_version = '10.2.0'
+        ext.gms_library_version = '10.2.+'
     }
 
     compile "com.android.support:appcompat-v7:${appcompat_library_version}"
@@ -46,7 +46,7 @@ android {
     }
 
     compileSdkVersion android_compile_version
-    buildToolsVersion "25.0.2"
+    buildToolsVersion build_tools_version
 
     defaultConfig {
         minSdkVersion android_min_version

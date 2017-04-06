@@ -24,11 +24,12 @@ public interface EntityComponent {
 
     EffectFactory getEffectFactory();
 
+    no.ntnu.tdt4240.asteroids.service.settings.IGameSettings getGameSettings();
 
     @Scope
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface GameScope {
+    @interface GameScope {
 
     }
 

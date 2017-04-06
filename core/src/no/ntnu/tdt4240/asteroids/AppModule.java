@@ -24,25 +24,26 @@ public class AppModule {
 
     @Provides
     @Singleton
-    GameSettings provideGameSettings() {
-        return new GameSettings();
+    IAppSettings provideAppSettings() {
+        return new AppSettings();
+    }
+
+
+    @Provides
+    @Singleton
+    no.ntnu.tdt4240.asteroids.service.Assets provideAssetLoader() {
+        return new no.ntnu.tdt4240.asteroids.service.Assets();
     }
 
     @Provides
     @Singleton
-    Assets provideAssetLoader() {
-        return new Assets();
-    }
-
-    @Provides
-    @Singleton
-    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(Assets assets) {
+    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(no.ntnu.tdt4240.asteroids.service.Assets assets) {
         return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assets);
     }
 
     @Provides
     @Singleton
-    AnimationFactory provideAnimationFactory(Assets assets) {
+    AnimationFactory provideAnimationFactory(no.ntnu.tdt4240.asteroids.service.Assets assets) {
         return new AnimationFactory(assets);
     }
 

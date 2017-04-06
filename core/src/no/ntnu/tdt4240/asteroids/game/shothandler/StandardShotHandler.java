@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
@@ -20,7 +21,7 @@ public class StandardShotHandler implements IShotHandler {
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {
         audioManager.playShoot();
-        Entity bullet = factory.createPlayerBullet();
+        Entity bullet = factory.createBullet(controlledEntity.getComponent(PlayerClass.class).id);
         TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
         TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
         bulletPosition.position.set(playerPosition.position);

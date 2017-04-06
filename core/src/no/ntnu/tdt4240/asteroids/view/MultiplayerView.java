@@ -19,30 +19,30 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.controller.IMainMenu;
-import no.ntnu.tdt4240.asteroids.controller.MainMenu;
+import no.ntnu.tdt4240.asteroids.controller.IMultiplayerMenu;
+import no.ntnu.tdt4240.asteroids.controller.MultiplayerMenu;
 
 
-public class MainView extends Stage implements MainMenu.IMainView {
+public class MultiplayerView extends Stage implements MultiplayerMenu.IMainView {
 
     @SuppressWarnings("unused")
-    private static final String TAG = MainView.class.getSimpleName();
+    private static final String TAG = MultiplayerView.class.getSimpleName();
     private static OrthographicCamera camera = new OrthographicCamera();
     private static Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT, camera);
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
-    private final TextButton play = new TextButton("PLAY", buttonSkin);
-    private final TextButton multiplayer = new TextButton("MULTIPLAYER", buttonSkin);
-    private final TextButton quit = new TextButton("QUIT", buttonSkin);
-    private final TextButton tutorial = new TextButton("Tutorial", buttonSkin);
+    private final TextButton quickGame = new TextButton("QUICK GAME", buttonSkin);
+    private final TextButton invitePlayers = new TextButton("INVITE FRIENDS", buttonSkin);
+    private final TextButton hostGame = new TextButton("HOST GAME", buttonSkin);
+    private final TextButton back = new TextButton("BACK", buttonSkin);
     private final Table table = new Table();
     private final BitmapFont defaultFont = new BitmapFont();
     private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-    private final IMainMenu controller;
+    private final IMultiplayerMenu controller;
     private boolean active = true;
     // TODO: implement main screen gui
 
-    public MainView(Batch batch, IMainMenu controller) {
+    public MultiplayerView(Batch batch, IMultiplayerMenu controller) {
         super(guiViewport, batch);
         this.controller = controller;
         guiViewport.apply(true);
@@ -56,48 +56,48 @@ public class MainView extends Stage implements MainMenu.IMainView {
 
     private void init() {
         table.setFillParent(true);
-        table.add(play).pad(30);
+        table.add(quickGame).pad(30);
         table.row();
-        table.add(multiplayer).pad(30);
+        table.add(invitePlayers).pad(30);
         table.row();
-        table.add(quit).pad(30);
+        table.add(hostGame).pad(30);
         table.row();
-        table.add(tutorial).pad(30);
+        table.add(back).pad(30);
         table.row();
-        play.addListener(new ClickListener() {
+        quickGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 table.addAction(Actions.sequence(Actions.fadeOut(1), new RunnableAction() {
                     @Override
                     public void run() {
                         active = !active;
-                        controller.onPlay();
+                        controller.onQuickgame();
                     }
                 }));
             }
         });
-        multiplayer.addListener(new ClickListener() {
+        invitePlayers.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 table.addAction(Actions.sequence(Actions.fadeOut(1), new RunnableAction() {
                     @Override
                     public void run() {
                         active = !active;
-                        controller.onMultiplayer();
+                        controller.onInvitePlayers();
                     }
                 }));
             }
         });
-        quit.addListener(new ClickListener() {
+        hostGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.onQuit();
+                controller.onHostGame();
             }
         });
-        tutorial.addListener(new ClickListener() {
+        back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.onTutorial();
+                controller.onBack();
             }
         });
     }
@@ -110,9 +110,6 @@ public class MainView extends Stage implements MainMenu.IMainView {
             table.addAction(Actions.sequence(Actions.fadeIn(1)));
         }
     }
-
-
-
 
     @Override
     public void draw() {

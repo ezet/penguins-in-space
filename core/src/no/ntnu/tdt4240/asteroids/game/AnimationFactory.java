@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-import no.ntnu.tdt4240.asteroids.Assets;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 
 public class AnimationFactory {
 

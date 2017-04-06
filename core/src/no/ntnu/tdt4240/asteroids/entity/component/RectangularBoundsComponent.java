@@ -28,4 +28,9 @@ public class RectangularBoundsComponent extends BoundsComponent {
         bounds.setSize(width, height);
 
     }
+
+    @Override
+    public Vector2 getCenter(Vector2 result) {
+        return bounds.getCenter(result);
+    }
 }

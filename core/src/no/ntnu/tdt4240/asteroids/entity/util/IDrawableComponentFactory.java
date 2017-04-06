@@ -1,5 +1,7 @@
 package no.ntnu.tdt4240.asteroids.entity.util;
 
+import com.badlogic.ashley.core.Component;
+
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 
 public interface IDrawableComponentFactory {
@@ -11,4 +13,6 @@ public interface IDrawableComponentFactory {
     DrawableComponent getObstacle();
 
     DrawableComponent getPowerup();
+
+    Component getMultiPlayer();
 }

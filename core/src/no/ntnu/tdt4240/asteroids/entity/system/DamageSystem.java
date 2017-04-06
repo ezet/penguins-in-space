@@ -15,52 +15,70 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMappe
 
 public class DamageSystem extends EntitySystem implements CollisionSystem.ICollisionHandler {
 
-    private Array<IDamageTakenListener> damageListeners = new Array<>();
-    private Array<IEntityDestroyedListener> destroyedListeners = new Array<>();
+    public Array<IDamageHandler> getDamageListeners() {
+        return damageListeners;
+    }
+
+    private final Array<IDamageHandler> damageListeners = new Array<>();
+    private final CollisionSystem collisionSystem;
 
     public DamageSystem(CollisionSystem collisionSystem) {
-        collisionSystem.listeners.add(this);
+        this.collisionSystem = collisionSystem;
     }
 
     @Override
-    public void onCollision(PooledEngine engine, Entity source, Entity target) {
-        DamageComponent damageComponent = damageMapper.get(source);
+    public void addedToEngine(Engine engine) {
+        super.addedToEngine(engine);
+        collisionSystem.listeners.add(this);
+    }
+
+
+    @Override
+    public void removedFromEngine(Engine engine) {
+        super.removedFromEngine(engine);
+        collisionSystem.listeners.removeValue(this, true);
+    }
+
+    @Override
+    public boolean onCollision(PooledEngine engine, Entity source, Entity target) {
+        if (!checkProcessing()) return false;
         HealthComponent healthComponent = healthMapper.get(target);
-        if (healthComponent == null || damageComponent == null) return;
+        DamageComponent damageComponent = damageMapper.get(source);
+        if (healthComponent == null || damageComponent == null) return false;
         if (damageComponent.ignoredEntities != null && damageComponent.ignoredEntities.matches(target))
-            return;
+            return false;
         if (healthComponent.ignoredEntities != null && healthComponent.ignoredEntities.matches(source))
-            return;
-
-
+            return false;
         healthComponent.hitPoints -= damageComponent.damage;
-        if (healthComponent.damageTakenHandler != null)
-            healthComponent.damageTakenHandler.onDamageTaken(getEngine(), source, damageComponent.damage);
-        notifyDamageListeners(target, healthComponent.hitPoints);
-        if (healthComponent.hitPoints <= 0) {
-            if (healthComponent.entityDestroyedHandler != null)
-            healthComponent.entityDestroyedHandler.onEntityDestroyed(getEngine(), source, target);
-            notifyDestroyedListeners(source, target);
+        if (healthComponent.damageHandler != null) {
+            healthComponent.damageHandler.onDamageTaken(getEngine(), source, damageComponent.damage);
         }
+        notifyDamageListeners(target, healthComponent.hitPoints);
+
+        if (healthComponent.hitPoints <= 0) {
+            if (healthComponent.damageHandler != null)
+                healthComponent.damageHandler.onEntityDestroyed(getEngine(), source, target);
+        }
+        notifyDestroyedListeners(source, target);
+        return true;
     }
 
     private void notifyDamageListeners(Entity entity, int hitpoints) {
-        for (IDamageTakenListener listener : damageListeners) {
+        for (IDamageHandler listener : damageListeners) {
             listener.onDamageTaken(getEngine(), entity, hitpoints);
         }
     }
 
     private void notifyDestroyedListeners(Entity source, Entity target) {
-        for (IEntityDestroyedListener destroyedListener : destroyedListeners) {
-            destroyedListener.onEntityDestroyed(getEngine(), source, target);
+        for (IDamageHandler listener : damageListeners) {
+            listener.onEntityDestroyed(getEngine(), source, target);
         }
     }
 
-    public interface IDamageTakenListener {
+    public interface IDamageHandler {
         void onDamageTaken(Engine engine, Entity entity, int damageTaken);
-    }
 
-    public interface IEntityDestroyedListener {
         void onEntityDestroyed(Engine engine, Entity source, Entity target);
     }
+
 }

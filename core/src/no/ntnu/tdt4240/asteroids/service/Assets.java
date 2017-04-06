@@ -1,12 +1,10 @@
-package no.ntnu.tdt4240.asteroids;
+package no.ntnu.tdt4240.asteroids.service;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
-
-import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 public class Assets {
 
@@ -32,12 +30,22 @@ public class Assets {
         assetManager.load("playerBlue.png", Texture.class);
         assetManager.load("playerGreen.png", Texture.class);
         assetManager.load("playerYellow.png", Texture.class);
+        assetManager.load("data/touchBackground.png", Texture.class);
+        assetManager.load("data/touchKnob.png", Texture.class);
         assetManager.update();
+    }
+
+    public Texture getTouchBackground() {
+        return assetManager.get("data/touchBackground.png");
+    }
+
+    public Texture getTouchKnob() {
+        return assetManager.get("data/touchKnob.png");
     }
 
 
     public Texture getPlayer(){
-        return assetManager.get(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
+        return assetManager.get(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
     }
 
     public Texture getProjectile() {
@@ -91,7 +99,7 @@ public class Assets {
     }
 
 
-    void dispose() {
+    public void dispose() {
 //        assetManager.clear();
     }
 

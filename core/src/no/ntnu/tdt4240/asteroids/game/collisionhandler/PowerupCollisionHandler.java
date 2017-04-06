@@ -16,7 +16,7 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.powerupMapp
 
 public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandler {
     @Override
-    public void onCollision(PooledEngine engine, Entity source, Entity target) {
+    public boolean onCollision(PooledEngine engine, Entity source, Entity target) {
         if (playerMapper.has(target)) {
             PowerupClass powerup = powerupMapper.get(source);
             EffectComponent effectComponent = engine.createComponent(EffectComponent.class);
@@ -26,6 +26,7 @@ public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandle
             target.add(pickupAnimation);
             engine.removeEntity(source);
         }
+        return true;
     }
 
     private AnimationComponent createAnimationComponent(){

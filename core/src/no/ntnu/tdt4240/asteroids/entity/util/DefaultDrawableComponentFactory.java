@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.Assets;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 
 public class DefaultDrawableComponentFactory implements IDrawableComponentFactory {
@@ -28,6 +28,11 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
 
     @Override
     public DrawableComponent getPlayer() {
+        return getDrawable(PLAYER);
+    }
+
+    @Override
+    public DrawableComponent getMultiPlayer() {
         return getDrawable(PLAYER);
     }
 

@@ -38,7 +38,7 @@ public class SettingsView extends Stage implements SettingsController.ISettingsV
     private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
     private final Label headlineLablel = new Label("Settings", defaultLabelStyle);
     private final Label changeCharacterLabel = new Label("Change the appearance of your character:", defaultLabelStyle);
-    private Label currentCharacterTextField = new Label(ServiceLocator.getAppComponent().getGameSettings().playerAppearance.replace(".png", ""), defaultLabelStyle);
+    private Label currentCharacterTextField = new Label(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance().replace(".png", ""), defaultLabelStyle);
 
     private final ISettingsController controller;
 

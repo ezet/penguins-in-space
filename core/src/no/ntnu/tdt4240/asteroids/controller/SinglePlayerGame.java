@@ -6,24 +6,24 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
+import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
-import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
-public class GameController extends ScreenAdapter implements World.IGameListener, IGameController {
+public class SinglePlayerGame extends ScreenAdapter implements World.IGameListener, IGameController {
 
     @SuppressWarnings("unused")
-    private static final String TAG = GameController.class.getSimpleName();
+    private static final String TAG = SinglePlayerGame.class.getSimpleName();
     private static final boolean DEBUG = false;
     private final Asteroids game;
     private final PooledEngine engine;
@@ -32,14 +32,15 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     private Screen parent;
 
 
-    GameController(Asteroids game, Screen parent) {
+    SinglePlayerGame(Asteroids game, Screen parent) {
         this.parent = parent;
 
         this.game = game;
         engine = setupEngine(game.getBatch());
-        ServiceLocator.initializeEntityComponent(engine);
+        ServiceLocator.initializeSinglePlayerEntityComponent(engine);
         world = setupModel(engine);
         view = setupView(engine, world);
+        updatePlayerHitpoints();
         world.run();
     }
 
@@ -109,10 +110,6 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     @Override
     public void handle(World model, int event) {
         switch (event) {
-            case World.EVENT_SCORE: {
-                onUpdateScore();
-                break;
-            }
             case World.EVENT_LEVEL_COMPLETE: {
                 onLevelComplete();
                 break;
@@ -121,7 +118,23 @@ public class GameController extends ScreenAdapter implements World.IGameListener
                 onGameOver();
                 break;
             }
+            case World.EVENT_PLAYER_DAMAGE: {
+                updatePlayerHitpoints();
+                break;
+
+            }
         }
+    }
+
+    @Override
+    public void notifyScoreChanged(String id, int oldScore, int newScore) {
+        view.updateScore(newScore);
+    }
+
+    private void updatePlayerHitpoints() {
+        HealthComponent healthComponent = ComponentMappers.healthMapper.get(world.getPlayer());
+        if (healthComponent != null)
+            view.updateHitpoints(healthComponent.hitPoints);
     }
 
     private void onGameOver() {
@@ -142,52 +155,33 @@ public class GameController extends ScreenAdapter implements World.IGameListener
     }
 
 
-    private void onUpdateScore() {
-        view.updateScore(world.getScore());
+    @Override
+    public void onPause() {
+        world.pause();
     }
 
-
-    public interface IGameView extends IView {
-
-        void setInputController(Actor inputController);
-
-        void updateScore(int score);
-
-        void updateLevel(int level);
-
-        void setDebug(boolean debug);
-
-        void resize(int width, int height);
+    @Override
+    public void onResume() {
+        // Update the player's texture,
+        // might want to update more things once settings consists of more options.
+        world.getPlayer().getComponent(DrawableComponent.class).texture
+                = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
+        world.run();
     }
 
+    @Override
+    public void onQuitLevel() {
+        game.setScreen(parent);
+    }
 
-
-        @Override
-        public void onPause() {
-            world.pause();
-        }
-
-        @Override
-        public void onResume() {
-            // Update the player's texture,
-            // might want to update more things once settings consists of more options.
-            world.getPlayer().getComponent(DrawableComponent.class).texture
-                    = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
-            world.run();
-        }
-
-        @Override
-        public void onQuitLevel() {
-            game.setScreen(parent);
-        }
-
-        @Override
-        public void onQuit() {
-            Gdx.app.exit();
-        }
+    @Override
+    public void onQuit() {
+        Gdx.app.exit();
+    }
 
     @Override
     public void onSettings() {
         game.setScreen(new SettingsController(game, this));
     }
+
 }

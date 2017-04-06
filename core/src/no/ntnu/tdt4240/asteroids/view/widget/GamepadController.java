@@ -1,6 +1,5 @@
 package no.ntnu.tdt4240.asteroids.view.widget;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,8 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
@@ -26,8 +26,10 @@ public class GamepadController extends WidgetGroup {
     private static final String TAG = GamepadController.class.getSimpleName();
     private Touchpad touchPad;
     private GamepadButton button;
+    private Assets assets;
 
     public GamepadController(ControllerInputHandler controllerInputHandler) {
+        assets = ServiceLocator.getAppComponent().getAssetLoader();
         initTouchpad();
         touchPad.addListener(new GamepadJoystickListener(controllerInputHandler));
         button.addListener(new GamepadButtonListener(controllerInputHandler));
@@ -43,14 +45,14 @@ public class GamepadController extends WidgetGroup {
         // TODO: use uiskin.json
 //        Skin touchpadSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
         Skin touchpadSkin = new Skin();
-        touchpadSkin.add("touchBackground", new Texture("data/touchBackground.png"));
-        touchpadSkin.add("touchKnob", new Texture("data/touchKnob.png"));
+        touchpadSkin.add("touchBackground", assets.getTouchBackground());
+        touchpadSkin.add("touchKnob", assets.getTouchKnob());
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
 
         style.background = touchpadSkin.getDrawable("touchBackground");
         style.knob = touchpadSkin.getDrawable("touchKnob");
-        style.knob.setMinHeight(TOUCHPAD_SIZE/2);
-        style.knob.setMinWidth(TOUCHPAD_SIZE/2);
+        style.knob.setMinHeight(TOUCHPAD_SIZE / 2);
+        style.knob.setMinWidth(TOUCHPAD_SIZE / 2);
 
         touchPad = new Touchpad(15, style);
         touchPad.setBounds(TOUCHPAD_MARGIN, TOUCHPAD_MARGIN, TOUCHPAD_SIZE, TOUCHPAD_SIZE);
@@ -64,7 +66,7 @@ public class GamepadController extends WidgetGroup {
         NoClickZone padZone = new NoClickZone(touchPad, NO_CLICK_MARGIN);
         addActor(padZone);
 
-        touchpadSkin.add("touchButton", new Texture("data/touchKnob.png"));
+        touchpadSkin.add("touchButton", assets.getTouchKnob());
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
         NoClickZone buttonZone = new NoClickZone(button, NO_CLICK_MARGIN);

@@ -15,10 +15,12 @@ import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.PowerupClass;
 import no.ntnu.tdt4240.asteroids.entity.component.RectangularBoundsComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 
@@ -41,6 +43,8 @@ public abstract class ComponentMappers {
     public static final ComponentMapper<ShootComponent> shootMapper = ComponentMapper.getFor(ShootComponent.class);
     public static final ComponentMapper<PlayerClass> playerMapper = ComponentMapper.getFor(PlayerClass.class);
     public static final ComponentMapper<PowerupClass> powerupMapper = ComponentMapper.getFor(PowerupClass.class);
+    public static final ComponentMapper<NetworkSyncComponent> networkSyncMapper = ComponentMapper.getFor(NetworkSyncComponent.class);
+    public static final ComponentMapper<ScoreComponent> scoreMapper = ComponentMapper.getFor(ScoreComponent.class);
 
     public static class BoundsComponentMapperWrapper {
 

@@ -3,10 +3,7 @@ package no.ntnu.tdt4240.asteroids.service.audio;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import no.ntnu.tdt4240.asteroids.Assets;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 
 public class AudioManager {
 

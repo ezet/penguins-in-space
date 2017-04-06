@@ -13,7 +13,7 @@ import no.ntnu.tdt4240.asteroids.view.SettingsView;
 
 public class SettingsController extends ScreenAdapter implements ISettingsController {
 
-    private static final String TAG = MainController.class.getSimpleName();
+    private static final String TAG = MainMenu.class.getSimpleName();
     private final Asteroids game;
     private final SettingsView view;
     private Screen parent;
@@ -41,19 +41,19 @@ public class SettingsController extends ScreenAdapter implements ISettingsContro
     @Override
     public void previousCharacter() {
         Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-        int index = characters.indexOf(ServiceLocator.getAppComponent().getGameSettings().playerAppearance, false);
+        int index = characters.indexOf(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance(), false);
         if (index == 0) return;
-        ServiceLocator.getAppComponent().getGameSettings().playerAppearance = characters.get(index-1);
-        view.setCurrentCharacter(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
+        ServiceLocator.getAppComponent().getSettings().setPlayerAppearance(characters.get(index-1));
+        view.setCurrentCharacter(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
     }
 
     @Override
     public void nextCharacter() {
         Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-        int index = characters.indexOf(ServiceLocator.getAppComponent().getGameSettings().playerAppearance, false);
+        int index = characters.indexOf(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance(), false);
         if (index == characters.size-1) return;
-        ServiceLocator.getAppComponent().getGameSettings().playerAppearance = characters.get(index+1);
-        view.setCurrentCharacter(ServiceLocator.getAppComponent().getGameSettings().playerAppearance);
+        ServiceLocator.getAppComponent().getSettings().setPlayerAppearance(characters.get(index+1));
+        view.setCurrentCharacter(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
     }
 
     @Override

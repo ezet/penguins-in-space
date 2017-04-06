@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
@@ -47,7 +48,7 @@ public class MultiShotHandler implements IShotHandler {
         lastShot = currentTimeMillis;
 
         for (int i = 0; i < numBullets; ++i) {
-            Entity bullet = entityFactory.createPlayerBullet();
+            Entity bullet = entityFactory.createBullet(controlledEntity.getComponent(PlayerClass.class).id);
             TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
             TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
             bulletPosition.position.set(playerPosition.position);

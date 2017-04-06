@@ -15,9 +15,9 @@ public interface AppComponent {
 
     AudioManager getAudioManager();
 
-    GameSettings getGameSettings();
+    IAppSettings getSettings();
 
-    Assets getAssetLoader();
+    no.ntnu.tdt4240.asteroids.service.Assets getAssetLoader();
 
     AnimationFactory getAnimationFactory();
 
