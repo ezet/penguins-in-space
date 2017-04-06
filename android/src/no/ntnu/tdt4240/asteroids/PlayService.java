@@ -7,11 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesStatusCodes;
-import com.google.android.gms.games.Player;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
@@ -256,9 +253,11 @@ public class PlayService implements INetworkService, RoomUpdateListener, RealTim
                 Log.d(TAG, "handleWaitingRoomResult: OK");
                 gameListener.onMultiplayerGameStarting();
                 List<PlayerData> playerList = new ArrayList<>();
-                for (Participant player : room.getParticipants()) {
-                    PlayerData playerData = new PlayerData(player.getParticipantId(), player.getDisplayName());
-                    if (Objects.equals(Games.Players.getCurrentPlayerId(gameHelper.getApiClient()), playerData.playerId)) {
+                String currentPlayerId = Games.Players.getCurrentPlayerId(gameHelper.getApiClient());
+                for (Participant participant : room.getParticipants()) {
+                    String playerId = participant.getPlayer().getPlayerId();
+                    PlayerData playerData = new PlayerData(playerId, participant.getParticipantId(), participant.getDisplayName());
+                    if (Objects.equals(currentPlayerId, playerId)) {
                         playerData.isSelf = true;
                     }
                     playerList.add(playerData);

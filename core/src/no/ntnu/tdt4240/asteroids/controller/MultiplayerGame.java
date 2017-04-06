@@ -60,11 +60,11 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
         Gdx.app.debug(TAG, "onRoomReady: ");
         for (PlayerData player : players) {
             if (player.isSelf) {
-                playerId = player.playerId;
-                world.addPlayer(player.playerId, player.displayName, true);
+                playerId = player.participantId;
+                world.addPlayer(player.participantId, player.displayName, true);
                 controllerInputHandler.setControlledEntity(world.getPlayer());
             } else {
-                world.addMultiplayer(player.playerId, player.displayName);
+                world.addMultiplayer(player.participantId, player.displayName);
             }
         }
     }

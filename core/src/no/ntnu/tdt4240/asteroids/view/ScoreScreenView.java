@@ -44,7 +44,6 @@ public class ScoreScreenView extends Stage implements ScoreScreenController.ISco
         this.controller = controller;
         guiViewport.apply(true);
         setDebugAll(true);
-
         table.addAction(Actions.alpha(0));
         addActor(table);
         init();

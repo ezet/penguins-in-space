@@ -80,7 +80,6 @@ public class World {
         @Override
         public void entityRemoved(Entity entity) {
             if (engine.getEntities().size() == 0) {
-//                initPlayer();
                 notifyListeners(EVENT_WORLD_RESET);
                 engine.removeEntityListener(this);
             }
@@ -164,23 +163,6 @@ public class World {
         healthComponent.damageHandler = new OpponentDamageHandler(this, participantId);
         engine.addEntity(entity);
     }
-
-//
-//    private void initPlayer() {
-//        entityFactory.initPlayer(player);
-//        HealthComponent healthComponent = healthMapper.get(player);
-//        if (healthComponent != null) {
-//            healthComponent.damageHandler = playerDamageHandler;
-//        }
-//        engine.addEntity(player);
-//    }
-//
-//    public void addPlayerData(String id, String name) {
-//        PlayerClass component = player.getComponent(PlayerClass.class);
-//        component.id = id;
-//        component.displayName = name;
-//        component.isSelf = true;
-//    }
 
     private void spawnObstacles(int currentObstacles) {
         int attempts = gameSettings.getMinObstacles() - currentObstacles;
