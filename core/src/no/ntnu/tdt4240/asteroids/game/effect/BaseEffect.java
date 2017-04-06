@@ -2,6 +2,7 @@ package no.ntnu.tdt4240.asteroids.game.effect;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import javax.inject.Inject;
@@ -15,7 +16,8 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMap
 
 public abstract class BaseEffect implements IEffect {
 
-    @Inject
+    private static final String TAG = BaseEffect.class.getSimpleName();
+
     AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
     private TextureRegion oldRegion;
     private boolean applied;
@@ -31,6 +33,7 @@ public abstract class BaseEffect implements IEffect {
 
     @Override
     public void refresh(IEffect effect) {
+        Gdx.app.debug(TAG, "refresh: ");
         BaseEffect baseEffect = (BaseEffect) effect;
         baseEffect.remainingDuration =+ baseEffect.getDuration();
     }

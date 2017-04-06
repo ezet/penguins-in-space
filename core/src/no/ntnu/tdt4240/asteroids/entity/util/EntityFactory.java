@@ -13,6 +13,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
@@ -60,6 +61,9 @@ public class EntityFactory {
         if (multiplayer) {
             positionX = (int) (Asteroids.VIRTUAL_WIDTH * MathUtils.random());
             positionY = (int) (Asteroids.VIRTUAL_HEIGHT * MathUtils.random());
+            entity.add(new NetworkSyncComponent());
+        } else {
+            entity.add(new EffectComponent());
         }
         entity.add(new TransformComponent(positionX, positionY, rotationX, rotationY));
         MovementComponent movementComponent = new MovementComponent();
@@ -69,7 +73,6 @@ public class EntityFactory {
         entity.add(new CircularBoundsComponent());
         entity.add(new ShootComponent());
         entity.add(new HealthComponent(3));
-        entity.add(new NetworkSyncComponent());
         entity.add(new ScoreComponent());
         entity.add(new BoundaryComponent(BoundaryComponent.MODE_WRAP));
         entity.add(drawableComponentFactory.getPlayer());

@@ -17,15 +17,16 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.powerupMapp
 public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandler {
     @Override
     public boolean onCollision(PooledEngine engine, Entity source, Entity target) {
-        if (playerMapper.has(target)) {
-            PowerupClass powerup = powerupMapper.get(source);
-            EffectComponent effectComponent = engine.createComponent(EffectComponent.class);
-            effectComponent.addEffect(powerup.effect);
-            target.add(effectComponent);
-            AnimationComponent pickupAnimation = createAnimationComponent();
-            target.add(pickupAnimation);
-            engine.removeEntity(source);
+        if (!powerupMapper.has(target)) {
+            return false;
         }
+        PowerupClass powerup = powerupMapper.get(source);
+        EffectComponent effectComponent = engine.createComponent(EffectComponent.class);
+        effectComponent.addEffect(powerup.effect);
+        target.add(effectComponent);
+        AnimationComponent pickupAnimation = createAnimationComponent();
+        target.add(pickupAnimation);
+        engine.removeEntity(source);
         return true;
     }
 
