@@ -15,10 +15,6 @@ import java.util.Vector;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
-import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
-import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
-import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
@@ -26,6 +22,8 @@ import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
+import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
+import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
@@ -33,12 +31,14 @@ import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.EffectSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
@@ -55,13 +55,13 @@ public class World {
     public static final int EVENT_GAME_OVER = 1;
     public static final int EVENT_LEVEL_COMPLETE = 2;
     public static final int EVENT_PLAYER_HITPOINTS = 3;
-    private static final int EVENT_WORLD_RESET = 4;
     public static final int EVENT_PLAYER_CHANGED = 5;
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
     public static final int STATE_GAME_OVER = 4;
+    private static final int EVENT_WORLD_RESET = 4;
     private static final int EDGE_LEFT = 0;
     private static final int EDGE_TOP = 1;
     private static final int EDGE_RIGHT = 2;
@@ -70,13 +70,8 @@ public class World {
     public final Vector<IGameListener> listeners = new Vector<>();
     // TODO: add config
     final PooledEngine engine;
-    private Entity player;
     private final DamageSystem.IDamageHandler obstacleDamageHandler = new ObstacleDamageHandler(this);
     private final PlayerDamageHandler playerDamageHandler = new PlayerDamageHandler(this);
-    @Inject
-    IGameSettings gameSettings;
-    @Inject
-    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
     private final EntityListener resetListener = new EntityListener() {
         @Override
         public void entityAdded(Entity entity) {
@@ -92,7 +87,12 @@ public class World {
         }
     };
     @Inject
+    IGameSettings gameSettings;
+    @Inject
+    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
+    @Inject
     AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
+    private Entity player;
     private int state = STATE_READY;
     private int level = 0;
 
@@ -114,7 +114,7 @@ public class World {
         ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(MultishotEffect.class);
     }
 
-   private void setupEngineSystems() {
+    private void setupEngineSystems() {
         engine.addSystem(new BoundsSystem());
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new DamageSystem(engine.getSystem(CollisionSystem.class)));
@@ -259,12 +259,14 @@ public class World {
                 break;
         }
 
-        Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
-        if (playerBounds.radius > 0) {
-            Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius + gameSettings.getPlayerNoSpawnRadius());
-            if (spawnCircle.contains(x, y)) {
-                // TODO: 04-Apr-17 remove recursion
-                return createObstacle();
+        if (player != null) {
+            Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
+            if (playerBounds.radius > 0) {
+                Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius + gameSettings.getPlayerNoSpawnRadius());
+                if (spawnCircle.contains(x, y)) {
+                    // TODO: 04-Apr-17 remove recursion
+                    return createObstacle();
+                }
             }
         }
 
@@ -395,9 +397,9 @@ public class World {
             world.audioManager.playExplosion();
             target.remove(CollisionComponent.class);
             target.remove(MovementComponent.class);
-            if (target.getComponent(PlayerClass.class) != null){
+            if (target.getComponent(PlayerClass.class) != null) {
                 ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class, CollisionComponent.class).get());
-                if (entities.size() < 2){
+                if (entities.size() < 2) {
                     world.notifyListeners(EVENT_GAME_OVER);
                 }
             }
