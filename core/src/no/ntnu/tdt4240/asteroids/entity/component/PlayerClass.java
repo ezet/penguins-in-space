@@ -16,6 +16,7 @@ public class PlayerClass implements Component, Pool.Poolable {
         this.displayName = displayName;
     }
 
+    @SuppressWarnings("unused")
     public PlayerClass() {
         reset();
     }
@@ -23,7 +24,7 @@ public class PlayerClass implements Component, Pool.Poolable {
     @Override
     public void reset() {
         id = "";
-        displayName = "Player";
+        displayName = "";
     }
 
 }

@@ -54,8 +54,7 @@ public class MainMenu extends ScreenAdapter implements IMainMenu {
 
     @Override
     public void onPlay() {
-        game.setScreen(new SinglePlayerGame(game, this));
-
+        game.setScreen(new SingleplayerGame(game, this));
     }
 
     @Override

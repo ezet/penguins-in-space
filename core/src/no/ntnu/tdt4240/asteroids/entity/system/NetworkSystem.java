@@ -66,7 +66,6 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        NetworkSyncComponent networkSyncComponent = networkSyncMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
         ByteBuffer buffer = ByteBuffer.allocate(4 * 8 + 1);

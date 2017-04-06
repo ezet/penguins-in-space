@@ -82,6 +82,12 @@ public class PlayService implements INetworkService, RoomUpdateListener, RealTim
     }
 
     @Override
+    public String getDisplayName() {
+        if (!getGameHelper().getApiClient().isConnected()) return null;
+        return Games.Players.getCurrentPlayer(getGameHelper().getApiClient()).getDisplayName();
+    }
+
+    @Override
     public void signOut() {
         try {
             activity.runOnUiThread(new Runnable() {

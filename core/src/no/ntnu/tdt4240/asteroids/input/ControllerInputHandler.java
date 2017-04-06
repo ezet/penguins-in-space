@@ -15,9 +15,12 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.shootMapper
 
 public class ControllerInputHandler {
 
-    // TODO: read config from settings
-    private static final int ACCELERATION_SCALAR = 500;
     private final PooledEngine engine;
+
+    public List<InputListener> getListeners() {
+        return listeners;
+    }
+
     private final List<InputListener> listeners = new ArrayList<>();
     private Entity controlledEntity;
 
@@ -28,18 +31,6 @@ public class ControllerInputHandler {
 
     public void setControlledEntity(Entity player) {
         this.controlledEntity = player;
-    }
-
-    public void addListener(InputListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(InputListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void clearListeners() {
-        listeners.clear();
     }
 
     public void accelerate(float inputX, float inputY) {

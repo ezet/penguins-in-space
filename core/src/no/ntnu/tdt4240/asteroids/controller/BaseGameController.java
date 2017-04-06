@@ -1,15 +1,24 @@
 package no.ntnu.tdt4240.asteroids.controller;
 
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -20,29 +29,35 @@ import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
-public class SinglePlayerGame extends ScreenAdapter implements World.IGameListener, IGameController {
+public abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
     @SuppressWarnings("unused")
-    private static final String TAG = SinglePlayerGame.class.getSimpleName();
-    private static final boolean DEBUG = false;
-    private final Asteroids game;
-    private final PooledEngine engine;
-    private IGameView view;
-    private World world;
-    private Screen parent;
+    protected static final String TAG = BaseGameController.class.getSimpleName();
+    protected final boolean DEBUG = false;
+    protected final Asteroids game;
+    protected final PooledEngine engine;
+    protected final ControllerInputHandler controllerInputHandler;
+    protected final IGameView view;
+    protected World world;
+    protected Screen parent;
 
 
-    SinglePlayerGame(Asteroids game, Screen parent) {
+    BaseGameController(Asteroids game, Screen parent) {
         this.parent = parent;
-
         this.game = game;
-        engine = setupEngine(game.getBatch());
-        ServiceLocator.initializeSinglePlayerEntityComponent(engine);
-        world = setupModel(engine);
-        view = setupView(engine, world);
-        updatePlayerHitpoints();
+        engine = new PooledEngine();
+        initializeEntityComponent(engine);
+        setupEngine(engine, game.getBatch());
+        controllerInputHandler = new ControllerInputHandler(engine);
+        view = new GameView(game.getBatch(), this);
+        setupView();
+        view.setInputController(new GamepadController(controllerInputHandler));
+        world = new World(engine);
+        setupWorld();
         world.run();
     }
+
+    protected abstract void initializeEntityComponent(PooledEngine engine);
 
     @Override
     public void resize(int width, int height) {
@@ -51,38 +66,30 @@ public class SinglePlayerGame extends ScreenAdapter implements World.IGameListen
         view.resize(width, height);
     }
 
-    private IGameView setupView(PooledEngine engine, World world) {
-        ControllerInputHandler controllerInputHandler = new ControllerInputHandler(engine);
-        controllerInputHandler.setControlledEntity(world.getPlayer());
-        view = new GameView(game.getBatch(), this);
+    protected void setupView() {
         view.setDebug(DEBUG);
-        view.setInputController(new GamepadController(controllerInputHandler));
-        return view;
     }
 
     @Override
-    public void show() {
+    public final void show() {
         super.show();
         Gdx.input.setInputProcessor(view.getInputProcessor());
-
     }
 
     @Override
-    public void hide() {
+    public final void hide() {
         super.hide();
         Gdx.input.setInputProcessor(null);
-
     }
 
-    private World setupModel(PooledEngine engine) {
+    protected void setupWorld() {
         world = new World(engine);
         world.listeners.add(this);
         world.initialize();
-        return world;
     }
 
     @Override
-    public void render(float delta) {
+    public final void render(float delta) {
         update(delta);
         draw();
     }
@@ -97,14 +104,12 @@ public class SinglePlayerGame extends ScreenAdapter implements World.IGameListen
         view.draw();
     }
 
-    private PooledEngine setupEngine(SpriteBatch batch) {
-        PooledEngine engine = new PooledEngine();
+    protected void setupEngine(PooledEngine engine, SpriteBatch batch) {
         RenderSystem renderSystem = new RenderSystem(batch);
         renderSystem.setDebug(DEBUG);
         engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());
-        return engine;
     }
 
     @Override
@@ -118,10 +123,12 @@ public class SinglePlayerGame extends ScreenAdapter implements World.IGameListen
                 onGameOver();
                 break;
             }
-            case World.EVENT_PLAYER_DAMAGE: {
+            case World.EVENT_PLAYER_HITPOINTS: {
                 updatePlayerHitpoints();
                 break;
-
+            }
+            case World.EVENT_PLAYER_CHANGED: {
+                controllerInputHandler.setControlledEntity(world.getPlayer());
             }
         }
     }
@@ -131,22 +138,46 @@ public class SinglePlayerGame extends ScreenAdapter implements World.IGameListen
         view.updateScore(newScore);
     }
 
-    private void updatePlayerHitpoints() {
+    protected void updatePlayerHitpoints() {
         HealthComponent healthComponent = ComponentMappers.healthMapper.get(world.getPlayer());
         if (healthComponent != null)
             view.updateHitpoints(healthComponent.hitPoints);
     }
 
-    private void onGameOver() {
+    protected void onGameOver() {
         world.stop();
-        // TODO: show game over screen
-//        stage.setScore(0);
-//        world.initialize();
-//        world.run();
-        game.setScreen(parent);
+        game.setScreen(new ScoreScreenController(game, parent, getPlayersAndScores()));
     }
 
-    private void onLevelComplete() {
+    protected List<String> getPlayersAndScores() {
+        ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
+        List<String> playersAndScores = new ArrayList<>();
+        for (Entity e : entities) {
+            PlayerClass playerComponent = e.getComponent(PlayerClass.class);
+            // TODO: 05-Apr-17 get real scores
+//            playersAndScores.add(playerComponent.id + " " + String.valueOf(playerComponent.getScore()));
+            playersAndScores.add(playerComponent.displayName + " " + 0);
+        }
+        Collections.sort(playersAndScores, new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                int sScore, tScore;
+                sScore = Integer.parseInt(s.split(" ")[1]);
+                tScore = Integer.parseInt(t1.split(" ")[1]);
+                // Opposite to get descending
+                if (sScore == tScore) {
+                    return 0;
+                } else if (sScore > tScore) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        return playersAndScores;
+    }
+
+    protected void onLevelComplete() {
         world.stop();
         // TODO: show level complete screen
         // TODO: update world, reinitialize

@@ -13,4 +13,9 @@ public class PlayerData {
         this.playerId = playerId;
         this.displayName = displayName;
     }
+
+    public PlayerData(String playerId, String displayName, boolean isSelf) {
+        this(playerId, displayName);
+        this.isSelf = isSelf;
+    }
 }

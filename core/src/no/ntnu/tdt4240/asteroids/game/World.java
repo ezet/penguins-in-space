@@ -54,12 +54,14 @@ public class World {
     public static final int EVENT_SCORE = 0;
     public static final int EVENT_GAME_OVER = 1;
     public static final int EVENT_LEVEL_COMPLETE = 2;
+    public static final int EVENT_PLAYER_HITPOINTS = 3;
+    private static final int EVENT_WORLD_RESET = 4;
+    public static final int EVENT_PLAYER_CHANGED = 5;
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
     public static final int STATE_GAME_OVER = 4;
-    public static final int EVENT_PLAYER_DAMAGE = 3;
     private static final int EDGE_LEFT = 0;
     private static final int EDGE_TOP = 1;
     private static final int EDGE_RIGHT = 2;
@@ -68,7 +70,7 @@ public class World {
     public final Vector<IGameListener> listeners = new Vector<>();
     // TODO: add config
     final PooledEngine engine;
-    private final Entity player;
+    private Entity player;
     private final DamageSystem.IDamageHandler obstacleDamageHandler = new ObstacleDamageHandler(this);
     private final PlayerDamageHandler playerDamageHandler = new PlayerDamageHandler(this);
     @Inject
@@ -83,7 +85,8 @@ public class World {
         @Override
         public void entityRemoved(Entity entity) {
             if (engine.getEntities().size() == 0) {
-                initPlayer();
+//                initPlayer();
+                notifyListeners(EVENT_WORLD_RESET);
                 engine.removeEntityListener(this);
             }
         }
@@ -95,12 +98,14 @@ public class World {
 
     public World(PooledEngine engine) {
         this.engine = engine;
-        //noinspection unchecked
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
-        player = new Entity();
         setupEngineSystems();
         registerEffects();
         gameSettings = ServiceLocator.getEntityComponent().getGameSettings();
+    }
+
+    public void initialize() {
+        spawnObstacles(engine.getEntities().size());
     }
 
     @SuppressWarnings("unchecked")
@@ -124,33 +129,58 @@ public class World {
         return player;
     }
 
-    public void initialize() {
-        level = 0;
+    private void clearEngine() {
         if (engine.getEntities().size() > 0) {
             engine.addEntityListener(resetListener);
             engine.clearPools();
             engine.removeAllEntities();
-        } else {
-            initPlayer();
         }
-        spawnObstacles(0);
     }
 
-    private void initPlayer() {
-        entityFactory.initPlayer(player);
+    public void reset() {
+        level = 0;
+        clearEngine();
+    }
+
+    public void nextLevel() {
+        level += 1;
+        clearEngine();
+    }
+
+    public void addPlayer(String id, String displayName, boolean multiplayer) {
+        player = entityFactory.createPlayer(id, displayName, multiplayer);
         HealthComponent healthComponent = healthMapper.get(player);
         if (healthComponent != null) {
             healthComponent.damageHandler = playerDamageHandler;
         }
         engine.addEntity(player);
+        notifyListeners(EVENT_PLAYER_CHANGED);
+        notifyListeners(EVENT_PLAYER_HITPOINTS);
     }
 
-    public void addPlayerData(String id, String name) {
-        PlayerClass component = player.getComponent(PlayerClass.class);
-        component.id = id;
-        component.displayName = name;
-        component.isSelf = true;
+    public void addMultiplayer(String participantId, String displayName) {
+        Entity entity = entityFactory.createMultiPlayer(participantId, displayName);
+        HealthComponent healthComponent = healthMapper.get(entity);
+        healthComponent.damageHandler = new OpponentDamageHandler(this, participantId);
+        engine.addEntity(entity);
     }
+
+//
+//    private void initPlayer() {
+//        entityFactory.initPlayer(player);
+//        HealthComponent healthComponent = healthMapper.get(player);
+//        if (healthComponent != null) {
+//            healthComponent.damageHandler = playerDamageHandler;
+//        }
+//        engine.addEntity(player);
+//    }
+//
+//    public void addPlayerData(String id, String name) {
+//        PlayerClass component = player.getComponent(PlayerClass.class);
+//        component.id = id;
+//        component.displayName = name;
+//        component.isSelf = true;
+//    }
 
     private void spawnObstacles(int currentObstacles) {
         int attempts = gameSettings.getMinObstacles() - currentObstacles;
@@ -172,7 +202,7 @@ public class World {
         MovementComponent sourceMovement = movementMapper.get(source);
         TransformComponent sourceTransform = transformMapper.get(source);
         if (sourceMovement == null || sourceTransform == null) return null;
-        Entity entity = entityFactory.createPowerup(getEffect());
+        Entity entity = entityFactory.createPowerup(getRandomEffect());
         MovementComponent movementComponent = movementMapper.get(entity);
         movementComponent.velocity.set(sourceMovement.velocity);
         TransformComponent transformComponent = transformMapper.get(entity);
@@ -180,7 +210,7 @@ public class World {
         return entity;
     }
 
-    private IEffect getEffect() {
+    private IEffect getRandomEffect() {
         return ServiceLocator.getEntityComponent().getEffectFactory().getRandomEffect();
     }
 
@@ -287,13 +317,6 @@ public class World {
         }
     }
 
-    public void addMultiplayer(String participantId, String displayName) {
-        Entity entity = entityFactory.createMultiPlayer(participantId, displayName);
-        HealthComponent healthComponent = healthMapper.get(entity);
-        healthComponent.damageHandler = new OpponentDamageHandler(this, participantId);
-        engine.addEntity(entity);
-    }
-
     public interface IGameListener {
 
         void handle(World model, int event);
@@ -335,7 +358,7 @@ public class World {
         @Override
         public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
             Gdx.app.debug(TAG, "onDamageTaken: ");
-            world.notifyListeners(EVENT_PLAYER_DAMAGE);
+            world.notifyListeners(EVENT_PLAYER_HITPOINTS);
         }
 
         @Override
@@ -358,7 +381,8 @@ public class World {
         @Override
         public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
             Gdx.app.debug(TAG, "onDamageTaken: Opponent");
-//            world.notifyListeners(EVENT_PLAYER_DAMAGE);
+            // TODO: 06-Apr-17 handle opponent damage
+//            world.notifyListeners(EVENT_PLAYER_HITPOINTS);
         }
 
         @Override
@@ -425,4 +449,5 @@ public class World {
             world.notifyListeners(EVENT_SCORE);
         }
     }
+
 }
