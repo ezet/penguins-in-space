@@ -98,7 +98,6 @@ public class EntityFactory {
     }
 
     public Entity createBullet(String playerId) {
-        // Single method needed as long as all players have unique IDs
         Entity entity = engine.createEntity();
         BulletClass bullet = engine.createComponent(BulletClass.class);
         bullet.id = playerId;
