@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.Array;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.SettingsView;
 
@@ -17,11 +18,14 @@ public class SettingsController extends ScreenAdapter implements ISettingsContro
     private final Asteroids game;
     private final SettingsView view;
     private Screen parent;
+    private int soundVolume = 100;
+    private AudioManager audioManager;
 
     public SettingsController(final Asteroids game, final Screen parent){
         this.parent = parent;
         this.game = game;
         this.view = new SettingsView(game.getBatch(),this);
+        this.audioManager = ServiceLocator.getAppComponent().getAudioManager();
     }
 
     @Override
@@ -54,6 +58,28 @@ public class SettingsController extends ScreenAdapter implements ISettingsContro
         if (index == characters.size-1) return;
         ServiceLocator.getAppComponent().getSettings().setPlayerAppearance(characters.get(index+1));
         view.setCurrentCharacter(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
+    }
+
+    @Override
+    public void toggleMute() {
+        soundVolume = (soundVolume == 100) ? 0: 100;
+        audioManager.update(soundVolume);
+    }
+
+    @Override
+    public void increaseVolume() {
+        if (soundVolume < 100){
+            soundVolume += 10;
+            audioManager.update(soundVolume);
+        }
+    }
+
+    @Override
+    public void decreaseVolume() {
+        if (soundVolume > 0){
+            soundVolume -= 10;
+            audioManager.update(soundVolume);
+        }
     }
 
     @Override
