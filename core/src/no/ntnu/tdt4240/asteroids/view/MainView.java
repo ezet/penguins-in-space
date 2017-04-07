@@ -110,7 +110,15 @@ public class MainView extends Stage implements MainMenu.IMainView {
         }
     }
 
+    @Override
+    public void resume() {
 
+    }
+
+    @Override
+    public void hide() {
+
+    }
 
 
     @Override

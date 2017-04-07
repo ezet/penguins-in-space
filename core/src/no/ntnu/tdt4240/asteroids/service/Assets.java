@@ -1,9 +1,14 @@
 package no.ntnu.tdt4240.asteroids.service;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
@@ -19,7 +24,11 @@ public class Assets {
         assetManager = new AssetManager();
     }
 
+    public void loadBitmaps() {
+    }
+
     public void loadTextures() {
+        assetManager.load("data/uiskin.json", Skin.class);
         assetManager.load("playerBlack.png", Texture.class);
         assetManager.load("powerup.png", Texture.class);
         assetManager.load("invuln.png", Texture.class);
@@ -101,6 +110,10 @@ public class Assets {
 
     public void dispose() {
 //        assetManager.clear();
+    }
+
+    public Skin getUiSkin() {
+        return assetManager.get("data/uiskin.json", Skin.class);
     }
 
     public boolean update() {

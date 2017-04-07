@@ -32,13 +32,13 @@ import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_INVAL
 import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_ROOM;
 
 
-public class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
+class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
 
-    public static final int RC_ACHIEVEMENTS = 1;
-    public static final int RC_SELECT_PLAYERS = 10000;
-    public static final int RC_LEADERBOARD = 2;
-    public static final int RC_INVITATION_INBOX = 10001;
-    public final static int RC_WAITING_ROOM = 10002;
+    private static final int RC_ACHIEVEMENTS = 1;
+    private static final int RC_SELECT_PLAYERS = 10000;
+    private static final int RC_LEADERBOARD = 2;
+    private static final int RC_INVITATION_INBOX = 10001;
+    private final static int RC_WAITING_ROOM = 10002;
     private static final String TAG = "PlayService";
     private static final int MIN_PLAYERS = 1;
     private static final int MAX_PLAYERS = 1;
@@ -141,19 +141,14 @@ public class PlayService implements INetworkService, RoomUpdateListener, RealTim
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         // TODO: 03-Apr-17 do this properly
         if (roomId == null) return;
+        if (!getGameHelper().isSignedIn()) return;
         Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, roomId);
-    }
-
-    @Override
-    public void setMessageReceivedListener(IGameListener listener) {
-        // TODO: create adapter between NetworkMessageReceivedListener and RealTimeMessageReceivedListener
     }
 
     @Override
     public boolean isSignedIn() {
         return gameHelper.isSignedIn();
     }
-
 
     @Override
     public void startQuickGame() {

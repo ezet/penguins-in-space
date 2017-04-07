@@ -27,6 +27,11 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     }
 
     @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+    }
+
+    @Override
     public void create() {
         ServiceLocator.initializeAppComponent(networkService);
         ServiceLocator.getAppComponent().getNetworkService().setGameListener(this);

@@ -101,6 +101,7 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
         }
         TransformComponent transformComponent = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
+        if (transformComponent == null || movement == null) return;
         transformComponent.position.x = wrap.getFloat();
         transformComponent.position.y = wrap.getFloat();
         transformComponent.rotation.x = wrap.getFloat();

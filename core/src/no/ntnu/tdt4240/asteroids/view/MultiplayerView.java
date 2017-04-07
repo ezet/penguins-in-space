@@ -112,6 +112,16 @@ public class MultiplayerView extends Stage implements MultiplayerMenu.IMainView 
     }
 
     @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
     public void draw() {
 //        Batch batch = getBatch();
 //        batch.disableBlending();

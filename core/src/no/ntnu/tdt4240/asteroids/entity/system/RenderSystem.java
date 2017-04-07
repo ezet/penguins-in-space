@@ -21,6 +21,7 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
@@ -37,7 +38,7 @@ public class RenderSystem extends IteratingSystem {
     private final Batch batch;
     private boolean debug;
     private Viewport viewport;
-    private BitmapFont font = new BitmapFont();
+    private BitmapFont font;
 
 
     public RenderSystem(Batch batch) {
@@ -48,6 +49,7 @@ public class RenderSystem extends IteratingSystem {
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setColor(Color.RED);
+        font = ServiceLocator.getAppComponent().getAssetLoader().getUiSkin().getFont("default-font");
     }
 
     @Override

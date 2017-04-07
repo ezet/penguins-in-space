@@ -6,6 +6,10 @@ public interface IView {
 
     void update(float delta);
 
+    void resume();
+
+    void hide();
+
     void draw();
 
     InputProcessor getInputProcessor();

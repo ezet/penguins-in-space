@@ -143,6 +143,16 @@ public class SettingsView extends Stage implements SettingsController.ISettingsV
     }
 
     @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
     public void draw() {
         super.draw();
 

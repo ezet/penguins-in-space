@@ -30,9 +30,10 @@ public class AnimationFactory {
     private Array<TextureRegion> createObstacleDestroyedAnimation() {
         Array<TextureRegion> explosions = new Array<>();
         Texture texture = assets.getObstacleExplosion();
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                explosions.add(new TextureRegion(texture, j * 64, i * 64, 64, 64));
+        TextureRegion[][] split = TextureRegion.split(texture, 64, 64);
+        for (TextureRegion[] row : split) {
+            for (TextureRegion region : row) {
+                explosions.add(region);
             }
         }
         return explosions;

@@ -14,20 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
 import no.ntnu.tdt4240.asteroids.controller.TutorialController;
-
-/**
- * Created by morte on 3/28/2017.
- */
 
 public class TutorialView extends Stage implements TutorialController.ITutorialView {
 
     private static final String TAG = MainView.class.getSimpleName();
-    private static Viewport viewport = new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    private static Viewport viewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
     private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
     private final TextButton back = new TextButton("QUIT", buttonSkin);
     private final Table table = new Table();
@@ -86,8 +84,12 @@ public class TutorialView extends Stage implements TutorialController.ITutorialV
     }
 
     @Override
-    public void draw() {
-        super.draw();
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 
@@ -98,6 +100,8 @@ public class TutorialView extends Stage implements TutorialController.ITutorialV
 
     @Override
     public void resize(int width, int height) {
+        getViewport().update(width, height);
+
 
     }
 

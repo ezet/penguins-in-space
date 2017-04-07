@@ -1,67 +1,60 @@
 package no.ntnu.tdt4240.asteroids.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.controller.IGameView;
 import no.ntnu.tdt4240.asteroids.controller.IGameController;
+import no.ntnu.tdt4240.asteroids.controller.IGameView;
+import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class GameView extends Stage implements IGameView {
+public class GameView extends BaseView implements IGameView {
 
     private static final String TAG = GameView.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.
-    private static Viewport guiViewport;
-
-    static {
-        OrthographicCamera camera = new OrthographicCamera();
-        guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT, camera);
-        guiViewport.apply();
-        camera.position.set((Asteroids.GUI_VIRTUAL_WIDTH) / 2, (Asteroids.GUI_VIRTUAL_WIDTH) / 2, 0);
-    }
-
     private final IGameController inputHandler;
-    private final Table table = new Table();
-    private final BitmapFont defaultFont = new BitmapFont();
-    private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
-    private final Label scoreLabel = new Label("SCORE: 0", defaultLabelStyle);
-    private final Label levelLabel = new Label("LEVEL: 0", defaultLabelStyle);
-    private final Label hitpointsLabel = new Label("", defaultLabelStyle);
-    private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
-    private final TextButton resume = new TextButton("RESUME", buttonSkin);
-    private final TextButton settings = new TextButton("SETTINGS", buttonSkin);
-    private final TextButton quitToMenu = new TextButton("QUIT TO MENU", buttonSkin);
-    private final TextButton quit = new TextButton("QUIT", buttonSkin);
-    private final TextButton pauseButton = new TextButton("Pause", buttonSkin);
+    private final Assets assetLoader;
+    private Table table;
+    private Label scoreLabel;
+    private Label levelLabel;
+    private Label hitpointsLabel;
+    private TextButton resume;
+    private TextButton settings;
+    private TextButton quitToMenu;
+    private TextButton quit;
+    private TextButton pauseButton;
     private Cell mainMenuCell;
 
 
     public GameView(Batch batch, IGameController inputHandler) {
-        super(guiViewport, batch);
+        super(batch);
+        getViewport().apply(true);
+        assetLoader = ServiceLocator.getAppComponent().getAssetLoader();
         this.inputHandler = inputHandler;
-        this.addActor(table);
+        loadAssets();
         initGui();
+    }
+
+    private void loadAssets() {
+        resume = new TextButton("RESUME", assetLoader.getUiSkin());
+        settings = new TextButton("SETTINGS", assetLoader.getUiSkin());
+        quitToMenu = new TextButton("QUIT TO MENU", assetLoader.getUiSkin());
+        quit = new TextButton("QUIT", assetLoader.getUiSkin());
+        pauseButton = new TextButton("Pause", assetLoader.getUiSkin());
+
+        scoreLabel = new Label("SCORE: 0", assetLoader.getUiSkin());
+        levelLabel = new Label("LEVEL: 0", assetLoader.getUiSkin());
+        hitpointsLabel = new Label("", assetLoader.getUiSkin());
     }
 
     @Override
@@ -70,8 +63,21 @@ public class GameView extends Stage implements IGameView {
         addActor(inputController);
     }
 
+    @Override
+    public void resume() {
+        Gdx.app.debug(TAG, "show: ");
+        super.resume();
+        loadAssets();
+        initGui();
+    }
+
     // TODO: clean up
     private void initGui() {
+        if (table != null) {
+            this.getActors().removeValue(table, true);
+        }
+        table = new Table();
+        this.addActor(table);
         table.setFillParent(true);
         table.center().top();
         // TODO: use proper style, remove scaling
@@ -176,21 +182,6 @@ public class GameView extends Stage implements IGameView {
     @Override
     public void setDebug(boolean debug) {
         setDebugAll(debug);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        getViewport().update(width, height);
-    }
-
-    @Override
-    public void update(float delta) {
-        act(delta);
-    }
-
-    @Override
-    public InputProcessor getInputProcessor() {
-        return this;
     }
 
     @Override

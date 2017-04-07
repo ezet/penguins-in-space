@@ -80,6 +80,16 @@ public class ScoreScreenView extends Stage implements ScoreScreenController.ISco
     }
 
     @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
     public void draw() {
         super.draw();
 

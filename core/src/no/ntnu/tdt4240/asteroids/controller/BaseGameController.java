@@ -33,17 +33,17 @@ import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 
-public abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
+abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
     @SuppressWarnings("unused")
     protected static final String TAG = BaseGameController.class.getSimpleName();
     protected final boolean DEBUG = false;
     protected final Asteroids game;
     protected final PooledEngine engine;
-    protected final ControllerInputHandler controllerInputHandler;
-    protected final IGameView view;
-    protected World world;
-    protected Screen parent;
+    final ControllerInputHandler controllerInputHandler;
+    protected IGameView view;
+    World world;
+    private Screen parent;
 
 
     BaseGameController(Asteroids game, Screen parent) {
@@ -53,9 +53,8 @@ public abstract class BaseGameController extends ScreenAdapter implements World.
         initializeEntityComponent(engine);
         setupEngine(engine, game.getBatch());
         controllerInputHandler = new ControllerInputHandler(engine);
-        view = new GameView(game.getBatch(), this);
         setupView();
-        view.setInputController(new GamepadController(controllerInputHandler));
+
         world = new World(engine);
         setupWorld();
         world.run();
@@ -70,20 +69,45 @@ public abstract class BaseGameController extends ScreenAdapter implements World.
         view.resize(width, height);
     }
 
-    protected void setupView() {
+    private void setupView() {
+        view = new GameView(game.getBatch(), this);
+        view.setInputController(new GamepadController(controllerInputHandler));
         view.setDebug(DEBUG);
     }
 
     @Override
     public final void show() {
-        super.show();
         Gdx.input.setInputProcessor(view.getInputProcessor());
+        Gdx.app.debug(TAG, "show: ");
+        super.show();
+    }
+
+    @Override
+    public void resume() {
+        Gdx.app.debug(TAG, "resume: ");
+        super.resume();
+//        view.resume();
+    }
+
+    @Override
+    public void pause() {
+        Gdx.app.debug(TAG, "pause: ");
+        super.pause();
+//        view.hide();
     }
 
     @Override
     public final void hide() {
-        super.hide();
         Gdx.input.setInputProcessor(null);
+        Gdx.app.debug(TAG, "hide: ");
+        super.hide();
+//        view.hide();
+    }
+
+    @Override
+    public void dispose() {
+        Gdx.app.debug(TAG, "dispose: ");
+        super.dispose();
     }
 
     protected void setupWorld() {
@@ -142,18 +166,18 @@ public abstract class BaseGameController extends ScreenAdapter implements World.
         view.updateScore(newScore);
     }
 
-    protected void updatePlayerHitpoints() {
+    private void updatePlayerHitpoints() {
         HealthComponent healthComponent = ComponentMappers.healthMapper.get(world.getPlayer());
         if (healthComponent != null)
             view.updateHitpoints(healthComponent.hitPoints);
     }
 
-    protected void onGameOver() {
+    private void onGameOver() {
         world.stop();
         game.setScreen(new ScoreScreenController(game, parent, getPlayersAndScores()));
     }
 
-    protected List<String> getPlayersAndScores() {
+    private List<String> getPlayersAndScores() {
         ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
         List<String> playersAndScores = new ArrayList<>();
         for (Entity entity : entities) {
@@ -180,7 +204,7 @@ public abstract class BaseGameController extends ScreenAdapter implements World.
         return playersAndScores;
     }
 
-    protected void onLevelComplete() {
+    private void onLevelComplete() {
         world.stop();
         // TODO: show level complete screen
         // TODO: update world, reinitialize

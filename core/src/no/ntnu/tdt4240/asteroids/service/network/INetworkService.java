@@ -24,8 +24,6 @@ public interface INetworkService {
 
     void sendUnreliableMessageToOthers(byte[] messageData);
 
-    void setMessageReceivedListener(IGameListener listener);
-
     boolean isSignedIn();
 
     void startQuickGame();
