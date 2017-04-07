@@ -1,48 +1,36 @@
 package no.ntnu.tdt4240.asteroids.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
 import no.ntnu.tdt4240.asteroids.controller.TutorialController;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-public class TutorialView extends Stage implements TutorialController.ITutorialView {
+public class TutorialView extends BaseView implements TutorialController.ITutorialView {
 
+    @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private static Viewport viewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
-    private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
-    private final TextButton back = new TextButton("QUIT", buttonSkin);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final TextButton back = new TextButton("QUIT", uiSkin);
     private final Table table = new Table();
 
-    private final BitmapFont defaultFont = new BitmapFont();
-    private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
-    private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
     private final Label label1 = new Label("Use the analog stick to the left to move around. " +
-            "Use the right button to shoot.", defaultLabelStyle);
-    private final Label label2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", defaultLabelStyle);
-    private final Label label3 = new Label("When you shoot the snowballs, they might drop new abilities...", defaultLabelStyle);
+            "Use the right button to shoot.", uiSkin);
+    private final Label label2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", uiSkin);
+    private final Label label3 = new Label("When you shoot the snowballs, they might drop new abilities...", uiSkin);
 
     private final ITutorialController controller;
 
 
     public TutorialView(Batch batch, ITutorialController controller) {
-        super(viewport, batch);
+        super(batch);
         this.controller = controller;
         setDebugAll(true);
         table.addAction(Actions.alpha(0));
@@ -76,34 +64,4 @@ public class TutorialView extends Stage implements TutorialController.ITutorialV
             }
         });
     }
-
-
-    @Override
-    public void update(float delta) {
-        act(delta);
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public InputProcessor getInputProcessor() {
-        return this;
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        getViewport().update(width, height);
-
-
-    }
-
-
 }

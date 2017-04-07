@@ -17,7 +17,7 @@ abstract class BaseView extends Stage implements IView {
     }
 
     @Override
-    public final void update(float delta) {
+    public void update(float delta) {
         act(delta);
     }
 
@@ -32,7 +32,7 @@ abstract class BaseView extends Stage implements IView {
     }
 
     @Override
-    public final void draw() {
+    public void draw() {
         super.draw();
     }
 

@@ -1,51 +1,36 @@
 package no.ntnu.tdt4240.asteroids.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.controller.IMainMenu;
 import no.ntnu.tdt4240.asteroids.controller.MainMenu;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class MainView extends Stage implements MainMenu.IMainView {
+public class MainView extends BaseView implements MainMenu.IMainView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private static Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
-    private final Skin buttonSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
-    private final TextButton play = new TextButton("PLAY", buttonSkin);
-    private final TextButton multiplayer = new TextButton("MULTIPLAYER", buttonSkin);
-    private final TextButton quit = new TextButton("QUIT", buttonSkin);
-    private final TextButton tutorial = new TextButton("Tutorial", buttonSkin);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final TextButton play = new TextButton("PLAY", uiSkin);
+    private final TextButton multiplayer = new TextButton("MULTIPLAYER", uiSkin);
+    private final TextButton quit = new TextButton("QUIT", uiSkin);
+    private final TextButton tutorial = new TextButton("Tutorial", uiSkin);
     private final Table table = new Table();
-    private final BitmapFont defaultFont = new BitmapFont();
-    private final Label.LabelStyle defaultLabelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
-    private final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
     private final IMainMenu controller;
     private boolean active = true;
     // TODO: implement main screen gui
 
     public MainView(Batch batch, IMainMenu controller) {
-        super(guiViewport, batch);
+        super(batch);
         this.controller = controller;
-        guiViewport.apply(true);
-
         setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
@@ -103,42 +88,10 @@ public class MainView extends Stage implements MainMenu.IMainView {
 
     @Override
     public void update(float delta) {
-        act(delta);
-        if(!active){
+        super.update(delta);
+        if (!active) {
             active = true;
             table.addAction(Actions.sequence(Actions.fadeIn(1)));
         }
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-
-    @Override
-    public void draw() {
-//        Batch batch = getBatch();
-//        batch.disableBlending();
-//        batch.begin();
-//         TODO: draw background
-//        batch.end();
-//        batch.enableBlending();
-        super.draw();
-    }
-
-    @Override
-    public InputProcessor getInputProcessor() {
-        return this;
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        getViewport().update(width, height);
     }
 }
