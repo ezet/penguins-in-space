@@ -12,6 +12,13 @@ public class AudioManager {
     private Sound explosion;
     private Sound powerup;
     private Sound shoot;
+    private float volume = 1;
+
+
+    public void update(int newVolumePercentage){
+        volume = (float)newVolumePercentage/100;
+        backgroundMusic.setVolume(volume);
+    }
 
     public AudioManager(Assets assets) {
         this.assets = assets;
@@ -28,16 +35,16 @@ public class AudioManager {
 
     public void playShoot() {
         if (shoot == null) shoot = assets.getShoot();
-        shoot.play();
+        shoot.play(volume);
     }
 
     public void playExplosion() {
         if (explosion == null) explosion = assets.getExplosion();
-        explosion.play();
+        explosion.play(volume);
     }
 
     public void playPowerup() {
         if (powerup == null) powerup = assets.getPowerup();
-        powerup.play();
+        powerup.play(volume);
     }
 }

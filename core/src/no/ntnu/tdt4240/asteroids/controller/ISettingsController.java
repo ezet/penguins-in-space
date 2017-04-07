@@ -7,4 +7,10 @@ public interface ISettingsController {
     void previousCharacter();
 
     void nextCharacter();
+
+    void toggleMute();
+
+    void increaseVolume();
+
+    void decreaseVolume();
 }
