@@ -16,7 +16,6 @@ public class EffectFactory<F extends IEffect> {
 
 
     public IEffect getRandomEffect() {
-        if (true) return new InvulnerabilityEffect();
         if (effects.size == 0) return null;
         int random = MathUtils.random(0, effects.size - 1);
         try {
