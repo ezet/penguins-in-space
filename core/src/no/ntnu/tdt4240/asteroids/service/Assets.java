@@ -1,17 +1,23 @@
 package no.ntnu.tdt4240.asteroids.service;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
+
+    public static final String DATA_UISKIN_JSON = "data/uiskin.json";
+    public static final String PLAYER_DEFAULT = "playerBlack.png";
+    public static final String POWERUP = "powerup.png";
+    public static final String OBSTACLE = "obstacle.png";
+    public static final String PROJECTILE = "projectile.png";
+    public static final String PLAYER_RED_PNG = "playerRed.png";
+    public static final String PLAYER_BLUE_PNG = "playerBlue.png";
+    public static final String PLAYER_GREEN_PNG = "playerGreen.png";
+    public static final String PLAYER_YELLOW_PNG = "playerYellow.png";
 
     public AssetManager getAssetManager() {
         return assetManager;
@@ -24,21 +30,18 @@ public class Assets {
         assetManager = new AssetManager();
     }
 
-    public void loadBitmaps() {
-    }
-
     public void loadTextures() {
-        assetManager.load("data/uiskin.json", Skin.class);
-        assetManager.load("playerBlack.png", Texture.class);
-        assetManager.load("powerup.png", Texture.class);
+        assetManager.load(DATA_UISKIN_JSON, Skin.class);
+        assetManager.load(PLAYER_DEFAULT, Texture.class);
+        assetManager.load(POWERUP, Texture.class);
         assetManager.load("invuln.png", Texture.class);
-        assetManager.load("obstacle.png", Texture.class);
-        assetManager.load("projectile.png", Texture.class);
+        assetManager.load(OBSTACLE, Texture.class);
+        assetManager.load(PROJECTILE, Texture.class);
         assetManager.load("explosion.png", Texture.class);
-        assetManager.load("playerRed.png", Texture.class);
-        assetManager.load("playerBlue.png", Texture.class);
-        assetManager.load("playerGreen.png", Texture.class);
-        assetManager.load("playerYellow.png", Texture.class);
+        assetManager.load(PLAYER_RED_PNG, Texture.class);
+        assetManager.load(PLAYER_BLUE_PNG, Texture.class);
+        assetManager.load(PLAYER_GREEN_PNG, Texture.class);
+        assetManager.load(PLAYER_YELLOW_PNG, Texture.class);
         assetManager.load("data/touchBackground.png", Texture.class);
         assetManager.load("data/touchKnob.png", Texture.class);
         assetManager.update();
@@ -57,21 +60,13 @@ public class Assets {
         return assetManager.get(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
     }
 
-    public Texture getProjectile() {
-        return assetManager.get("projectile.png");
-    }
-
-    public Texture getObstacle() {
-        return assetManager.get("obstacle.png");
-    }
-
     public Texture getEffect() {
-        return assetManager.get("powerup.png");
+        return assetManager.get(POWERUP);
     }
 
     public Array<String> getCharacters(){
-        String[] pngs = {"playerBlack.png", "playerBlue.png", "playerGreen.png", "playerYellow.png", "playerRed.png"};
-        return new Array(pngs);
+        String[] pngs = {PLAYER_DEFAULT, PLAYER_BLUE_PNG, PLAYER_GREEN_PNG, PLAYER_YELLOW_PNG, PLAYER_RED_PNG};
+        return new Array<>(pngs);
     }
 
     public Texture getObstacleExplosion() {
@@ -113,12 +108,21 @@ public class Assets {
     }
 
     public Skin getUiSkin() {
-        return assetManager.get("data/uiskin.json", Skin.class);
+        return assetManager.get(DATA_UISKIN_JSON, Skin.class);
     }
 
     public boolean update() {
         if (loaded) return loaded;
         loaded = assetManager.update();
         return loaded;
+    }
+
+    public Texture getTexture(String asset) {
+        return get(asset, Texture.class);
+    }
+
+    private <T> T get(String asset, Class<T> cls) {
+        // TODO: 07-Apr-17 finish loading
+        return assetManager.get(asset, cls);
     }
 }

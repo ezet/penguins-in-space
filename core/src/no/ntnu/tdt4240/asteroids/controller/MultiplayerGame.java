@@ -39,9 +39,10 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
 
     @Override
     public void notifyScoreChanged(String id, int oldScore, int score) {
-        if (Objects.equals(id, playerId)) {
-            view.updateScore(score);
-        }
+        return;
+        //        if (Objects.equals(id, playerId)) {
+//            view.updateScore(score);
+//        }
         // TODO: 05-Apr-17 handle opponent scores
     }
 

@@ -1,39 +1,60 @@
 package no.ntnu.tdt4240.asteroids.entity.util;
 
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+
+import static no.ntnu.tdt4240.asteroids.service.Assets.OBSTACLE;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_BLUE_PNG;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_DEFAULT;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_GREEN_PNG;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_RED_PNG;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_YELLOW_PNG;
+import static no.ntnu.tdt4240.asteroids.service.Assets.POWERUP;
+import static no.ntnu.tdt4240.asteroids.service.Assets.PROJECTILE;
 
 public class DefaultDrawableComponentFactory implements IDrawableComponentFactory {
 
-    private static final int PLAYER = 0;
-    private static final int PROJECTILE = 1;
-    private static final int OBSTACLE = 2;
-    private static final int POWERUP = 3;
-
     // TODO: use assets and atlas
+    private static final String TAG = DefaultDrawableComponentFactory.class.getSimpleName();
     private final PooledEngine engine;
+    private int playerCounter = 0;
     private Assets assets;
-    private TextureRegion[] map = new TextureRegion[4];
+    private Array<String> playerTextures = new Array<>();
 
     @Inject
     public DefaultDrawableComponentFactory(PooledEngine engine, Assets assets) {
         this.engine = engine;
         this.assets = assets;
+        playerTextures.add(PLAYER_DEFAULT);
+        playerTextures.add(PLAYER_BLUE_PNG);
+        playerTextures.add(PLAYER_RED_PNG);
+        playerTextures.add(PLAYER_GREEN_PNG);
+        playerTextures.add(PLAYER_YELLOW_PNG);
     }
 
     @Override
     public DrawableComponent getPlayer() {
-        return getDrawable(PLAYER);
+        playerCounter = 0;
+        String playerAppearance = ServiceLocator.getAppComponent().getSettings().getPlayerAppearance();
+        return getDrawable(playerAppearance);
     }
 
     @Override
     public DrawableComponent getMultiPlayer() {
-        return getDrawable(PLAYER);
+        if (playerCounter == playerTextures.size) {
+            Gdx.app.error(TAG, "getMultiPlayer: not enough player textures");
+            playerCounter = 0;
+        }
+        String asset = playerTextures.get(playerCounter++);
+        return getDrawable(asset);
     }
 
     @Override
@@ -51,28 +72,13 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
         return getDrawable(POWERUP);
     }
 
-    private DrawableComponent getDrawable(int entity) {
+    private DrawableComponent getDrawable(String asset) {
         DrawableComponent component = engine.createComponent(DrawableComponent.class);
-        TextureRegion textureRegion = map[entity];
-        if (textureRegion == null) {
-            textureRegion = getTextureRegion(entity);
-            map[entity] = textureRegion;
-        }
-        component.texture = textureRegion;
+        component.texture = getTextureRegion(asset);
         return component;
     }
 
-    private TextureRegion getTextureRegion(int entity) {
-        switch (entity) {
-            case PLAYER:
-                return new TextureRegion(assets.getPlayer());
-            case OBSTACLE:
-                return new TextureRegion(assets.getObstacle());
-            case PROJECTILE:
-                return new TextureRegion(assets.getProjectile());
-            case POWERUP:
-                return new TextureRegion(assets.getEffect());
-        }
-        return null;
+    private TextureRegion getTextureRegion(String asset) {
+        return new TextureRegion(assets.getTexture(asset));
     }
 }

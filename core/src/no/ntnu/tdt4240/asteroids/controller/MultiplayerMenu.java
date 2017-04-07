@@ -65,8 +65,10 @@ public class MultiplayerMenu extends ScreenAdapter implements IMultiplayerMenu {
         MultiplayerGame screen = new MultiplayerGame(game, this);
         game.setScreen(screen);
         List<PlayerData> players = new ArrayList<>();
-        players.add(new PlayerData("", "Player", true));
-        players.add(new PlayerData("test", "test"));
+        players.add(new PlayerData("player", "Player", true));
+        players.add(new PlayerData("test1", "test1"));
+        players.add(new PlayerData("test2", "test2"));
+        players.add(new PlayerData("test3", "test3"));
         screen.onRoomReady(players);
     }
 
