@@ -11,17 +11,18 @@ import no.ntnu.tdt4240.asteroids.entity.component.PowerupClass;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.effectMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.powerupMapper;
 
 public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandler {
     @Override
     public boolean onCollision(PooledEngine engine, Entity source, Entity target) {
-        if (!playerMapper.has(target)) {
+        EffectComponent effectComponent = effectMapper.get(target);;
+        if (effectComponent == null) {
             return false;
         }
         PowerupClass powerup = powerupMapper.get(source);
-        EffectComponent effectComponent = engine.createComponent(EffectComponent.class);
         effectComponent.addEffect(powerup.effect);
         target.add(effectComponent);
         AnimationComponent pickupAnimation = createAnimationComponent();

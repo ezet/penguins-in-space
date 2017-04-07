@@ -6,7 +6,7 @@ public class SinglePlayerSettings implements IGameSettings {
     private static double obstacleSpawnChance = 0.3;
     private static int maxObstacles = 8;
     private static int minObstacles = 3;
-    private static double powerupSpawnChance = 0.2;
+    private static double powerupSpawnChance = 1;
     private static float playerGravity = 0.01f;
     private static int obstacleMaxSpeed = 200;
     private static float accelerationScalar = 500;

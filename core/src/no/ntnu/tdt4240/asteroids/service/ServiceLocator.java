@@ -13,8 +13,8 @@ import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 public abstract class ServiceLocator {
 
-    private static EntityComponent entityComponent;
-    private static AppComponent appComponent;
+    public static EntityComponent entityComponent;
+    public static AppComponent appComponent;
 
     public static void initializeSinglePlayerEntityComponent(PooledEngine engine) {
         entityComponent = DaggerEntityComponent.builder().entityModule(new EntityModule(engine, false)).appComponent(getAppComponent()).build();

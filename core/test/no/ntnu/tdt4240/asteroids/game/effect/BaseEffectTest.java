@@ -18,7 +18,6 @@ import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,17 +46,24 @@ public class BaseEffectTest {
     }
 
     @Test
-    public void lifecycle_validEffect_shouldSucceed() {
+    public void tick_validEffect_shouldApply() {
         fixture.tick(engine, entity, effectComponent, 1);
         verify(fixture).applyEffect(engine, entity, effectComponent);
-        verify(audioManager).playPowerup();
+    }
 
+    @Test
+    public void tick_validEffect_shouldRemove() {
+        fixture.tick(engine, entity, effectComponent, 1);
+        fixture.tick(engine, entity, effectComponent, 10);
         fixture.tick(engine, entity, effectComponent, 1);
 
-        fixture.tick(engine, entity, effectComponent, 10);
         verify(fixture).removeEffect(any(PooledEngine.class), any(Entity.class), any(EffectComponent.class));
+    }
 
-        verify(fixture, times(2)).tick(engine, entity, effectComponent, 1);
+    @Test
+    public void tick_validEffect_shouldPlaySound() {
+        fixture.tick(engine, entity, effectComponent, 1);
+        verify(audioManager).playPowerup();
     }
 
 }

@@ -5,8 +5,6 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import javax.inject.Inject;
-
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -33,30 +31,30 @@ public abstract class BaseEffect implements IEffect {
 
     @Override
     public void refresh(IEffect effect) {
-        Gdx.app.debug(TAG, "refresh: ");
         BaseEffect baseEffect = (BaseEffect) effect;
-        baseEffect.remainingDuration =+ baseEffect.getDuration();
+        this.remainingDuration += baseEffect.getDuration();
     }
 
     @Override
-    public void tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
+    public boolean tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
         if (!applied) {
             applyEffect(engine, entity, component);
             audioManager.playPowerup();
             setTexture(entity);
             remainingDuration = getDuration();
             applied = true;
+            return false;
         } else if (remainingDuration > 0) {
             remainingDuration -= deltaTime;
-        }
-        if (remainingDuration < 0) {
-//            entity.remove(EffectComponent.class);
-            component.removeEffect(this);
+            return false;
+        } else {
             removeEffect(engine, entity, component);
             restoreTexture(entity);
             applied = false;
             remainingDuration = 0;
+            return true;
         }
+//        return false;
     }
 
     private void setTexture(Entity entity) {
@@ -71,5 +69,4 @@ public abstract class BaseEffect implements IEffect {
         DrawableComponent drawableComponent = drawableMapper.get(entity);
         drawableComponent.texture = oldRegion;
     }
-
 }
