@@ -22,7 +22,7 @@ public class MainView extends BaseView implements MainMenu.IMainView {
     private final TextButton play = new TextButton("PLAY", uiSkin);
     private final TextButton multiplayer = new TextButton("MULTIPLAYER", uiSkin);
     private final TextButton quit = new TextButton("QUIT", uiSkin);
-    private final TextButton tutorial = new TextButton("Tutorial", uiSkin);
+    private final TextButton TUTORIAL = new TextButton("TUTORIAL", uiSkin);
     private final Table table = new Table();
     private final IMainMenu controller;
     private boolean active = true;
@@ -44,9 +44,9 @@ public class MainView extends BaseView implements MainMenu.IMainView {
         table.row();
         table.add(multiplayer).pad(30);
         table.row();
-        table.add(quit).pad(30);
+        table.add(TUTORIAL).pad(30);
         table.row();
-        table.add(tutorial).pad(30);
+        table.add(quit).pad(30);
         table.row();
         play.addListener(new ClickListener() {
             @Override
@@ -78,7 +78,7 @@ public class MainView extends BaseView implements MainMenu.IMainView {
                 controller.onQuit();
             }
         });
-        tutorial.addListener(new ClickListener() {
+        TUTORIAL.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.onTutorial();
