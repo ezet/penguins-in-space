@@ -52,15 +52,16 @@ public class World {
 
 
     public static final int EVENT_SCORE = 0;
-    public static final int EVENT_GAME_OVER = 1;
+    public static final int EVENT_GAME_END = 1;
     public static final int EVENT_LEVEL_COMPLETE = 2;
     public static final int EVENT_PLAYER_HITPOINTS = 3;
+    public static final int EVENT_PLAYER_DESTROYED = 3;
     public static final int EVENT_PLAYER_CHANGED = 5;
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
     public static final int STATE_LEVEL_END = 3;
-    public static final int STATE_GAME_OVER = 4;
+    public static final int STATE_GAME_END = 4;
     private static final int EVENT_WORLD_RESET = 4;
     private static final int EDGE_LEFT = 0;
     private static final int EDGE_TOP = 1;
@@ -264,9 +265,9 @@ public class World {
         return entity;
     }
 
-    void gameOver() {
-        state = STATE_GAME_OVER;
-        notifyListeners(EVENT_GAME_OVER);
+    void endGame() {
+        state = STATE_GAME_END;
+        notifyListeners(EVENT_GAME_END);
     }
 
     public void run() {
@@ -352,7 +353,7 @@ public class World {
 
         @Override
         public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
-            world.gameOver();
+            world.endGame();
         }
     }
 
@@ -387,7 +388,7 @@ public class World {
             if (target.getComponent(PlayerClass.class) != null) {
                 ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class, CollisionComponent.class).get());
                 if (entities.size() < 2) {
-                    world.notifyListeners(EVENT_GAME_OVER);
+                    world.notifyListeners(EVENT_GAME_END);
                 }
             }
         }

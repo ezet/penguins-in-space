@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import no.ntnu.tdt4240.asteroids.controller.IMultiplayerMenu;
 import no.ntnu.tdt4240.asteroids.controller.MultiplayerMenu;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
@@ -18,7 +19,7 @@ public class MultiplayerView extends BaseView implements MultiplayerMenu.IMainVi
 
     @SuppressWarnings("unused")
     private static final String TAG = MultiplayerView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton quickGame = new TextButton("QUICK GAME", uiSkin);
     private final TextButton invitePlayers = new TextButton("INVITE FRIENDS", uiSkin);
     private final TextButton hostGame = new TextButton("HOST GAME", uiSkin);

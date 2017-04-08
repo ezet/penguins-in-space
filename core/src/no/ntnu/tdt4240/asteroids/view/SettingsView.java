@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import no.ntnu.tdt4240.asteroids.controller.ISettingsController;
 import no.ntnu.tdt4240.asteroids.controller.SettingsController;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
@@ -19,7 +20,7 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
 
     @SuppressWarnings("unused")
     private static final String TAG = SettingsView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton backButton = new TextButton("Save Settings", uiSkin);
     private final TextButton leftButton = new TextButton("Previous", uiSkin);
     private final TextButton rightButton = new TextButton("Next", uiSkin);

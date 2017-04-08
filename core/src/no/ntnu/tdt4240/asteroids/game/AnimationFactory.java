@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 import no.ntnu.tdt4240.asteroids.service.Assets;
 
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.EXPLOSION;
+
 public class AnimationFactory {
 
     private final Array<TextureRegion> obstacleDestroyedAnimation;
@@ -29,7 +31,7 @@ public class AnimationFactory {
 
     private Array<TextureRegion> createObstacleDestroyedAnimation() {
         Array<TextureRegion> explosions = new Array<>();
-        Texture texture = assets.getObstacleExplosion();
+        Texture texture = assets.getTexture(EXPLOSION);
         TextureRegion[][] split = TextureRegion.split(texture, 64, 64);
         for (TextureRegion[] row : split) {
             for (TextureRegion region : row) {

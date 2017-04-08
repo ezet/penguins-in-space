@@ -11,13 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
 import no.ntnu.tdt4240.asteroids.controller.TutorialController;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 public class TutorialView extends BaseView implements TutorialController.ITutorialView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton back = new TextButton("QUIT", uiSkin);
     private final Table table = new Table();
 

@@ -26,7 +26,7 @@ public class AudioManager {
 
     public void playBackgroundMusic() {
         if (backgroundMusic == null) {
-            backgroundMusic = assets.getBackgroundMusic();
+            backgroundMusic = assets.getMusic(Assets.MusicAsset.SOUND_MUSIC_MP3);
             backgroundMusic.setLooping(true);
         }
         if (!backgroundMusic.isPlaying())
@@ -34,17 +34,17 @@ public class AudioManager {
     }
 
     public void playShoot() {
-        if (shoot == null) shoot = assets.getShoot();
+        if (shoot == null) shoot = assets.getSound(Assets.SoundAsset.SOUND_SHOOT_WAV);
         shoot.play(volume);
     }
 
     public void playExplosion() {
-        if (explosion == null) explosion = assets.getExplosion();
+        if (explosion == null) explosion = assets.getSound(Assets.SoundAsset.SOUND_EXPLOSION_WAV);
         explosion.play(volume);
     }
 
     public void playPowerup() {
-        if (powerup == null) powerup = assets.getPowerup();
+        if (powerup == null) powerup = assets.getSound(Assets.SoundAsset.SOUND_POWERUP_WAV);
         powerup.play(volume);
     }
 }

@@ -32,6 +32,7 @@ import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_DEFAULT;
 
 abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
@@ -147,8 +148,8 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
                 onLevelComplete();
                 break;
             }
-            case World.EVENT_GAME_OVER: {
-                onGameOver();
+            case World.EVENT_GAME_END: {
+                onGameEnd();
                 break;
             }
             case World.EVENT_PLAYER_HITPOINTS: {
@@ -172,7 +173,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
             view.updateHitpoints(healthComponent.hitPoints);
     }
 
-    private void onGameOver() {
+    protected void onGameEnd() {
         world.stop();
         game.setScreen(new ScoreScreenController(game, parent, getPlayersAndScores()));
     }
@@ -223,7 +224,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         // Update the player's texture,
         // might want to update more things once settings consists of more options.
         world.getPlayer().getComponent(DrawableComponent.class).texture
-                = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getPlayer());
+                = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getTexture(PLAYER_DEFAULT));
         world.run();
     }
 

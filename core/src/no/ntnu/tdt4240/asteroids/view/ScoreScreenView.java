@@ -13,6 +13,7 @@ import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.controller.IScoreScreenController;
 import no.ntnu.tdt4240.asteroids.controller.ScoreScreenController;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
@@ -21,7 +22,7 @@ public class ScoreScreenView extends BaseView implements ScoreScreenController.I
     @SuppressWarnings("unused")
     private static final String TAG = ScoreScreenView.class.getSimpleName();
     private final Table table = new Table();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton menuButton = new TextButton("Quit to menu", uiSkin);
 
     private final IScoreScreenController controller;

@@ -14,6 +14,9 @@ import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.TOUCH_BACKGROUND;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.TOUCH_KNOB;
+
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
 
@@ -45,8 +48,8 @@ public class GamepadController extends WidgetGroup {
         // TODO: use uiskin.json
 //        Skin touchpadSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
         Skin touchpadSkin = new Skin();
-        touchpadSkin.add("touchBackground", assets.getTouchBackground());
-        touchpadSkin.add("touchKnob", assets.getTouchKnob());
+        touchpadSkin.add("touchBackground", assets.getTexture(TOUCH_BACKGROUND));
+        touchpadSkin.add("touchKnob", assets.getTexture(TOUCH_KNOB));
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
 
         style.background = touchpadSkin.getDrawable("touchBackground");
@@ -66,7 +69,7 @@ public class GamepadController extends WidgetGroup {
         NoClickZone padZone = new NoClickZone(touchPad, NO_CLICK_MARGIN);
         addActor(padZone);
 
-        touchpadSkin.add("touchButton", assets.getTouchKnob());
+        touchpadSkin.add("touchButton", assets.getTexture(TOUCH_KNOB));
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
         NoClickZone buttonZone = new NoClickZone(button, NO_CLICK_MARGIN);

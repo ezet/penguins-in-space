@@ -11,14 +11,8 @@ import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.service.Assets.OBSTACLE;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_BLUE_PNG;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_DEFAULT;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_GREEN_PNG;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_RED_PNG;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PLAYER_YELLOW_PNG;
-import static no.ntnu.tdt4240.asteroids.service.Assets.POWERUP;
-import static no.ntnu.tdt4240.asteroids.service.Assets.PROJECTILE;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.*;
+
 
 public class DefaultDrawableComponentFactory implements IDrawableComponentFactory {
 
@@ -34,10 +28,10 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
         this.engine = engine;
         this.assets = assets;
         playerTextures.add(PLAYER_DEFAULT);
-        playerTextures.add(PLAYER_BLUE_PNG);
-        playerTextures.add(PLAYER_RED_PNG);
-        playerTextures.add(PLAYER_GREEN_PNG);
-        playerTextures.add(PLAYER_YELLOW_PNG);
+        playerTextures.add(PLAYER_BLUE);
+        playerTextures.add(PLAYER_RED);
+        playerTextures.add(PLAYER_GREEN);
+        playerTextures.add(PLAYER_YELLOW);
     }
 
     @Override

@@ -46,15 +46,15 @@ public class GameView extends BaseView implements IGameView {
     }
 
     private void loadAssets() {
-        resume = new TextButton("RESUME", assetLoader.getUiSkin());
-        settings = new TextButton("SETTINGS", assetLoader.getUiSkin());
-        quitToMenu = new TextButton("QUIT TO MENU", assetLoader.getUiSkin());
-        quit = new TextButton("QUIT", assetLoader.getUiSkin());
-        pauseButton = new TextButton("Pause", assetLoader.getUiSkin());
+        resume = new TextButton("RESUME", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        settings = new TextButton("SETTINGS", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        quitToMenu = new TextButton("QUIT TO MENU", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        quit = new TextButton("QUIT", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        pauseButton = new TextButton("Pause", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
 
-        scoreLabel = new Label("SCORE: 0", assetLoader.getUiSkin());
-        levelLabel = new Label("LEVEL: 0", assetLoader.getUiSkin());
-        hitpointsLabel = new Label("", assetLoader.getUiSkin());
+        scoreLabel = new Label("SCORE: 0", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        levelLabel = new Label("LEVEL: 0", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        hitpointsLabel = new Label("", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
     }
 
     @Override

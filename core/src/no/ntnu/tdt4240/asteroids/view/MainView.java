@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import no.ntnu.tdt4240.asteroids.controller.IMainMenu;
 import no.ntnu.tdt4240.asteroids.controller.MainMenu;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
@@ -18,7 +19,7 @@ public class MainView extends BaseView implements MainMenu.IMainView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getUiSkin();
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton play = new TextButton("PLAY", uiSkin);
     private final TextButton multiplayer = new TextButton("MULTIPLAYER", uiSkin);
     private final TextButton quit = new TextButton("QUIT", uiSkin);
