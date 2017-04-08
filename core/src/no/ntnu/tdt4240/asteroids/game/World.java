@@ -6,13 +6,9 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.Objects;
-import java.util.Vector;
 
 import javax.inject.Inject;
 
@@ -38,7 +34,6 @@ import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
-import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
@@ -46,35 +41,27 @@ import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 @SuppressWarnings("WeakerAccess")
 public class World {
 
-    public static final int EVENT_SCORE = 0;
-    public static final int EVENT_GAME_END = 1;
-    public static final int EVENT_LEVEL_COMPLETE = 2;
-    public static final int EVENT_PLAYER_HITPOINTS = 3;
-    public static final int EVENT_PLAYER_DESTROYED = 3;
-    public static final int EVENT_PLAYER_CHANGED = 5;
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
-    public static final int STATE_LEVEL_END = 3;
-    public static final int STATE_GAME_END = 4;
-    private static final int EVENT_WORLD_RESET = 4;
-    private static final int EDGE_LEFT = 0;
-    private static final int EDGE_TOP = 1;
-    private static final int EDGE_RIGHT = 2;
-    private static final int EDGE_BOTTOM = 3;
-    private static final Family FAMILY_PLAYERS = Family.one(PlayerClass.class).get();
+    public static final int EVENT_WORLD_RESET = 0;
+    @SuppressWarnings("unused")
     private static final String TAG = World.class.getSimpleName();
-    private final ImmutableArray<Entity> enginePlayers;
-    public final Vector<IGameListener> listeners = new Vector<>();
-    public final Array<PlayerData> players = new Array<>();
-    // TODO: add config
+    private static final int SPAWN_LEFT = 0;
+    private static final int SPAWN_TOP = 1;
+    private static final int SPAWN_RIGHT = 2;
+    private static final int SPAWN_BOTTOM = 3;
+    private static final Family FAMILY_PLAYERS = Family.all(PlayerClass.class).get();
+    private static final Family FAMILY_OBSTACLES = Family.all(ObstacleClass.class).get();
+    public final ObstacleListener obstacleListener;
+    public final PlayerListener playerListener;
+    public final Array<IGameListener> listeners = new Array<>();
     final PooledEngine engine;
     private final DamageSystem.IDamageHandler obstacleDamageHandler = new ObstacleDamageHandler(this);
     private final PlayerDamageHandler playerDamageHandler = new PlayerDamageHandler(this);
@@ -87,28 +74,31 @@ public class World {
         public void entityRemoved(Entity entity) {
             if (engine.getEntities().size() == 0) {
                 notifyListeners(EVENT_WORLD_RESET);
+                engine.addEntityListener(FAMILY_OBSTACLES, obstacleListener);
+                engine.addEntityListener(FAMILY_PLAYERS, playerListener);
                 engine.removeEntityListener(this);
             }
         }
     };
+    private final ImmutableArray<Entity> players;
     @Inject
     IGameSettings gameSettings;
     @Inject
     EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
     @Inject
     AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
-    private Entity player;
     private int state = STATE_READY;
     private int level = 0;
 
     public World(PooledEngine engine) {
         this.engine = engine;
-        engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
-        engine.addEntityListener(FAMILY_PLAYERS, new PlayerListener(this));
-        enginePlayers = engine.getEntitiesFor(FAMILY_PLAYERS);
+        obstacleListener = new ObstacleListener(this);
+        engine.addEntityListener(FAMILY_OBSTACLES, obstacleListener);
+        playerListener = new PlayerListener(this);
+        engine.addEntityListener(FAMILY_PLAYERS, playerListener);
+        players = engine.getEntitiesFor(FAMILY_PLAYERS);
         setupEngineSystems();
         registerEffects();
-
         gameSettings = ServiceLocator.getEntityComponent().getGameSettings();
     }
 
@@ -133,56 +123,27 @@ public class World {
         engine.getSystem(ScoreSystem.class).getListeners().add(new ScoreListener(this));
     }
 
-    public Entity getPlayer() {
-        return player;
-    }
 
     private void clearEngine() {
         if (engine.getEntities().size() > 0) {
+            engine.removeEntityListener(playerListener);
+            engine.removeEntityListener(obstacleListener);
             engine.addEntityListener(resetListener);
-            engine.clearPools();
             engine.removeAllEntities();
+            engine.clearPools();
         }
     }
 
     public void reset() {
-        level = 0;
         clearEngine();
     }
 
-    public void nextLevel() {
-        level += 1;
-        clearEngine();
-    }
-
-    public void addPlayer(PlayerData playerData) {
-        if (playerData.isSelf) {
-            Entity player = createPlayer(playerData.participantId, playerData.displayName, true);
-            engine.addEntity(player);
-            notifyListeners(EVENT_PLAYER_CHANGED);
-            notifyListeners(EVENT_PLAYER_HITPOINTS);
-            playerData.entity = player;
-        } else {
-            Entity multiplayer = createOpponent(playerData.participantId, playerData.displayName);
-            engine.addEntity(multiplayer);
-            playerData.entity = multiplayer;
-        }
-    }
-
-    private Entity createPlayer(String id, String displayName, boolean multiplayer) {
-        player = entityFactory.createPlayer(id, displayName, multiplayer);
-        HealthComponent healthComponent = healthMapper.get(player);
+    public void addPlayer(Entity entity) {
+        HealthComponent healthComponent = healthMapper.get(entity);
         if (healthComponent != null) {
             healthComponent.damageHandler = playerDamageHandler;
         }
-        return player;
-    }
-
-    private  Entity createOpponent(String participantId, String displayName) {
-        Entity entity = entityFactory.createMultiPlayer(participantId, displayName);
-        HealthComponent healthComponent = healthMapper.get(entity);
-        healthComponent.damageHandler = new OpponentDamageHandler(this, participantId);
-        return entity;
+        engine.addEntity(entity);
     }
 
     private void spawnObstacles(int currentObstacles) {
@@ -219,70 +180,72 @@ public class World {
 
     private Entity createObstacle() {
         Entity entity = entityFactory.createObstacle();
-        DrawableComponent drawable = drawableMapper.get(entity);
         HealthComponent healthComponent = healthMapper.get(entity);
         healthComponent.damageHandler = obstacleDamageHandler;
+        do {
+            positionObstacle(entity);
+        } while (!isValidPosition(entity));
+        return entity;
+    }
 
-        int edge = MathUtils.random(3);
-        int x = 0;
-        int y = 0;
+    private boolean isValidPosition(Entity entity) {
+        TransformComponent transform = entity.getComponent(TransformComponent.class);
+        positionObstacle(entity);
+        for (Entity player : players) {
+            Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
+            if (playerBounds.radius > 0) {
+                Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius + gameSettings.getPlayerNoSpawnRadius());
+                if (spawnCircle.contains(transform.position.x, transform.position.y)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private Entity positionObstacle(Entity entity) {
+        DrawableComponent drawable = drawableMapper.get(entity);
         float xVec = 0;
         float yVec = 0;
+        int x = 0;
+        int y = 0;
         int halfRegionHeight = drawable.texture.getRegionHeight() / 2;
         int halfRegionWidth = drawable.texture.getRegionWidth() / 2;
         int graphicsWidth = Asteroids.VIRTUAL_WIDTH;
         int graphicsHeight = Asteroids.VIRTUAL_HEIGHT;
         int halfSpeed = gameSettings.getObstacleMaxSpeed() / 2;
-
-        // Based on spawn, position and movement (always inwards) is generated randomly.
+        int edge = MathUtils.random(3);
         switch (edge) {
-            case EDGE_TOP:
+            case SPAWN_TOP:
                 x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
                 xVec = MathUtils.random(-halfSpeed, halfSpeed);
                 yVec = MathUtils.random() * gameSettings.getObstacleMaxSpeed();
                 y = -halfRegionHeight;
                 break;
-            case EDGE_BOTTOM:
+            case SPAWN_BOTTOM:
                 x = MathUtils.random(-halfRegionWidth, graphicsWidth + halfRegionWidth);
                 xVec = MathUtils.random(-halfSpeed, halfSpeed);
                 yVec = -1 * MathUtils.random() * gameSettings.getObstacleMaxSpeed();
                 y = graphicsHeight + halfRegionHeight;
                 break;
-            case EDGE_LEFT:
+            case SPAWN_LEFT:
                 y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
                 yVec = MathUtils.random(-halfSpeed, halfSpeed);
                 xVec = MathUtils.random() * gameSettings.getObstacleMaxSpeed();
                 x = -halfRegionWidth;
                 break;
-            case EDGE_RIGHT:
+            case SPAWN_RIGHT:
                 y = MathUtils.random(-halfRegionHeight, graphicsHeight + halfRegionHeight);
                 yVec = MathUtils.random(-halfSpeed, halfSpeed);
                 xVec = -1 * MathUtils.random() * gameSettings.getObstacleMaxSpeed();
                 x = graphicsWidth + halfRegionWidth;
                 break;
         }
-
-        if (player != null) {
-            Circle playerBounds = (Circle) player.getComponent(CircularBoundsComponent.class).getBounds();
-            if (playerBounds.radius > 0) {
-                Circle spawnCircle = new Circle(playerBounds.x, playerBounds.y, playerBounds.radius + gameSettings.getPlayerNoSpawnRadius());
-                if (spawnCircle.contains(x, y)) {
-                    // TODO: 04-Apr-17 remove recursion
-                    return createObstacle();
-                }
-            }
-        }
-
         MovementComponent movement = entity.getComponent(MovementComponent.class);
         movement.velocity.set(xVec, yVec);
         TransformComponent position = entity.getComponent(TransformComponent.class);
         position.position.set(x, y);
         return entity;
-    }
-
-    void endGame() {
-        state = STATE_GAME_END;
-        notifyListeners(EVENT_GAME_END);
     }
 
     public void run() {
@@ -292,6 +255,7 @@ public class World {
 
     public void stop() {
         state = STATE_READY;
+        clearEngine();
         // TODO: stop engine
     }
 
@@ -300,7 +264,7 @@ public class World {
         // TODO: pause engine
     }
 
-    private void notifyListeners(int event) {
+    void notifyListeners(int event) {
         for (IGameListener listener : listeners) {
             listener.handle(this, event);
         }
@@ -326,7 +290,11 @@ public class World {
 
         void handle(World model, int event);
 
-        void notifyScoreChanged(String id, int oldScore, int newScore);
+        void notifyScoreChanged(Entity entity, int oldScore, int newScore);
+
+        void notifyPlayerRemoved(Entity entity);
+
+        void notifyDamageTaken(Entity entity, int damageTaken);
     }
 
     private static class ObstacleListener implements EntityListener {
@@ -361,51 +329,23 @@ public class World {
         }
 
         @Override
-        public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
-            Gdx.app.debug(TAG, "onDamageTaken: ");
-            world.notifyListeners(EVENT_PLAYER_HITPOINTS);
+        public void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken) {
+//            Gdx.app.debug(TAG, "onDamageTaken: ");
+            for (IGameListener listener : world.listeners) {
+                listener.notifyDamageTaken(entity, damageTaken);
+            }
         }
 
         @Override
-        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
-            world.endGame();
-        }
-    }
-
-    private static class OpponentDamageHandler implements DamageSystem.IDamageHandler {
-
-        private static final String TAG = PlayerDamageHandler.class.getSimpleName();
-        private World world;
-        private String playerId;
-
-        public OpponentDamageHandler(World world, String playerId) {
-            this.world = world;
-            this.playerId = playerId;
-        }
-
-        @Override
-        public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
-            Gdx.app.debug(TAG, "onDamageTaken: Opponent");
-            // TODO: 06-Apr-17 handle opponent damage
-//            world.notifyListeners(EVENT_PLAYER_HITPOINTS);
-        }
-
-        @Override
-        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+        public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
             AnimationComponent animation = new AnimationComponent();
             // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
             animation.removeEntityAfterAnimation = true;
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
-            target.add(animation);
+            entity.add(animation);
             world.audioManager.playExplosion();
-            target.remove(CollisionComponent.class);
-            target.remove(MovementComponent.class);
-            if (target.getComponent(PlayerClass.class) != null) {
-                ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class, CollisionComponent.class).get());
-                if (entities.size() < 2) {
-                    world.notifyListeners(EVENT_GAME_END);
-                }
-            }
+            entity.remove(CollisionComponent.class);
+            entity.remove(MovementComponent.class);
         }
     }
 
@@ -418,21 +358,21 @@ public class World {
         }
 
         @Override
-        public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
+        public void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken) {
 
         }
 
         @Override
-        public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
-            world.spawnPowerup(target);
+        public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
+            world.spawnPowerup(entity);
             AnimationComponent animation = new AnimationComponent();
             animation.removeEntityAfterAnimation = true;
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
-            target.add(animation);
+            entity.add(animation);
             world.audioManager.playExplosion();
             // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
-            target.remove(CollisionComponent.class);
-            target.remove(MovementComponent.class);
+            entity.remove(CollisionComponent.class);
+            entity.remove(MovementComponent.class);
         }
     }
 
@@ -447,15 +387,13 @@ public class World {
         @Override
         public void onScoreChanged(Engine engine, Entity entity, int oldScore) {
             ScoreComponent scoreComponent = scoreMapper.get(entity);
-            PlayerClass playerClass = playerMapper.get(entity);
             for (IGameListener listener : world.listeners) {
-                listener.notifyScoreChanged(playerClass.participantId, oldScore, scoreComponent.score);
+                listener.notifyScoreChanged(entity, oldScore, scoreComponent.score);
             }
-            world.notifyListeners(EVENT_SCORE);
         }
     }
 
-    private class PlayerListener implements EntityListener {
+    private static class PlayerListener implements EntityListener {
         private World world;
 
         public PlayerListener(World world) {
@@ -464,20 +402,14 @@ public class World {
 
         @Override
         public void entityAdded(Entity entity) {
-
+//            Gdx.app.debug(TAG, "entityAdded: " + entity);
         }
 
         @Override
         public void entityRemoved(Entity entity) {
-            PlayerClass playerClass = playerMapper.get(entity);
-            ScoreComponent scoreComponent = scoreMapper.get(entity);
-            for (PlayerData playerData : players) {
-                if (Objects.equals(playerClass.participantId, playerData.participantId)) {
-                    playerData.totalScore += scoreComponent.score;
-                }
-            }
-            if (enginePlayers.size() == 1) {
-                Gdx.app.debug(TAG, "entityRemoved: WIN");
+//            Gdx.app.debug(TAG, "entityRemoved: " + entity);
+            for (IGameListener listener : world.listeners) {
+                listener.notifyPlayerRemoved(entity);
             }
         }
     }

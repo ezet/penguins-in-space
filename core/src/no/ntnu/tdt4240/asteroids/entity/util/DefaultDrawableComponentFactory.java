@@ -27,7 +27,6 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     public DefaultDrawableComponentFactory(PooledEngine engine, Assets assets) {
         this.engine = engine;
         this.assets = assets;
-        playerTextures.add(PLAYER_DEFAULT);
         playerTextures.add(PLAYER_BLUE);
         playerTextures.add(PLAYER_RED);
         playerTextures.add(PLAYER_GREEN);
@@ -36,9 +35,13 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
 
     @Override
     public DrawableComponent getPlayer() {
-        playerCounter = 0;
         String playerAppearance = ServiceLocator.getAppComponent().getSettings().getPlayerAppearance();
         return getDrawable(playerAppearance);
+    }
+
+    @Override
+    public void resetOpponentCount() {
+        playerCounter = 0;
     }
 
     @Override

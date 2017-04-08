@@ -2,6 +2,7 @@ package no.ntnu.tdt4240.asteroids.input;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +18,9 @@ public class ControllerInputHandler {
 
     private final PooledEngine engine;
 
-    public List<InputListener> getListeners() {
-        return listeners;
-    }
 
-    private final List<InputListener> listeners = new ArrayList<>();
     private Entity controlledEntity;
+    private static final String TAG = ControllerInputHandler.class.getSimpleName();
 
 
     public ControllerInputHandler(PooledEngine engine) {
@@ -35,30 +33,25 @@ public class ControllerInputHandler {
 
     public void accelerate(float inputX, float inputY) {
         MovementComponent movement = ComponentMappers.movementMapper.get(controlledEntity);
+        if (movement == null) {
+//            Gdx.app.debug(TAG, "accelerate: No movement component");
+            return;
+        }
         movement.acceleration.set(inputX, inputY).scl(movement.accelerationScalar);
         if (!movement.acceleration.isZero()) {
             TransformComponent position = ComponentMappers.transformMapper.get(controlledEntity);
             position.rotation.set(movement.acceleration);
         }
-        for (InputListener listener : listeners) {
-            listener.onMove();
-        }
     }
 
     public void fire() {
         ShootComponent shootComponent = shootMapper.get(controlledEntity);
-        shootComponent.fire(engine, controlledEntity);
-        for (InputListener listener : listeners) {
-            listener.onFire();
+        if (shootComponent == null) {
+//            Gdx.app.debug(TAG, "fire: No shoot component");
+            return;
         }
+        shootComponent.fire(engine, controlledEntity);
+
     }
 
-
-    // TODO: implement listener for audio
-    public interface InputListener {
-
-        void onMove();
-
-        void onFire();
-    }
 }

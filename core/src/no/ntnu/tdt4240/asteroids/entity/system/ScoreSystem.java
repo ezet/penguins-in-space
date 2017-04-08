@@ -48,11 +48,11 @@ public class ScoreSystem extends EntitySystem implements DamageSystem.IDamageHan
     }
 
     @Override
-    public void onDamageTaken(Engine engine, Entity entity, int damageTaken) {
+    public void onDamageTaken(Engine engine, Entity target, Entity source, int damageTaken) {
     }
 
     @Override
-    public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
+    public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
         BulletClass bulletClass = bulletMapper.get(source);
         // TODO: 06-Apr-17 Improve how we find the source
         if (bulletClass != null) {

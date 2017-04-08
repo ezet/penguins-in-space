@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.controller;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,7 +19,8 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
 
     @SuppressWarnings("unused")
     private static final String TAG = MultiplayerGame.class.getSimpleName();
-    private String playerId;
+    private static final int ROUNDS = 3;
+    private int roundsPlayed = 0;
 
     public MultiplayerGame(Asteroids game, Screen parent) {
         super(game, parent);
@@ -37,7 +39,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     }
 
     @Override
-    public void notifyScoreChanged(String id, int oldScore, int score) {
+    public void notifyScoreChanged(Entity entity, int oldScore, int score) {
         return;
         //        if (Objects.equals(id, playerId)) {
 //            view.updateScore(score);
@@ -51,6 +53,32 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     }
 
     @Override
+    public void notifyPlayerRemoved(Entity entity) {
+        super.notifyPlayerRemoved(entity);
+        if (remainingPlayers.size() == 1) {
+            players.get(remainingPlayers.iterator().next()).totalScore += 1;
+        }
+        if (remainingPlayers.size() <= 1) {
+            roundsPlayed++;
+            if (roundsPlayed < ROUNDS) {
+                world.reset();
+            } else {
+                onGameEnd();
+            }
+        }
+    }
+
+    @Override
+    public void handle(World model, int event) {
+        switch (event) {
+            case World.EVENT_WORLD_RESET: {
+                addPlayers(players.values(), true);
+                break;
+            }
+        }
+    }
+
+    @Override
     public void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
         engine.getSystem(NetworkSystem.class).processPackage(senderParticipantId, messageData);
     }
@@ -58,8 +86,6 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     @Override
     public void onRoomReady(List<PlayerData> players) {
         Gdx.app.debug(TAG, "onRoomReady: ");
-        for (PlayerData player : players) {
-            world.addPlayer(player);
-        }
+        addPlayers(players, true);
     }
 }

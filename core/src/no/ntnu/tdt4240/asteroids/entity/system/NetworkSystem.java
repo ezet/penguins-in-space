@@ -114,7 +114,7 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
 
 
     private void receiveBullet(String playerId, ByteBuffer wrap) {
-        Gdx.app.debug(TAG, "receiveBullet: ");
+//        Gdx.app.debug(TAG, "receiveBullet: ");
         Entity entity = entityFactory.createBullet(playerId);
         TransformComponent transform = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
@@ -136,7 +136,7 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
     }
 
     private void sendBullet(Entity entity) {
-        Gdx.app.debug(TAG, "sendBullet: ");
+//        Gdx.app.debug(TAG, "sendBullet: ");
         TransformComponent transform = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
         ByteBuffer buffer = ByteBuffer.allocate(4 * 4 + 1);

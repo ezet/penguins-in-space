@@ -1,23 +1,23 @@
 package no.ntnu.tdt4240.asteroids.controller;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
-import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -30,8 +30,6 @@ import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_DEFAULT;
 
 abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
@@ -42,6 +40,9 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     protected final PooledEngine engine;
     final ControllerInputHandler controllerInputHandler;
     protected IGameView view;
+    protected String playerParticipantId;
+    HashMap<String, PlayerData> players = new HashMap<>();
+    HashSet<String> remainingPlayers = new HashSet<>();
     World world;
     private Screen parent;
 
@@ -143,66 +144,59 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     @Override
     public void handle(World model, int event) {
         switch (event) {
-            case World.EVENT_LEVEL_COMPLETE: {
-                onLevelComplete();
+            case World.EVENT_WORLD_RESET: {
+                addPlayers(players.values(), false);
                 break;
             }
-            case World.EVENT_GAME_END: {
-                onGameEnd();
-                break;
+        }
+    }
+
+    protected void setControlledEntity(Entity entity) {
+        controllerInputHandler.setControlledEntity(entity);
+    }
+
+    @Override
+    public void notifyPlayerRemoved(Entity entity) {
+        PlayerClass playerClass = playerMapper.get(entity);
+        remainingPlayers.remove(playerClass.participantId);
+    }
+
+    public void addPlayers(Collection<PlayerData> data, boolean multiplayer) {
+        players = new HashMap<>();
+        remainingPlayers = new HashSet<>();
+        ServiceLocator.getEntityComponent().getDrawableComponentFactory().resetOpponentCount();
+        for (PlayerData player : data) {
+            players.put(player.participantId, player);
+            remainingPlayers.add(player.participantId);
+            Entity entity;
+            if (player.isSelf) {
+                entity = ServiceLocator.entityComponent.getEntityFactory().createPlayer(player.participantId, player.displayName, multiplayer);
+                playerParticipantId = player.participantId;
+                setControlledEntity(entity);
+            } else {
+                entity = ServiceLocator.entityComponent.getEntityFactory().createOpponent(player.participantId, player.displayName);
             }
-            case World.EVENT_PLAYER_HITPOINTS: {
-                updatePlayerHitpoints();
-                break;
-            }
-            case World.EVENT_PLAYER_CHANGED: {
-                controllerInputHandler.setControlledEntity(world.getPlayer());
-            }
+            world.addPlayer(entity);
         }
     }
 
     @Override
-    public void notifyScoreChanged(String id, int oldScore, int newScore) {
-        view.updateScore(newScore);
+    public void notifyDamageTaken(Entity entity, int damageTaken) {
+        PlayerClass playerClass = playerMapper.get(entity);
+        HealthComponent healthComponent = ComponentMappers.healthMapper.get(entity);
+        if (Objects.equals(playerClass.participantId, playerParticipantId)) {
+            view.updateHitpoints(healthComponent.hitPoints);
+        }
     }
 
-    private void updatePlayerHitpoints() {
-        HealthComponent healthComponent = ComponentMappers.healthMapper.get(world.getPlayer());
-        if (healthComponent != null)
-            view.updateHitpoints(healthComponent.hitPoints);
+    @Override
+    public void notifyScoreChanged(Entity entity, int oldScore, int newScore) {
+        view.updateScore(newScore);
     }
 
     protected void onGameEnd() {
         world.stop();
-        game.setScreen(new ScoreScreenController(game, parent, getPlayersAndScores()));
-    }
-
-    private List<String> getPlayersAndScores() {
-//        ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
-
-        List<String> playersAndScores = new ArrayList<>();
-        for (PlayerData player : world.players) {
-            PlayerClass playerComponent = playerMapper.get(player.entity);
-            ScoreComponent scoreComponent = scoreMapper.get(player.entity);
-            playersAndScores.add(playerComponent.displayName + " " + scoreComponent.score);
-        }
-        Collections.sort(playersAndScores, new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                int sScore, tScore;
-                sScore = Integer.parseInt(s.split(" ")[1]);
-                tScore = Integer.parseInt(t1.split(" ")[1]);
-                // Opposite to get descending
-                if (sScore == tScore) {
-                    return 0;
-                } else if (sScore > tScore) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-        });
-        return playersAndScores;
+        game.setScreen(new ScoreScreenController(game, parent, new ArrayList<>(players.values())));
     }
 
     private void onLevelComplete() {
@@ -223,8 +217,12 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     public void onResume() {
         // Update the player's texture,
         // might want to update more things once settings consists of more options.
-        world.getPlayer().getComponent(DrawableComponent.class).texture
-                = new TextureRegion(ServiceLocator.getAppComponent().getAssetLoader().getTexture(PLAYER_DEFAULT));
+        ImmutableArray<Entity> entitiesFor = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
+        for (Entity entity : entitiesFor) {
+            if (Objects.equals(playerMapper.get(entity).participantId, playerParticipantId)) {
+                entity.add(ServiceLocator.entityComponent.getDrawableComponentFactory().getPlayer());
+            }
+        }
         world.run();
     }
 

@@ -14,5 +14,7 @@ public interface IDrawableComponentFactory {
 
     DrawableComponent getPowerup();
 
+    void resetOpponentCount();
+
     Component getMultiPlayer();
 }

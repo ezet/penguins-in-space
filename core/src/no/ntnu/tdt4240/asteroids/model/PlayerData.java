@@ -1,7 +1,5 @@
 package no.ntnu.tdt4240.asteroids.model;
 
-import com.badlogic.ashley.core.Entity;
-
 public class PlayerData {
 
     public String participantId = "";
@@ -13,8 +11,6 @@ public class PlayerData {
     public boolean isSelf = false;
 
     public int totalScore = 0;
-
-    public Entity entity;
 
     public PlayerData(String participantId, String displayName) {
         this.participantId = participantId;
@@ -29,5 +25,15 @@ public class PlayerData {
     public PlayerData(String playerId, String participantId, String displayName) {
         this(participantId, displayName);
         this.playerId = playerId;
+    }
+
+    @Override
+    public int hashCode() {
+        return participantId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PlayerData && participantId.equals(obj);
     }
 }

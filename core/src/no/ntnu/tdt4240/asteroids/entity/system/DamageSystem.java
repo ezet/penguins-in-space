@@ -51,34 +51,34 @@ public class DamageSystem extends EntitySystem implements CollisionSystem.IColli
             return false;
         healthComponent.hitPoints -= damageComponent.damage;
         if (healthComponent.damageHandler != null) {
-            healthComponent.damageHandler.onDamageTaken(getEngine(), source, damageComponent.damage);
+            healthComponent.damageHandler.onDamageTaken(getEngine(), target, source, damageComponent.damage);
         }
-        notifyDamageListeners(target, healthComponent.hitPoints);
+        notifyDamageListeners(target, source, damageComponent.damage);
 
         if (healthComponent.hitPoints <= 0) {
             if (healthComponent.damageHandler != null)
-                healthComponent.damageHandler.onEntityDestroyed(getEngine(), source, target);
+                healthComponent.damageHandler.onEntityDestroyed(getEngine(), target, source);
         }
-        notifyDestroyedListeners(source, target);
+        notifyDestroyedListeners(target, source);
         return true;
     }
 
-    private void notifyDamageListeners(Entity entity, int hitpoints) {
+    private void notifyDamageListeners(Entity entity, Entity source, int damageDone) {
         for (IDamageHandler listener : damageListeners) {
-            listener.onDamageTaken(getEngine(), entity, hitpoints);
+            listener.onDamageTaken(getEngine(), entity, source, damageDone);
         }
     }
 
-    private void notifyDestroyedListeners(Entity source, Entity target) {
+    private void notifyDestroyedListeners(Entity entity, Entity source) {
         for (IDamageHandler listener : damageListeners) {
-            listener.onEntityDestroyed(getEngine(), source, target);
+            listener.onEntityDestroyed(getEngine(), entity, source);
         }
     }
 
     public interface IDamageHandler {
-        void onDamageTaken(Engine engine, Entity entity, int damageTaken);
+        void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken);
 
-        void onEntityDestroyed(Engine engine, Entity source, Entity target);
+        void onEntityDestroyed(Engine engine, Entity entity, Entity source);
     }
 
 }

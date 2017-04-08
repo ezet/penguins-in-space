@@ -32,7 +32,6 @@ public abstract class ComponentMappers {
     public static final ComponentMapper<BoundaryComponent> boundaryMapper = ComponentMapper.getFor(BoundaryComponent.class);
     public static final ComponentMapper<GravityComponent> gravityMapper = ComponentMapper.getFor(GravityComponent.class);
     public static final ComponentMapper<CollisionComponent> collisionMapper = ComponentMapper.getFor(CollisionComponent.class);
-    //    public static final ComponentMapper<BoundsComponent> boundsMapper = ComponentMapper.getFor(BoundsComponent.class);
     public static final BoundsComponentMapperWrapper boundsMapper = new BoundsComponentMapperWrapper();
     public static final ComponentMapper<ObstacleClass> obstacleMapper = ComponentMapper.getFor(ObstacleClass.class);
     public static final ComponentMapper<BulletClass> bulletMapper = ComponentMapper.getFor(BulletClass.class);
@@ -43,7 +42,6 @@ public abstract class ComponentMappers {
     public static final ComponentMapper<ShootComponent> shootMapper = ComponentMapper.getFor(ShootComponent.class);
     public static final ComponentMapper<PlayerClass> playerMapper = ComponentMapper.getFor(PlayerClass.class);
     public static final ComponentMapper<PowerupClass> powerupMapper = ComponentMapper.getFor(PowerupClass.class);
-    public static final ComponentMapper<NetworkSyncComponent> networkSyncMapper = ComponentMapper.getFor(NetworkSyncComponent.class);
     public static final ComponentMapper<ScoreComponent> scoreMapper = ComponentMapper.getFor(ScoreComponent.class);
 
     public static class BoundsComponentMapperWrapper {

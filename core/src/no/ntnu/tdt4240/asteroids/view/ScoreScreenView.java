@@ -13,6 +13,7 @@ import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.controller.IScoreScreenController;
 import no.ntnu.tdt4240.asteroids.controller.ScoreScreenController;
+import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
@@ -33,20 +34,18 @@ public class ScoreScreenView extends BaseView implements ScoreScreenController.I
         setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
-        init();
-        table.addAction(Actions.fadeIn(1));
+        table.setFillParent(true);
     }
 
-    private void init() {
-        table.setFillParent(true);
-        List<String> scores = controller.getScores();
+    @Override
+    public void displayScores(List<PlayerData> data) {
         table.row();
-        Label winner = new Label("Last penguin standing: " + scores.get(0).split(" ")[0], uiSkin);
+        Label winner = new Label("Last penguin standing: " + data.get(0).displayName, uiSkin);
         table.add(winner).pad(10);
 
-        for (int i = 0; i < scores.size(); i++) {
+        for (int i = 0; i < data.size(); i++) {
             table.row();
-            Label l = new Label(String.valueOf(i + 1) + ". " + scores.get(i), uiSkin);
+            Label l = new Label(String.valueOf(i + 1) + ". " + data.get(i).displayName + " " + data.get(i).totalScore, uiSkin);
             table.add(l).pad(5);
         }
 
@@ -58,6 +57,7 @@ public class ScoreScreenView extends BaseView implements ScoreScreenController.I
                 controller.onQuitLevel();
             }
         });
+        table.addAction(Actions.fadeIn(1));
     }
 
 }
