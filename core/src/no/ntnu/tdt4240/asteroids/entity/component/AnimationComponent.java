@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Pool;
 public class AnimationComponent implements Component, Pool.Poolable {
 
     public final Array<TextureRegion> frames = new Array<>();
-    public boolean removeOnAnimationComplete = false;
+    public boolean removeEntityAfterAnimation = false;
     public int currentFrame = 0;
     public TextureRegion originalRegion = null;
     public long duration = 0;
@@ -17,7 +17,7 @@ public class AnimationComponent implements Component, Pool.Poolable {
 
     @Override
     public void reset() {
-        removeOnAnimationComplete = false;
+        removeEntityAfterAnimation = false;
         originalRegion = null;
         frames.clear();
         currentFrame = 0;

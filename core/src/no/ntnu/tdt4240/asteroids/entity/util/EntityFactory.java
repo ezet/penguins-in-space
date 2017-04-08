@@ -82,7 +82,7 @@ public class EntityFactory {
     }
 
     public Entity createMultiPlayer(String participantId, String displayName) {
-        Entity entity = engine.createEntity();
+        Entity entity = new Entity();
         entity.add(new PlayerClass(participantId, displayName));
         int rotationX = 1;
         int rotationY = 0;

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.game.World;
+import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 class SingleplayerGame extends BaseGameController implements World.IGameListener, IGameController {
@@ -24,7 +25,7 @@ class SingleplayerGame extends BaseGameController implements World.IGameListener
     protected void setupWorld() {
         super.setupWorld();
         String displayName = ServiceLocator.getAppComponent().getNetworkService().getDisplayName();
-        if (displayName == null) displayName = "Player";
-        world.addPlayer("", displayName, false);
+        PlayerData data = new PlayerData("", displayName);
+        world.addPlayer(data);
     }
 }

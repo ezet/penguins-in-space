@@ -1,9 +1,7 @@
 package no.ntnu.tdt4240.asteroids.controller;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
@@ -26,6 +24,7 @@ import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.game.World;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
+import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
@@ -179,11 +178,12 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     }
 
     private List<String> getPlayersAndScores() {
-        ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
+//        ImmutableArray<Entity> entities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
+
         List<String> playersAndScores = new ArrayList<>();
-        for (Entity entity : entities) {
-            PlayerClass playerComponent = playerMapper.get(entity);
-            ScoreComponent scoreComponent = scoreMapper.get(entity);
+        for (PlayerData player : world.players) {
+            PlayerClass playerComponent = playerMapper.get(player.entity);
+            ScoreComponent scoreComponent = scoreMapper.get(player.entity);
             playersAndScores.add(playerComponent.displayName + " " + scoreComponent.score);
         }
         Collections.sort(playersAndScores, new Comparator<String>() {

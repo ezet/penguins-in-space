@@ -9,7 +9,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
+import java.util.Objects;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
+import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
@@ -49,7 +52,6 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMa
 
 @SuppressWarnings("WeakerAccess")
 public class World {
-
 
     public static final int EVENT_SCORE = 0;
     public static final int EVENT_GAME_END = 1;
@@ -69,8 +71,9 @@ public class World {
     private static final int EDGE_BOTTOM = 3;
     private static final Family FAMILY_PLAYERS = Family.one(PlayerClass.class).get();
     private static final String TAG = World.class.getSimpleName();
-    final ImmutableArray<Entity> players;
+    private final ImmutableArray<Entity> enginePlayers;
     public final Vector<IGameListener> listeners = new Vector<>();
+    public final Array<PlayerData> players = new Array<>();
     // TODO: add config
     final PooledEngine engine;
     private final DamageSystem.IDamageHandler obstacleDamageHandler = new ObstacleDamageHandler(this);
@@ -102,7 +105,7 @@ public class World {
         this.engine = engine;
         engine.addEntityListener(Family.all(ObstacleClass.class).get(), new ObstacleListener(this));
         engine.addEntityListener(FAMILY_PLAYERS, new PlayerListener(this));
-        players = engine.getEntitiesFor(FAMILY_PLAYERS);
+        enginePlayers = engine.getEntitiesFor(FAMILY_PLAYERS);
         setupEngineSystems();
         registerEffects();
 
@@ -152,22 +155,34 @@ public class World {
         clearEngine();
     }
 
-    public void addPlayer(String id, String displayName, boolean multiplayer) {
+    public void addPlayer(PlayerData playerData) {
+        if (playerData.isSelf) {
+            Entity player = createPlayer(playerData.participantId, playerData.displayName, true);
+            engine.addEntity(player);
+            notifyListeners(EVENT_PLAYER_CHANGED);
+            notifyListeners(EVENT_PLAYER_HITPOINTS);
+            playerData.entity = player;
+        } else {
+            Entity multiplayer = createOpponent(playerData.participantId, playerData.displayName);
+            engine.addEntity(multiplayer);
+            playerData.entity = multiplayer;
+        }
+    }
+
+    private Entity createPlayer(String id, String displayName, boolean multiplayer) {
         player = entityFactory.createPlayer(id, displayName, multiplayer);
         HealthComponent healthComponent = healthMapper.get(player);
         if (healthComponent != null) {
             healthComponent.damageHandler = playerDamageHandler;
         }
-        engine.addEntity(player);
-        notifyListeners(EVENT_PLAYER_CHANGED);
-        notifyListeners(EVENT_PLAYER_HITPOINTS);
+        return player;
     }
 
-    public void addMultiplayer(String participantId, String displayName) {
+    private  Entity createOpponent(String participantId, String displayName) {
         Entity entity = entityFactory.createMultiPlayer(participantId, displayName);
         HealthComponent healthComponent = healthMapper.get(entity);
         healthComponent.damageHandler = new OpponentDamageHandler(this, participantId);
-        engine.addEntity(entity);
+        return entity;
     }
 
     private void spawnObstacles(int currentObstacles) {
@@ -379,7 +394,7 @@ public class World {
         public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
             AnimationComponent animation = new AnimationComponent();
             // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
-            animation.removeOnAnimationComplete = true;
+            animation.removeEntityAfterAnimation = true;
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
             target.add(animation);
             world.audioManager.playExplosion();
@@ -411,11 +426,11 @@ public class World {
         public void onEntityDestroyed(Engine engine, Entity source, Entity target) {
             world.spawnPowerup(target);
             AnimationComponent animation = new AnimationComponent();
-            // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
-            animation.removeOnAnimationComplete = true;
+            animation.removeEntityAfterAnimation = true;
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
             target.add(animation);
             world.audioManager.playExplosion();
+            // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
             target.remove(CollisionComponent.class);
             target.remove(MovementComponent.class);
         }
@@ -454,7 +469,14 @@ public class World {
 
         @Override
         public void entityRemoved(Entity entity) {
-            if (players.size() == 1) {
+            PlayerClass playerClass = playerMapper.get(entity);
+            ScoreComponent scoreComponent = scoreMapper.get(entity);
+            for (PlayerData playerData : players) {
+                if (Objects.equals(playerClass.participantId, playerData.participantId)) {
+                    playerData.totalScore += scoreComponent.score;
+                }
+            }
+            if (enginePlayers.size() == 1) {
                 Gdx.app.debug(TAG, "entityRemoved: WIN");
             }
         }

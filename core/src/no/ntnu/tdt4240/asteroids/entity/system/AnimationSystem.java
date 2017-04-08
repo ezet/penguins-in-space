@@ -27,7 +27,7 @@ public class AnimationSystem extends IteratingSystem {
             animationComponent.originalRegion = drawableComponent.texture;
         } else if (animationComponent.currentFrame == animationComponent.frames.size) {
             entity.remove(AnimationComponent.class);
-            if (animationComponent.removeOnAnimationComplete) {
+            if (animationComponent.removeEntityAfterAnimation) {
                 getEngine().removeEntity(entity);
             } else {
                 drawableComponent.texture = animationComponent.originalRegion;

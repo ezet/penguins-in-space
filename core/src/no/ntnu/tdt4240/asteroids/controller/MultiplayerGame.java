@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.List;
-import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.system.NetworkSystem;
@@ -60,13 +59,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     public void onRoomReady(List<PlayerData> players) {
         Gdx.app.debug(TAG, "onRoomReady: ");
         for (PlayerData player : players) {
-            if (player.isSelf) {
-                playerId = player.participantId;
-                world.addPlayer(player.participantId, player.displayName, true);
-                controllerInputHandler.setControlledEntity(world.getPlayer());
-            } else {
-                world.addMultiplayer(player.participantId, player.displayName);
-            }
+            world.addPlayer(player);
         }
     }
 }
