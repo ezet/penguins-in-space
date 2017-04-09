@@ -1,6 +1,5 @@
 package no.ntnu.tdt4240.asteroids.service.network;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
@@ -17,6 +16,8 @@ public interface INetworkService {
     void unlockAchievement();
 
     void submitScore(int highScore);
+
+    void submitScoreWithResult(int highScore, IScoreCallback singleplayerGame);
 
     void showAchievement();
 
@@ -46,5 +47,10 @@ public interface INetworkService {
         void onUnreliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData);
 
         void onRoomReady(List<PlayerData> players);
+    }
+
+    interface IScoreCallback {
+
+        void onScoreResult(boolean allTimeBest, boolean weeklyBest, boolean dailyBest);
     }
 }

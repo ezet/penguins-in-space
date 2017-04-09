@@ -11,6 +11,9 @@ public class PlayerData {
     public boolean isSelf = false;
 
     public int totalScore = 0;
+    public boolean alltimeBest;
+    public boolean weeklyBest;
+    public boolean dailyBest;
 
     public PlayerData(String participantId, String displayName) {
         this.participantId = participantId;

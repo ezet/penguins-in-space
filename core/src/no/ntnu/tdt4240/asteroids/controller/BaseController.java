@@ -5,14 +5,15 @@ import com.badlogic.gdx.ScreenAdapter;
 
 import no.ntnu.tdt4240.asteroids.view.IView;
 
-public abstract class BaseController extends ScreenAdapter {
+abstract class BaseController extends ScreenAdapter {
+    @SuppressWarnings("unused")
     private static final String TAG = BaseController.class.getSimpleName();
 
     public abstract IView getView();
 
     @Override
     public void show() {
-        Gdx.app.debug(TAG, "show: ");
+//        Gdx.app.debug(TAG, "show: ");
         super.show();
         getView().show();
         Gdx.input.setInputProcessor(getView().getInputProcessor());
@@ -20,10 +21,11 @@ public abstract class BaseController extends ScreenAdapter {
 
     @Override
     public void hide() {
-        Gdx.app.debug(TAG, "hide: ");
+//        Gdx.app.debug(TAG, "hide: ");
         Gdx.input.setInputProcessor(null);
         getView().hide();
     }
+
     @Override
     public void render(float delta) {
         getView().update(delta);
@@ -47,7 +49,7 @@ public abstract class BaseController extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        Gdx.app.debug(TAG, "dispose: ");
+//        Gdx.app.debug(TAG, "dispose: ");
         super.dispose();
     }
 

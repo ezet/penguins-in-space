@@ -35,6 +35,17 @@ public class ScoreScreenView extends BaseView implements ScoreScreenController.I
         table.setFillParent(true);
     }
 
+    private String getBestText(PlayerData player) {
+        String text = "";
+        if (player.alltimeBest)
+            text = " ALL TIME BEST!";
+        else if (player.weeklyBest)
+            text = " WEEKLY BEST!";
+        else if (player.dailyBest)
+            text = " DAILY BEST!";
+        return text;
+    }
+
     @Override
     public void displayScores(List<PlayerData> data) {
         table.clear();
@@ -43,11 +54,13 @@ public class ScoreScreenView extends BaseView implements ScoreScreenController.I
         table.add(winner).pad(10);
 
         for (int i = 0; i < data.size(); i++) {
+            int rank = i + 1;
+            PlayerData player = data.get(i);
             table.row();
-            Label l = new Label(String.valueOf(i + 1) + ". " + data.get(i).displayName + " " + data.get(i).totalScore, uiSkin);
+            String newBest = getBestText(player);
+            Label l = new Label(rank + ". " + player.displayName + " " + data.get(i).totalScore + newBest, uiSkin);
             table.add(l).pad(5);
         }
-
         table.row();
         table.add(menuButton).pad(30);
         menuButton.addListener(new ClickListener() {

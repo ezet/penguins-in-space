@@ -35,12 +35,12 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     @SuppressWarnings("unused")
     protected static final String TAG = BaseGameController.class.getSimpleName();
-    protected final boolean DEBUG = false;
+    private final boolean DEBUG = false;
     protected final Asteroids game;
     protected final PooledEngine engine;
-    final ControllerInputHandler controllerInputHandler;
+    private final ControllerInputHandler controllerInputHandler;
     protected IGameView view;
-    protected String playerParticipantId;
+    String playerParticipantId;
     HashMap<String, PlayerData> players = new HashMap<>();
     HashSet<String> remainingPlayers = new HashSet<>();
     World world;
@@ -78,36 +78,36 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     @Override
     public final void show() {
+//        Gdx.app.debug(TAG, "show: ");
         Gdx.input.setInputProcessor(view.getInputProcessor());
-        Gdx.app.debug(TAG, "show: ");
         super.show();
     }
 
     @Override
     public void resume() {
-        Gdx.app.debug(TAG, "resume: ");
+//        Gdx.app.debug(TAG, "resume: ");
         super.resume();
 //        view.resume();
     }
 
     @Override
     public void pause() {
-        Gdx.app.debug(TAG, "pause: ");
+//        Gdx.app.debug(TAG, "pause: ");
         super.pause();
 //        view.hide();
     }
 
     @Override
     public final void hide() {
+//        Gdx.app.debug(TAG, "hide: ");
         Gdx.input.setInputProcessor(null);
-        Gdx.app.debug(TAG, "hide: ");
         super.hide();
 //        view.hide();
     }
 
     @Override
     public void dispose() {
-        Gdx.app.debug(TAG, "dispose: ");
+//        Gdx.app.debug(TAG, "dispose: ");
         super.dispose();
     }
 
@@ -151,7 +151,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         }
     }
 
-    protected void setControlledEntity(Entity entity) {
+    private void setControlledEntity(Entity entity) {
         controllerInputHandler.setControlledEntity(entity);
     }
 
@@ -161,7 +161,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         remainingPlayers.remove(playerClass.participantId);
     }
 
-    public void addPlayers(Collection<PlayerData> data, boolean multiplayer) {
+    void addPlayers(Collection<PlayerData> data, boolean multiplayer) {
         players = new HashMap<>();
         remainingPlayers = new HashSet<>();
         ServiceLocator.getEntityComponent().getDrawableComponentFactory().resetOpponentCount();
@@ -194,19 +194,10 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         view.updateScore(newScore);
     }
 
-    protected void onGameEnd() {
+    void onGameEnd() {
         world.stop();
         game.setScreen(new ScoreScreenController(game, parent, new ArrayList<>(players.values())));
     }
-
-    private void onLevelComplete() {
-        world.stop();
-        // TODO: show level complete screen
-        // TODO: update world, reinitialize
-        view.updateLevel(world.getLevel());
-        world.run();
-    }
-
 
     @Override
     public void onPause() {

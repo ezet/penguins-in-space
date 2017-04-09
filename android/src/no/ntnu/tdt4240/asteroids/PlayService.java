@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.leaderboard.Leaderboards;
+import com.google.android.gms.games.leaderboard.ScoreSubmissionData;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
@@ -24,12 +29,16 @@ import com.google.example.games.basegameutils.GameHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_INVALID_ROOM;
 import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_ROOM;
+import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_ALL_TIME;
+import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_DAILY;
+import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_WEEKLY;
 
 
 class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
@@ -116,6 +125,18 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
             Games.Leaderboards.submitScore(gameHelper.getApiClient(),
                     activity.getString(R.string.leaderboard_highest), highScore);
         }
+    }
+
+    @Override
+    public void submitScoreWithResult(int highScore, IScoreCallback scoreCallback) {
+        if (isSignedIn()) {
+            PendingResult<Leaderboards.SubmitScoreResult> result = Games.Leaderboards.submitScoreImmediate(
+                    gameHelper.getApiClient(),
+                    activity.getString(R.string.leaderboard_highest),
+                    highScore);
+            result.setResultCallback(new ScoreCallback(scoreCallback), 3000, TimeUnit.SECONDS);
+        }
+
     }
 
     @Override
@@ -450,4 +471,19 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     }
 
 
+    private class ScoreCallback implements ResultCallback<Leaderboards.SubmitScoreResult> {
+        private IScoreCallback callback;
+
+        public ScoreCallback(IScoreCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onResult(@NonNull Leaderboards.SubmitScoreResult submitScoreResult) {
+            final boolean alltimeBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_ALL_TIME).newBest;
+            final boolean weeklyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_WEEKLY).newBest;
+            final boolean dailyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_DAILY).newBest;
+            callback.onScoreResult(alltimeBest, weeklyBest, dailyBest);
+        }
+    }
 }

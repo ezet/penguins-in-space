@@ -88,4 +88,5 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
         Gdx.app.debug(TAG, "onRoomReady: ");
         addPlayers(players, true);
     }
+
 }
