@@ -6,14 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.achievement.Achievements;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.android.gms.games.leaderboard.ScoreSubmissionData;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
@@ -114,16 +115,15 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     }
 
     @Override
-    public void unlockAchievement() {
-        Games.Achievements.unlock(gameHelper.getApiClient(),
-                activity.getString(R.string.achievement_dum_dum));
+    public void unlockAchievement(String id) {
+        Games.Achievements.unlock(gameHelper.getApiClient(), id);
     }
 
     @Override
     public void submitScore(int highScore) {
         if (isSignedIn()) {
             Games.Leaderboards.submitScore(gameHelper.getApiClient(),
-                    activity.getString(R.string.leaderboard_highest), highScore);
+                    activity.getString(R.string.leaderboard_highscore), highScore);
         }
     }
 
@@ -132,7 +132,7 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         if (isSignedIn()) {
             PendingResult<Leaderboards.SubmitScoreResult> result = Games.Leaderboards.submitScoreImmediate(
                     gameHelper.getApiClient(),
-                    activity.getString(R.string.leaderboard_highest),
+                    activity.getString(R.string.leaderboard_highscore),
                     highScore);
             result.setResultCallback(new ScoreCallback(scoreCallback), 3000, TimeUnit.SECONDS);
         }
@@ -152,7 +152,7 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     public void showScore() {
         if (isSignedIn()) {
             activity.startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(),
-                    activity.getString(R.string.leaderboard_highest)), RC_LEADERBOARD);
+                    activity.getString(R.string.leaderboard_highscore)), RC_LEADERBOARD);
         } else {
             signIn();
         }
@@ -469,7 +469,6 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
 //            switchToMainScreen();
 //        }
     }
-
 
     private class ScoreCallback implements ResultCallback<Leaderboards.SubmitScoreResult> {
         private IScoreCallback callback;

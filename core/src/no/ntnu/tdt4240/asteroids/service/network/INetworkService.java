@@ -5,6 +5,13 @@ import java.util.List;
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
 
 public interface INetworkService {
+
+    String ACHIEVEMENT_KILL_5_ENEMIES = "CgkIs8TFzMUHEAIQAw";
+    String ACHIEVEMENT_KILL_10_ENEMIES = "CgkIs8TFzMUHEAIQBA";
+    String ACHIEVEMENT_KILL_15_ENEMIES = "CgkIs8TFzMUHEAIQBQ";
+    String ACHIEVEMENT_KILL_100_ENEMIES = "CgkIs8TFzMUHEAIQBw";
+    String ACHIEVEMENT_WIN_MP_DM = "CgkIs8TFzMUHEAIQBg";
+
     void signIn();
 
     String getDisplayName();
@@ -13,7 +20,7 @@ public interface INetworkService {
 
     void rateGame();
 
-    void unlockAchievement();
+    void unlockAchievement(String string);
 
     void submitScore(int highScore);
 

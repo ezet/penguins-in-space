@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.PooledEngine;
 
 import javax.inject.Inject;
 
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
@@ -12,6 +13,8 @@ import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 
 public class MultiShotHandler implements IShotHandler {
 
@@ -46,9 +49,9 @@ public class MultiShotHandler implements IShotHandler {
         }
         audioManager.playShoot();
         lastShot = currentTimeMillis;
-
+        IdComponent idComponent = idMapper.get(controlledEntity);
         for (int i = 0; i < numBullets; ++i) {
-            Entity bullet = entityFactory.createBullet(controlledEntity.getComponent(PlayerClass.class).participantId);
+            Entity bullet = entityFactory.createBullet(idComponent.participantId);
             TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);
             TransformComponent bulletPosition = bullet.getComponent(TransformComponent.class);
             bulletPosition.position.set(playerPosition.position);

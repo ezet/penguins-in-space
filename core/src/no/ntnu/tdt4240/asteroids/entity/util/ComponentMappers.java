@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.entity.util;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 
+import no.ntnu.tdt4240.asteroids.entity.component.AchievementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundsComponent;
@@ -14,6 +15,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
@@ -43,6 +45,8 @@ public abstract class ComponentMappers {
     public static final ComponentMapper<PlayerClass> playerMapper = ComponentMapper.getFor(PlayerClass.class);
     public static final ComponentMapper<PowerupClass> powerupMapper = ComponentMapper.getFor(PowerupClass.class);
     public static final ComponentMapper<ScoreComponent> scoreMapper = ComponentMapper.getFor(ScoreComponent.class);
+    public static final ComponentMapper<AchievementComponent> achievementMapper = ComponentMapper.getFor(AchievementComponent.class);
+    public static final ComponentMapper<IdComponent> idMapper = ComponentMapper.getFor(IdComponent.class);
 
     public static class BoundsComponentMapperWrapper {
 

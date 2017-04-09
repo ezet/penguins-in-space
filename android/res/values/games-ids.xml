@@ -1,8 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 Google Play game services IDs.
 -->
 <resources>
     <string name="app_id">259200737843</string>
-    <string name="leaderboard_highest">CgkIs8TFzMUHEAIQAg</string>
-    <string name="achievement_dum_dum">achievement_dum_dum</string>
+    <string name="package_name">no.ntnu.tdt4240.asteroids</string>
+    <string name="achievement_kill_5_enemies">CgkIs8TFzMUHEAIQAw</string>
+    <string name="achievement_kill_10_enemies">CgkIs8TFzMUHEAIQBA</string>
+    <string name="achievement_kill_15_enemies">CgkIs8TFzMUHEAIQBQ</string>
+    <string name="achievement_win_a_multiplayer_dm">CgkIs8TFzMUHEAIQBg</string>
+    <string name="achievement_kill_100_enemies">CgkIs8TFzMUHEAIQBw</string>
+    <string name="leaderboard_highscore">CgkIs8TFzMUHEAIQAg</string>
 </resources>

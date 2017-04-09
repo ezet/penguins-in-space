@@ -15,7 +15,7 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-public class MultiplayerGame extends BaseGameController implements World.IGameListener, IGameController, INetworkService.INetworkListener {
+public class MultiplayerGame extends BaseGameController implements World.IGameListener, INetworkService.INetworkListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = MultiplayerGame.class.getSimpleName();

@@ -10,10 +10,12 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.bulletMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 
@@ -37,7 +39,7 @@ public class ScoreSystem extends EntitySystem implements DamageSystem.IDamageHan
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
         damageSystem.getDamageListeners().add(this);
-        players = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
+        players = engine.getEntitiesFor(Family.all(PlayerClass.class, IdComponent.class).get());
 
     }
 
@@ -53,12 +55,13 @@ public class ScoreSystem extends EntitySystem implements DamageSystem.IDamageHan
 
     @Override
     public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
-        BulletClass bulletClass = bulletMapper.get(source);
+
+        IdComponent bulletId = idMapper.get(source);
         // TODO: 06-Apr-17 Improve how we find the source
-        if (bulletClass != null) {
+        if (bulletId != null) {
             for (Entity player : players) {
-                PlayerClass playerClass = playerMapper.get(player);
-                if (Objects.equals(playerClass.participantId, bulletClass.id)) {
+                IdComponent playerId = idMapper.get(player);
+                if (Objects.equals(playerId.participantId, bulletId.participantId)) {
                     if (player.isScheduledForRemoval()) return;
                     ScoreComponent scoreComponent = scoreMapper.get(player);
                     int oldScore = scoreComponent.score;

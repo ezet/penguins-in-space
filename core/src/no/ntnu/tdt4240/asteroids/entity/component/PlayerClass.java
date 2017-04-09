@@ -5,14 +5,11 @@ import com.badlogic.gdx.utils.Pool;
 
 public class PlayerClass implements Component, Pool.Poolable {
 
-    public String participantId;
-
     public String displayName;
 
     public boolean isSelf;
 
-    public PlayerClass(String participantId, String displayName) {
-        this.participantId = participantId;
+    public PlayerClass(String displayName) {
         this.displayName = displayName;
     }
 
@@ -23,7 +20,6 @@ public class PlayerClass implements Component, Pool.Poolable {
 
     @Override
     public void reset() {
-        participantId = "";
         displayName = "";
     }
 

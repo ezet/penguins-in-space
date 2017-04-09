@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.entity.component.AchievementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
@@ -16,6 +17,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.GravityComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkAddComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
@@ -51,7 +53,8 @@ public class EntityFactory {
 
     public Entity createPlayer(String id, String displayName, boolean multiplayer) {
         Entity entity = new Entity();
-        PlayerClass playerClass = new PlayerClass(id, displayName);
+        PlayerClass playerClass = new PlayerClass(displayName);
+        entity.add(new IdComponent(id));
         playerClass.isSelf = true;
         entity.add(playerClass);
         int rotationX = 1;
@@ -74,6 +77,7 @@ public class EntityFactory {
         entity.add(new ShootComponent());
         entity.add(new HealthComponent(3));
         entity.add(new ScoreComponent());
+        entity.add(new AchievementComponent());
         entity.add(new BoundaryComponent(BoundaryComponent.MODE_WRAP));
         entity.add(drawableComponentFactory.getPlayer());
         CollisionComponent collisionComponent = new CollisionComponent();
@@ -83,7 +87,8 @@ public class EntityFactory {
 
     public Entity createOpponent(String participantId, String displayName) {
         Entity entity = new Entity();
-        entity.add(new PlayerClass(participantId, displayName));
+        entity.add(new PlayerClass(displayName));
+        entity.add(new IdComponent(participantId));
         int rotationX = 1;
         int rotationY = 0;
         int positionX = Asteroids.VIRTUAL_WIDTH / 2;
@@ -102,9 +107,10 @@ public class EntityFactory {
 
     public Entity createBullet(String playerId) {
         Entity entity = engine.createEntity();
-        BulletClass bullet = engine.createComponent(BulletClass.class);
-        bullet.id = playerId;
-        entity.add(bullet);
+        entity.add(engine.createComponent(BulletClass.class));
+        IdComponent idComponent = engine.createComponent(IdComponent.class);
+        idComponent.participantId = playerId;
+        entity.add(idComponent);
         entity.add(engine.createComponent(TransformComponent.class));
         entity.add(engine.createComponent(MovementComponent.class));
         entity.add(engine.createComponent(CircularBoundsComponent.class));

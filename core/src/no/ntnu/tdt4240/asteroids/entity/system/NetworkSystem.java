@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkAddComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkSyncComponent;
@@ -22,6 +23,7 @@ import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.bulletMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
@@ -50,7 +52,7 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
         super.addedToEngine(engine);
         syncedEntities = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
         engine.addEntityListener(Family.all(NetworkAddComponent.class).get(), this);
-        player = engine.getEntitiesFor(Family.all(NetworkSyncComponent.class, PlayerClass.class).get());
+        player = engine.getEntitiesFor(Family.all(NetworkSyncComponent.class, PlayerClass.class, IdComponent.class).get());
 
     }
 
@@ -86,12 +88,11 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
         networkService.sendUnreliableMessageToOthers(buffer.array());
     }
 
-    private void updateEntity(String playerId, ByteBuffer wrap) {
+    private void updateEntity(String participantId, ByteBuffer wrap) {
         Entity entity = null;
-        for (Entity player : syncedEntities) {
-            PlayerClass playerClass = playerMapper.get(player);
-            if (playerClass.participantId.equals(playerId)) {
-                entity = player;
+        for (Entity syncedEntity : syncedEntities) {
+            if (idMapper.get(syncedEntity).participantId.equals(participantId)) {
+                entity = syncedEntity;
                 break;
             }
         }
@@ -128,9 +129,9 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
 
     @Override
     public void entityAdded(Entity entity) {
-        BulletClass bulletClass = bulletMapper.get(entity);
-        PlayerClass playerClass = playerMapper.get(player.first());
-        if (Objects.equals(bulletClass.id, playerClass.participantId)) {
+        IdComponent bulletId = idMapper.get(entity);
+        IdComponent playerId = idMapper.get(player.first());
+        if (Objects.equals(bulletId.participantId, playerId.participantId)) {
             sendBullet(entity);
         }
     }

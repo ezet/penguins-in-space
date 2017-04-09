@@ -17,7 +17,9 @@ import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
+import no.ntnu.tdt4240.asteroids.entity.system.AchievementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
@@ -29,6 +31,7 @@ import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 
 abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
@@ -52,12 +55,11 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         this.game = game;
         engine = new PooledEngine();
         initializeEntityComponent(engine);
-        setupEngine(engine, game.getBatch());
         controllerInputHandler = new ControllerInputHandler(engine);
         setupView();
-
         world = new World(engine);
         setupWorld();
+        setupEngine(engine, game.getBatch());
         world.run();
     }
 
@@ -139,6 +141,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());
+        engine.addSystem(new AchievementSystem());
     }
 
     @Override
@@ -157,8 +160,8 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     @Override
     public void notifyPlayerRemoved(Entity entity) {
-        PlayerClass playerClass = playerMapper.get(entity);
-        remainingPlayers.remove(playerClass.participantId);
+        IdComponent id = idMapper.get(entity);
+        remainingPlayers.remove(id.participantId);
     }
 
     void addPlayers(Collection<PlayerData> data, boolean multiplayer) {
@@ -182,9 +185,9 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     @Override
     public void notifyDamageTaken(Entity entity, int damageTaken) {
-        PlayerClass playerClass = playerMapper.get(entity);
+        IdComponent id = idMapper.get(entity);
         HealthComponent healthComponent = ComponentMappers.healthMapper.get(entity);
-        if (Objects.equals(playerClass.participantId, playerParticipantId)) {
+        if (Objects.equals(id.participantId, playerParticipantId)) {
             view.updateHitpoints(healthComponent.hitPoints);
         }
     }
@@ -208,9 +211,9 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     public void onResume() {
         // Update the player's texture,
         // might want to update more things once settings consists of more options.
-        ImmutableArray<Entity> entitiesFor = engine.getEntitiesFor(Family.all(PlayerClass.class).get());
-        for (Entity entity : entitiesFor) {
-            if (Objects.equals(playerMapper.get(entity).participantId, playerParticipantId)) {
+        ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(PlayerClass.class, IdComponent.class).get());
+        for (Entity entity : players) {
+            if (Objects.equals(idMapper.get(entity).participantId, playerParticipantId)) {
                 entity.add(ServiceLocator.entityComponent.getDrawableComponentFactory().getPlayer());
             }
         }

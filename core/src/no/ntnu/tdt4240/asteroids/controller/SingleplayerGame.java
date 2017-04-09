@@ -12,10 +12,10 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 
-class SingleplayerGame extends BaseGameController implements World.IGameListener, IGameController, INetworkService.IScoreCallback {
+class SingleplayerGame extends BaseGameController implements World.IGameListener, INetworkService.IScoreCallback {
 
     @SuppressWarnings("unused")
     protected static final String TAG = SingleplayerGame.class.getSimpleName();
@@ -32,9 +32,11 @@ class SingleplayerGame extends BaseGameController implements World.IGameListener
     public void notifyPlayerRemoved(Entity entity) {
         super.notifyPlayerRemoved(entity);
         final int score = scoreMapper.get(entity).score;
-        final String participantId = playerMapper.get(entity).participantId;
+        final String participantId = idMapper.get(entity).participantId;
         players.get(participantId).totalScore = score;
-        ServiceLocator.getAppComponent().getNetworkService().submitScoreWithResult(score, this);
+//        ServiceLocator.getAppComponent().getNetworkService().submitScoreWithResult(score, this);
+        ServiceLocator.getAppComponent().getNetworkService().submitScore(score);
+        onGameEnd();
     }
 
     @Override
