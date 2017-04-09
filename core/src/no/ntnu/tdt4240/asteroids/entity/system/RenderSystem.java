@@ -36,7 +36,7 @@ public class RenderSystem extends IteratingSystem {
     private static ShapeRenderer shapeRenderer;
     private final Camera camera;
     private final Batch batch;
-    private boolean debug = true;
+    private boolean debug = false;
     private Viewport viewport;
     private BitmapFont font;
 
