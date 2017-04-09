@@ -9,12 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.controller.ITutorialController;
 import no.ntnu.tdt4240.asteroids.controller.TutorialController;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-public class TutorialView extends BaseView implements TutorialController.ITutorialView {
+public class TutorialView extends BaseView implements TutorialController.IView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
@@ -27,10 +26,10 @@ public class TutorialView extends BaseView implements TutorialController.ITutori
     private final Label label2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", uiSkin);
     private final Label label3 = new Label("When you shoot the snowballs, they might drop new abilities...", uiSkin);
 
-    private final ITutorialController controller;
+    private final TutorialController.ViewHandler controller;
 
 
-    public TutorialView(Batch batch, ITutorialController controller) {
+    public TutorialView(Batch batch, TutorialController.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         setDebugAll(true);
@@ -61,7 +60,7 @@ public class TutorialView extends BaseView implements TutorialController.ITutori
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.onQuitLevel();
+                controller.onBack();
             }
         });
     }

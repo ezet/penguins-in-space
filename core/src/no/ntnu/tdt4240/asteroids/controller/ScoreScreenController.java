@@ -14,12 +14,12 @@ import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.ScoreScreenView;
 
 
-public class ScoreScreenController extends ScreenAdapter implements IScoreScreenController {
+public class ScoreScreenController extends BaseController {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainMenu.class.getSimpleName();
     private final Asteroids game;
-    private final ScoreScreenView view;
+    private final IScoreScreenView view;
     private Screen parent;
     private List<PlayerData> playerData;
 
@@ -27,7 +27,7 @@ public class ScoreScreenController extends ScreenAdapter implements IScoreScreen
         this.parent = parent;
         this.game = game;
         this.playerData = playerData;
-        this.view = new ScoreScreenView(game.getBatch(), this);
+        this.view = new ScoreScreenView(game.getBatch(), new ViewHandler());
         Collections.sort(playerData, new Comparator<PlayerData>() {
             @Override
             public int compare(PlayerData s, PlayerData t1) {
@@ -37,42 +37,26 @@ public class ScoreScreenController extends ScreenAdapter implements IScoreScreen
     }
 
     @Override
-    public void render(float delta) {
-        super.render(delta);
-        update(delta);
-        draw();
-    }
-
-    @Override
-    public void onQuitLevel() {
-        game.setScreen(this.parent);
-        dispose();
-
-    }
-
-    @Override
     public void show() {
         super.show();
         view.displayScores(playerData);
-        Gdx.input.setInputProcessor(view.getInputProcessor());
     }
 
     @Override
-    public void hide() {
-        super.hide();
-        Gdx.input.setInputProcessor(null);
-
-    }
-
-    private void update(float delta){
-        view.update(delta);
-    }
-
-    private void draw(){
-        view.draw();
+    public IView getView() {
+        return view;
     }
 
     public interface IScoreScreenView extends IView {
         void displayScores(List<PlayerData> data);
+    }
+
+    public class ViewHandler {
+
+        public void onBack() {
+            game.setScreen(parent);
+            dispose();
+
+        }
     }
 }

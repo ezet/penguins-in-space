@@ -10,7 +10,7 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 
 abstract class BaseView extends Stage implements IView {
 
-    private static Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
+    private static final Viewport guiViewport = new FitViewport(Asteroids.GUI_VIRTUAL_WIDTH, Asteroids.GUI_VIRTUAL_HEIGHT);
 
     BaseView(Batch batch) {
         super(guiViewport, batch);
@@ -23,6 +23,16 @@ abstract class BaseView extends Stage implements IView {
 
     @Override
     public void resume() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void show() {
 
     }
 

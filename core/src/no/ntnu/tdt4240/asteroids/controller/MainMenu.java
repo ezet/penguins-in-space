@@ -1,79 +1,55 @@
 package no.ntnu.tdt4240.asteroids.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.view.IView;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.MainView;
 
-public class MainMenu extends ScreenAdapter implements IMainMenu {
+public class MainMenu extends BaseController {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainMenu.class.getSimpleName();
     private final Asteroids game;
-    private final IMainView view;
-
+    private final IView view;
 
     public MainMenu(final Asteroids game) {
         this.game = game;
-        view = new MainView(game.getBatch(), this);
+        this.view = new MainView(game.getBatch(), new ViewHandler());
     }
 
     @Override
-    public void show() {
-        super.show();
-        Gdx.input.setInputProcessor(view.getInputProcessor());
+    public no.ntnu.tdt4240.asteroids.view.IView getView() {
+        return view;
     }
 
-    @Override
-    public void hide() {
-        super.hide();
-        Gdx.input.setInputProcessor(null);
+    public interface IView extends no.ntnu.tdt4240.asteroids.view.IView {
     }
 
-    @Override
-    public void render(float delta) {
-        update(delta);
-        draw();
-    }
+    public class ViewHandler {
 
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-        view.resize(width, height);
-    }
+        public void onPlay() {
+            game.setScreen(new SingleplayerGame(game, MainMenu.this));
+        }
 
-    private void update(float delta) {
-        view.update(delta);
-    }
+        public void onMultiplayer() {
+            game.setScreen(new MultiplayerMenu(game));
+        }
 
-    private void draw() {
-        view.draw();
-    }
+        public void onQuit() {
+            Gdx.app.exit();
+        }
 
-    @Override
-    public void onPlay() {
-        game.setScreen(new SingleplayerGame(game, this));
-    }
+        public void onTutorial() {
+            game.setScreen(new TutorialController(game, MainMenu.this));
+        }
 
-    @Override
-    public void onMultiplayer() {
-        game.setScreen(new MultiplayerMenu(game));
-    }
+        public void onShowAchievements() {
+            ServiceLocator.getAppComponent().getNetworkService().showAchievement();
+        }
 
-    @Override
-    public void onQuit() {
-        Gdx.app.exit();
-    }
-
-    @Override
-    public void onTutorial() {
-        game.setScreen(new TutorialController(game, this));
-    }
-
-
-    public interface IMainView extends IView {
-        void resize(int width, int height);
+        public void onShowLeaderboard() {
+            ServiceLocator.getAppComponent().getNetworkService().showScore();
+        }
     }
 }

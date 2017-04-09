@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.controller.ISettingsController;
+import java.util.ArrayList;
+import java.util.List;
+
 import no.ntnu.tdt4240.asteroids.controller.SettingsController;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -32,20 +34,41 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
 
     private final Label headlineLabel = new Label("Settings", uiSkin);
     private final Label changeCharacterLabel = new Label("Change the appearance of your character:", uiSkin);
-    private final ISettingsController controller;
+    private final SettingsController.ViewHandler controller;
     private Label currentCharacterTextField = new Label(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance().replace(".png", ""), uiSkin);
+    private List<TextButton> buttons = new ArrayList<>();
 
 
-    public SettingsView(Batch batch, ISettingsController controller) {
+    public SettingsView(Batch batch, SettingsController.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
         init();
-        table.addAction(Actions.fadeIn(1));
     }
 
+    @Override
+    public void show() {
+        table.addAction(Actions.fadeIn(0.5f));
+    }
+
+    @Override
+    public void hide() {
+        table.addAction(Actions.alpha(0.5f));
+    }
+
+    @Override
+    public void resume() {
+        show();
+    }
+
+    @Override
+    public void pause() {
+        hide();
+    }
+
+    @Override
     public void setCurrentCharacter(String string) {
         currentCharacterTextField.setText(string.replace(".png", ""));
     }
@@ -101,7 +124,7 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.onQuitLevel();
+                controller.onBack();
             }
         });
 

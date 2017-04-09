@@ -6,9 +6,13 @@ public interface IView {
 
     void update(float delta);
 
+    void show();
+
     void resume();
 
     void hide();
+
+    void pause();
 
     void draw();
 
