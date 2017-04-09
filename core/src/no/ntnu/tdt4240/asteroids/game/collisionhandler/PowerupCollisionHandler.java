@@ -12,7 +12,6 @@ import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.effectMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.powerupMapper;
 
 public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandler {
@@ -33,7 +32,7 @@ public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandle
 
     private AnimationComponent createAnimationComponent(){
         AnimationComponent animationComponent = new AnimationComponent();
-        Array<TextureRegion> textureRegions = ServiceLocator.getAppComponent().getAnimationFactory().getPowerupPickupAnimation();
+        Array<TextureRegion> textureRegions = ServiceLocator.getAppComponent().getAnimationFactory().getPowerupPickup();
         animationComponent.frames.addAll(textureRegions);
         return animationComponent;
     }

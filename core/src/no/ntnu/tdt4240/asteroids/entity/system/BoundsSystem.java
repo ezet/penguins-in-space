@@ -27,7 +27,7 @@ public class BoundsSystem extends IteratingSystem {
         BoundsComponent bounds = boundsMapper.get(entity);
         TransformComponent transform = transformMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
-        bounds.setSize(drawable.texture.getRegionWidth() * transform.scaleX, drawable.texture.getRegionHeight() * transform.scaleY);
+        bounds.setSize(drawable.texture.getRegionWidth() * transform.scale.x, drawable.texture.getRegionHeight() * transform.scale.y);
         bounds.setCenter(transform.position);
     }
 }

@@ -23,17 +23,25 @@ public class Assets {
     public void loadTextures() {
         assetManager.load(SkinAsset.UISKIN, Skin.class);
         assetManager.load(TextureAsset.PLAYER_DEFAULT, Texture.class);
-        assetManager.load(TextureAsset.POWERUP, Texture.class);
+        assetManager.load(TextureAsset.POWERUP_RANDOM, Texture.class);
+        assetManager.load(TextureAsset.POWERUP_MISSILE, Texture.class);
+        assetManager.load(TextureAsset.POWERUP_ARMOR, Texture.class);
+        assetManager.load(TextureAsset.POWERUP_MULTISHOT, Texture.class);
+        assetManager.load(TextureAsset.POWERUP_BOMB, Texture.class);
         assetManager.load(TextureAsset.PLAYER_INVULNERABLE, Texture.class);
         assetManager.load(TextureAsset.OBSTACLE, Texture.class);
         assetManager.load(TextureAsset.PROJECTILE, Texture.class);
-        assetManager.load(TextureAsset.EXPLOSION, Texture.class);
+        assetManager.load(TextureAsset.OBSTACLE_EXPLOSION, Texture.class);
         assetManager.load(TextureAsset.PLAYER_RED, Texture.class);
         assetManager.load(TextureAsset.PLAYER_BLUE, Texture.class);
         assetManager.load(TextureAsset.PLAYER_GREEN, Texture.class);
         assetManager.load(TextureAsset.PLAYER_YELLOW, Texture.class);
         assetManager.load(TextureAsset.TOUCH_BACKGROUND, Texture.class);
         assetManager.load(TextureAsset.TOUCH_KNOB, Texture.class);
+        assetManager.load(TextureAsset.BOMB, Texture.class);
+        assetManager.load(TextureAsset.BOMB_EXPLOSION, Texture.class);
+        assetManager.load(TextureAsset.EXPLOSION, Texture.class);
+        assetManager.load(TextureAsset.MISSILE, Texture.class);
         assetManager.update();
     }
 
@@ -85,7 +93,11 @@ public class Assets {
 
     public static abstract class TextureAsset {
         public static final String PLAYER_DEFAULT = "playerBlack.png";
-        public static final String POWERUP = "powerup.png";
+        public static final String POWERUP_MISSILE = "powerup_missile.png";
+        public static final String POWERUP_BOMB = "powerup_bomb.png";
+        public static final String POWERUP_ARMOR = "powerup_armor.png";
+        public static final String POWERUP_MULTISHOT = "powerup_multishot.png";
+        public static final String POWERUP_RANDOM = "powerup_random.png";
         public static final String OBSTACLE = "obstacle.png";
         public static final String PROJECTILE = "projectile.png";
         public static final String PLAYER_RED = "playerRed.png";
@@ -93,9 +105,13 @@ public class Assets {
         public static final String PLAYER_GREEN = "playerGreen.png";
         public static final String PLAYER_YELLOW = "playerYellow.png";
         public static final String PLAYER_INVULNERABLE = "invuln.png";
-        public static final String EXPLOSION = "explosion.png";
+        public static final String OBSTACLE_EXPLOSION = "explosion.png";
         public static final String TOUCH_BACKGROUND = "data/touchBackground.png";
         public static final String TOUCH_KNOB = "data/touchKnob.png";
+        public static final String BOMB = "bomb.png";
+        public static final String BOMB_EXPLOSION = "bomb_explosion.png";
+        public static final String EXPLOSION = "explosion3.png";
+        public static final String MISSILE = "missile.png";
     }
 
     public static abstract class SoundAsset {

@@ -6,18 +6,17 @@ import com.badlogic.gdx.utils.Pool;
 
 public class TransformComponent implements Component, Pool.Poolable {
 
-    public Vector2 position;
+    public final Vector2 position;
 
-    public Vector2 rotation;
+    public final Vector2 rotation;
 
-    public int scaleX = 1;
-
-    public int scaleY = 1;
+    public final Vector2 scale;
 
     @SuppressWarnings("WeakerAccess")
     public TransformComponent() {
         position = new Vector2();
         rotation = new Vector2();
+        scale = new Vector2(1, 1);
     }
 
     public TransformComponent(int positionX, int positionY, int rotationX, int rotationY) {
@@ -30,8 +29,7 @@ public class TransformComponent implements Component, Pool.Poolable {
     public void reset() {
         position.setZero();
         rotation.setZero();
-        scaleX = 1;
-        scaleY = 1;
+        scale.set(1, 1);
     }
 
 }

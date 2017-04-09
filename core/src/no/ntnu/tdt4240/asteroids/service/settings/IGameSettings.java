@@ -17,4 +17,8 @@ public interface IGameSettings {
     float getAccelerationScalar();
 
     int getPlayerNoSpawnRadius();
+
+    float getBombDelay();
+
+    float getMissileDelay();
 }

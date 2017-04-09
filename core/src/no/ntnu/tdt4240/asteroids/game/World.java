@@ -31,8 +31,10 @@ import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.game.effect.BombShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
+import no.ntnu.tdt4240.asteroids.game.effect.MissileShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
@@ -110,6 +112,8 @@ public class World {
     private void registerEffects() {
         ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(InvulnerabilityEffect.class);
         ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(MultishotEffect.class);
+        ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(BombShotEffect.class);
+        ServiceLocator.getEntityComponent().getEffectFactory().registerEffect(MissileShotEffect.class);
     }
 
     private void setupEngineSystems() {
@@ -341,7 +345,7 @@ public class World {
             AnimationComponent animation = new AnimationComponent();
             // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
             animation.removeEntityAfterAnimation = true;
-            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
+            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
             entity.add(animation);
             world.audioManager.playExplosion();
             entity.remove(CollisionComponent.class);
@@ -367,7 +371,7 @@ public class World {
             world.spawnPowerup(entity);
             AnimationComponent animation = new AnimationComponent();
             animation.removeEntityAfterAnimation = true;
-            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getObstacleDestroyedAnimation());
+            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
             entity.add(animation);
             world.audioManager.playExplosion();
             // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference

@@ -40,6 +40,7 @@ public class AchievementSystem extends EntitySystem implements DamageSystem.IDam
     @Override
     public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
         IdComponent sourceId = idMapper.get(source);
+        if (sourceId == null) return;
         AchievementComponent component = null;
         for (Entity player : players) {
             IdComponent playerId = idMapper.get(player);
@@ -48,7 +49,7 @@ public class AchievementSystem extends EntitySystem implements DamageSystem.IDam
                 break;
             }
         }
-        assert component != null;
+        if (component == null) return;
         component.kills++;
         if (component.kills > 100) return;
         if (component.kills == 100)

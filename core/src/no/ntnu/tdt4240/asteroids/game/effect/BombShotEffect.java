@@ -3,17 +3,17 @@ package no.ntnu.tdt4240.asteroids.game.effect;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import no.ntnu.tdt4240.asteroids.game.shothandler.BombShotHandler;
 import no.ntnu.tdt4240.asteroids.game.shothandler.MissileShotHandler;
-import no.ntnu.tdt4240.asteroids.game.shothandler.MultiShotHandler;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-public class MultishotEffect extends BaseShotEffect {
+public class BombShotEffect extends BaseShotEffect {
 
     public static final int DEFAULT_DURATION = 10;
 
-    public MultishotEffect() {
-        super(new MultiShotHandler());
+    public BombShotEffect() {
+        super(new BombShotHandler());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class MultishotEffect extends BaseShotEffect {
 
     @Override
     public TextureRegion getPowerupTexture() {
-        Texture texture = ServiceLocator.getAppComponent().getAssetLoader().getTexture(Assets.TextureAsset.POWERUP_MULTISHOT);
+        Texture texture = ServiceLocator.getAppComponent().getAssetLoader().getTexture(Assets.TextureAsset.POWERUP_BOMB);
         return new TextureRegion(texture);
     }
 }

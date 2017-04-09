@@ -8,12 +8,13 @@ import no.ntnu.tdt4240.asteroids.game.shothandler.MultiShotHandler;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-public class MultishotEffect extends BaseShotEffect {
+public class MissileShotEffect extends BaseShotEffect {
 
     public static final int DEFAULT_DURATION = 10;
 
-    public MultishotEffect() {
-        super(new MultiShotHandler());
+
+    public MissileShotEffect() {
+        super(new MissileShotHandler());
     }
 
     @Override
@@ -28,7 +29,7 @@ public class MultishotEffect extends BaseShotEffect {
 
     @Override
     public TextureRegion getPowerupTexture() {
-        Texture texture = ServiceLocator.getAppComponent().getAssetLoader().getTexture(Assets.TextureAsset.POWERUP_MULTISHOT);
+        Texture texture = ServiceLocator.getAppComponent().getAssetLoader().getTexture(Assets.TextureAsset.POWERUP_MISSILE);
         return new TextureRegion(texture);
     }
 }

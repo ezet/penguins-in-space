@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.entity.util;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
@@ -55,6 +57,16 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     }
 
     @Override
+    public Component getBomb() {
+        return getDrawable(Assets.TextureAsset.BOMB);
+    }
+
+    @Override
+    public Component getMissile() {
+        return getDrawable(MISSILE);
+    }
+
+    @Override
     public DrawableComponent getProjectile() {
         return getDrawable(PROJECTILE);
     }
@@ -65,8 +77,10 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     }
 
     @Override
-    public DrawableComponent getPowerup() {
-        return getDrawable(POWERUP);
+    public DrawableComponent getPowerup(IEffect effect) {
+        DrawableComponent component = engine.createComponent(DrawableComponent.class);
+        component.texture = effect.getPowerupTexture();
+        return component;
     }
 
     private DrawableComponent getDrawable(String asset) {

@@ -9,6 +9,7 @@ import no.ntnu.tdt4240.asteroids.entity.util.EffectFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
+import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 import no.ntnu.tdt4240.asteroids.service.settings.MultiPlayerSettings;
@@ -58,7 +59,7 @@ public class EntityModule {
 
     @Provides
     @EntityComponent.GameScope
-    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings) {
-        return new EntityFactory(engine, drawableComponentFactory, gameSettings);
+    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory) {
+        return new EntityFactory(engine, drawableComponentFactory, gameSettings, animationFactory);
     }
 }

@@ -137,7 +137,6 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     protected void setupEngine(PooledEngine engine, SpriteBatch batch) {
         RenderSystem renderSystem = new RenderSystem(batch);
-        renderSystem.setDebug(DEBUG);
         engine.addSystem(renderSystem);
         engine.addSystem(new BoundarySystem(Asteroids.VIRTUAL_WIDTH, Asteroids.VIRTUAL_HEIGHT));
         engine.addSystem(new AnimationSystem());

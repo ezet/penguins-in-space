@@ -54,4 +54,14 @@ public class SinglePlayerSettings implements IGameSettings {
     public int getPlayerNoSpawnRadius() {
         return playerNoSpawnRadius;
     }
+
+    @Override
+    public float getBombDelay() {
+        return 2f;
+    }
+
+    @Override
+    public float getMissileDelay() {
+        return 3f;
+    }
 }

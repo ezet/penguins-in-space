@@ -33,11 +33,13 @@ public class MultiShotHandler implements IShotHandler {
     @Inject
     EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
 
+    public MultiShotHandler() {
+    }
+
     public MultiShotHandler(int bulletSpeed, int numBullets, int spread) {
         this.BULLET_SPEED = bulletSpeed;
         this.numBullets = numBullets;
         this.spread = spread;
-        fireDelay = 100 * numBullets;
     }
 
     @Override

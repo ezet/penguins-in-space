@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.AchievementComponent;
+import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BoundaryComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
@@ -28,10 +29,16 @@ import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
+import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
 import no.ntnu.tdt4240.asteroids.game.collisionhandler.BulletCollisionHandler;
 import no.ntnu.tdt4240.asteroids.game.collisionhandler.PowerupCollisionHandler;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
+import no.ntnu.tdt4240.asteroids.game.shothandler.BombShotHandler;
+import no.ntnu.tdt4240.asteroids.game.shothandler.MissileShotHandler;
+import no.ntnu.tdt4240.asteroids.game.shothandler.StandardShotHandler;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
+
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 public class EntityFactory {
 
@@ -43,12 +50,14 @@ public class EntityFactory {
     private final PooledEngine engine;
     private final IDrawableComponentFactory drawableComponentFactory;
     private final IGameSettings gameSettings;
+    private AnimationFactory animationFactory;
 
     @Inject
-    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings) {
+    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory) {
         this.engine = engine;
         this.drawableComponentFactory = drawableComponentFactory;
         this.gameSettings = gameSettings;
+        this.animationFactory = animationFactory;
     }
 
     public Entity createPlayer(String id, String displayName, boolean multiplayer) {
@@ -74,7 +83,7 @@ public class EntityFactory {
         entity.add(movementComponent);
         entity.add(new GravityComponent(gameSettings.getPlayerGravity()));
         entity.add(new CircularBoundsComponent());
-        entity.add(new ShootComponent());
+        entity.add(new ShootComponent(new StandardShotHandler()));
         entity.add(new HealthComponent(3));
         entity.add(new ScoreComponent());
         entity.add(new AchievementComponent());
@@ -124,6 +133,56 @@ public class EntityFactory {
         return entity;
     }
 
+    public Entity createMissile(String playerId) {
+        Entity entity = engine.createEntity();
+        entity.add(engine.createComponent(BulletClass.class));
+        IdComponent idComponent = engine.createComponent(IdComponent.class);
+        idComponent.participantId = playerId;
+        entity.add(idComponent);
+        entity.add(engine.createComponent(TransformComponent.class));
+        entity.add(engine.createComponent(MovementComponent.class));
+        entity.add(engine.createComponent(CircularBoundsComponent.class));
+        entity.add(engine.createComponent(DamageComponent.class));
+        entity.add(engine.createComponent(NetworkAddComponent.class));
+        entity.add(drawableComponentFactory.getMissile());
+        AnimationComponent animation = engine.createComponent(AnimationComponent.class);
+        entity.add(animation);
+        animation.delay = gameSettings.getMissileDelay();
+        animation.scale.set(1.5f, 1.5f);
+        animation.removeDuringAnimation.add(MovementComponent.class);
+        animation.removeEntityAfterAnimation = true;
+        animation.frames.addAll(animationFactory.getShortExplosion());
+        CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
+        collisionComponent.collisionHandler = bulletCollisionHandler;
+        collisionComponent.ignoredEntities = BULLET_COLLISION_IGNORE;
+        entity.add(collisionComponent);
+        return entity;
+    }
+
+    public Entity createBomb(String playerId) {
+        Entity entity = engine.createEntity();
+        entity.add(engine.createComponent(BulletClass.class));
+        IdComponent idComponent = engine.createComponent(IdComponent.class);
+        idComponent.participantId = playerId;
+        entity.add(idComponent);
+        entity.add(engine.createComponent(TransformComponent.class));
+        entity.add(engine.createComponent(CircularBoundsComponent.class));
+        entity.add(engine.createComponent(DamageComponent.class));
+        entity.add(engine.createComponent(NetworkAddComponent.class));
+        entity.add(drawableComponentFactory.getBomb());
+        AnimationComponent animation = engine.createComponent(AnimationComponent.class);
+        entity.add(animation);
+        animation.delay = gameSettings.getBombDelay();
+        animation.scale.set(2.5f, 2.5f);
+        animation.removeEntityAfterAnimation = true;
+        animation.frames.addAll(animationFactory.getLongExplosion());
+        CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
+        collisionComponent.collisionHandler = bulletCollisionHandler;
+        collisionComponent.ignoredEntities = BULLET_COLLISION_IGNORE;
+        entity.add(collisionComponent);
+        return entity;
+    }
+
     public Entity createObstacle() {
         Entity entity = engine.createEntity();
         entity.add(engine.createComponent(ObstacleClass.class));
@@ -145,7 +204,7 @@ public class EntityFactory {
         powerup.effect = effect;
         entity.add(powerup);
         entity.add(engine.createComponent(CircularBoundsComponent.class));
-        entity.add(drawableComponentFactory.getPowerup());
+        entity.add(drawableComponentFactory.getPowerup(effect));
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         collisionComponent.ignoredEntities = POWERUP_COLLISION_IGNORE;
         collisionComponent.collisionHandler = POWERUP_COLLISION_HANDLER;

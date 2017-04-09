@@ -24,7 +24,7 @@ public class RectangularBoundsComponent extends BoundsComponent {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(float width, float height) {
         bounds.setSize(width, height);
 
     }

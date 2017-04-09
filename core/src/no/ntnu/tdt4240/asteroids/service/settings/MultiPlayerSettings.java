@@ -43,4 +43,14 @@ public class MultiPlayerSettings implements IGameSettings {
     public int getPlayerNoSpawnRadius() {
         return playerNoSpawnRadius;
     }
+
+    @Override
+    public float getBombDelay() {
+        return 2;
+    }
+
+    @Override
+    public float getMissileDelay() {
+        return 3;
+    }
 }

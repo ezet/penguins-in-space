@@ -36,7 +36,7 @@ public class RenderSystem extends IteratingSystem {
     private static ShapeRenderer shapeRenderer;
     private final Camera camera;
     private final Batch batch;
-    private boolean debug;
+    private boolean debug = true;
     private Viewport viewport;
     private BitmapFont font;
 
@@ -60,8 +60,8 @@ public class RenderSystem extends IteratingSystem {
         if (debug) shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         batch.begin();
         super.update(deltaTime);
-        shapeRenderer.end();
         batch.end();
+        if (debug) shapeRenderer.end();
     }
 
     private void drawBounds(Entity entity) {
@@ -80,23 +80,19 @@ public class RenderSystem extends IteratingSystem {
         TransformComponent transform = transformMapper.get(entity);
         DrawableComponent drawable = drawableMapper.get(entity);
         TextureRegion region = drawable.texture;
-        float width = region.getRegionWidth() * transform.scaleX;
-        float height = region.getRegionHeight() * transform.scaleY;
+        float width = region.getRegionWidth();
+        float height = region.getRegionHeight();
         float originX = width * 0.5f;
         float originY = height * 0.5f;
         float x = transform.position.x - originX;
         float y = transform.position.y - originY;
-        batch.draw(drawable.texture, x, y, originX, originY, width, height, transform.scaleX, transform.scaleY, transform.rotation.angle());
-        PlayerClass playerClass = playerMapper.get(entity);
-
-        if (playerClass != null && !playerClass.isSelf) {
-            font.draw(batch, playerClass.displayName, x, y, width*3, -1, true);
-        }
         if (debug) drawBounds(entity);
-    }
 
-    public void setDebug(boolean debug) {
-        this.debug = debug;
+        batch.draw(drawable.texture, x, y, originX, originY, width, height, transform.scale.x, transform.scale.y, transform.rotation.angle());
+        PlayerClass playerClass = playerMapper.get(entity);
+        if (playerClass != null && !playerClass.isSelf) {
+            font.draw(batch, playerClass.displayName, x, y, width, -1, true);
+        }
     }
 
     public void resize(int width, int height) {

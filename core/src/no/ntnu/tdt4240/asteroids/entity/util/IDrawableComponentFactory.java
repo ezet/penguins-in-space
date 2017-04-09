@@ -3,6 +3,7 @@ package no.ntnu.tdt4240.asteroids.entity.util;
 import com.badlogic.ashley.core.Component;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 
 public interface IDrawableComponentFactory {
 
@@ -12,9 +13,13 @@ public interface IDrawableComponentFactory {
 
     DrawableComponent getObstacle();
 
-    DrawableComponent getPowerup();
+    DrawableComponent getPowerup(IEffect effect);
 
     void resetOpponentCount();
 
     Component getMultiPlayer();
+
+    Component getBomb();
+
+    Component getMissile();
 }

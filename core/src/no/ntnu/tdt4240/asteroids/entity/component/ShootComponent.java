@@ -12,6 +12,13 @@ public class ShootComponent implements Component, Pool.Poolable {
 
     public IShotHandler handler;
 
+    public ShootComponent(IShotHandler handler) {
+        this.handler = handler;
+    }
+
+    public ShootComponent() {
+    }
+
     public void fire(PooledEngine engine, Entity controlledEntity) {
         if (handler == null) handler = new StandardShotHandler();
         handler.fire(engine, controlledEntity);

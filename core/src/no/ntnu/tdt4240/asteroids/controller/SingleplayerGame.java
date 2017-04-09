@@ -34,9 +34,9 @@ class SingleplayerGame extends BaseGameController implements World.IGameListener
         final int score = scoreMapper.get(entity).score;
         final String participantId = idMapper.get(entity).participantId;
         players.get(participantId).totalScore = score;
-//        ServiceLocator.getAppComponent().getNetworkService().submitScoreWithResult(score, this);
-        ServiceLocator.getAppComponent().getNetworkService().submitScore(score);
-        onGameEnd();
+        ServiceLocator.getAppComponent().getNetworkService().submitScoreWithResult(score, this);
+//        ServiceLocator.getAppComponent().getNetworkService().submitScore(score);
+//        onGameEnd();
     }
 
     @Override

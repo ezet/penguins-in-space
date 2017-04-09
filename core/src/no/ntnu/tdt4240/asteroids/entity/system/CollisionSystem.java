@@ -121,7 +121,7 @@ public class CollisionSystem extends IteratingSystem {
         if (collisionComponent.preCollisionPosition.isZero()) {
             getEngine().removeEntity(entity);
         } else {
-            transformComponent.position = collisionComponent.preCollisionPosition;
+            transformComponent.position.set(collisionComponent.preCollisionPosition);
         }
     }
 

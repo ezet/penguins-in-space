@@ -24,7 +24,7 @@ public class CircularBoundsComponent extends BoundsComponent {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(float width, float height) {
         bounds.setRadius(Math.min(width / 2, height / 2));
     }
 
