@@ -3,11 +3,13 @@ package no.ntnu.tdt4240.asteroids.service.audio;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
+import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 
 public class AudioManager {
 
     private Assets assets;
+    private ISettingsService settingsService;
     private Music backgroundMusic;
     private Sound explosion;
     private Sound powerup;
@@ -15,13 +17,14 @@ public class AudioManager {
     private float volume = 1;
 
 
-    public void update(int newVolumePercentage){
-        volume = (float)newVolumePercentage/100;
-        backgroundMusic.setVolume(volume);
+    public AudioManager(Assets assets, ISettingsService settingsService) {
+        this.assets = assets;
+        this.settingsService = settingsService;
     }
 
-    public AudioManager(Assets assets) {
-        this.assets = assets;
+    public void setMusicVolume(int newVolumePercentage) {
+        volume = newVolumePercentage / 100f;
+        backgroundMusic.setVolume(volume);
     }
 
     public void playBackgroundMusic() {
@@ -29,6 +32,7 @@ public class AudioManager {
             backgroundMusic = assets.getMusic(Assets.MusicAsset.SOUND_MUSIC_MP3);
             backgroundMusic.setLooping(true);
         }
+        setMusicVolume(settingsService.getInt(ISettingsService.MUSIC_VOLUME));
         if (!backgroundMusic.isPlaying())
             this.backgroundMusic.play();
     }
@@ -47,4 +51,9 @@ public class AudioManager {
         if (powerup == null) powerup = assets.getSound(Assets.SoundAsset.SOUND_POWERUP_WAV);
         powerup.play(volume);
     }
+
+    public void stopMusic() {
+        backgroundMusic.stop();
+    }
+
 }

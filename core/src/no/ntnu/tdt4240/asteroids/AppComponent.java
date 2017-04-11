@@ -15,7 +15,7 @@ public interface AppComponent {
 
     AudioManager getAudioManager();
 
-    IAppSettings getSettings();
+    ISettingsService getSettingsService();
 
     no.ntnu.tdt4240.asteroids.service.Assets getAssetLoader();
 

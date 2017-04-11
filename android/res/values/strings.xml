@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Asteroids</string>
+    <item name="prefkey_volume" type="id">VOLUME</item>
 
 
 </resources>

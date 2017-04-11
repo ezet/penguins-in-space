@@ -20,11 +20,13 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     @SuppressWarnings("unused")
     private static final String TAG = MultiplayerGame.class.getSimpleName();
     private static final int ROUNDS = 3;
+    private final INetworkService networkService;
     private int roundsPlayed = 0;
 
     public MultiplayerGame(Asteroids game, Screen parent) {
         super(game, parent);
-        ServiceLocator.getAppComponent().getNetworkService().setNetworkListener(this);
+        networkService = ServiceLocator.getAppComponent().getNetworkService();
+        networkService.setNetworkListener(this);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     @Override
     protected void setupEngine(PooledEngine engine, SpriteBatch batch) {
         super.setupEngine(engine, batch);
-        engine.addSystem(new NetworkSystem(ServiceLocator.getAppComponent().getNetworkService()));
+        engine.addSystem(new NetworkSystem(networkService));
     }
 
     @Override
@@ -89,4 +91,15 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
         addPlayers(players, true);
     }
 
+    @Override
+    public void onQuitLevel() {
+        super.onQuitLevel();
+        networkService.quitGame();
+    }
+
+    @Override
+    public void onQuit() {
+        networkService.quitGame();
+        super.onQuit();
+    }
 }

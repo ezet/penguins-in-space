@@ -51,20 +51,20 @@ public class AchievementSystem extends EntitySystem implements DamageSystem.IDam
         }
         if (component == null) return;
         component.kills++;
+        if (component.kills > 1000) return;
+        if (component.kills == 1000)
+            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_1000_ENEMIES);
+
+        if (component.kills > 500) return;
+        if (component.kills == 500)
+            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_500_ENEMIES);
+
+        if (component.kills > 250) return;
+        if (component.kills == 250)
+            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_250_ENEMIES);
+
         if (component.kills > 100) return;
         if (component.kills == 100)
             networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_100_ENEMIES);
-
-        if (component.kills > 15) return;
-        if (component.kills == 15)
-            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_15_ENEMIES);
-
-        if (component.kills > 10) return;
-        if (component.kills == 10)
-            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_10_ENEMIES);
-
-        if (component.kills > 5) return;
-        if (component.kills == 5)
-            networkService.unlockAchievement(INetworkService.ACHIEVEMENT_KILL_5_ENEMIES);
     }
 }

@@ -6,14 +6,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
+import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.*;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.MISSILE;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.OBSTACLE;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_BLUE;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_DEFAULT;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_GREEN;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_RED;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_YELLOW;
+import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PROJECTILE;
 
 
 public class DefaultDrawableComponentFactory implements IDrawableComponentFactory {
@@ -37,8 +47,26 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
 
     @Override
     public DrawableComponent getPlayer() {
-        String playerAppearance = ServiceLocator.getAppComponent().getSettings().getPlayerAppearance();
+        String playerAppearance = ServiceLocator.getAppComponent().getSettingsService().getString(ISettingsService.PLAYER_APPEARANCE);
+        if (Objects.equals(playerAppearance, "")) playerAppearance = PLAYER_DEFAULT;
         return getDrawable(playerAppearance);
+    }
+
+    @Override
+    public DrawableComponent getProjectile() {
+        return getDrawable(PROJECTILE);
+    }
+
+    @Override
+    public DrawableComponent getObstacle() {
+        return getDrawable(OBSTACLE);
+    }
+
+    @Override
+    public DrawableComponent getPowerup(IEffect effect) {
+        DrawableComponent component = engine.createComponent(DrawableComponent.class);
+        component.texture = effect.getPowerupTexture();
+        return component;
     }
 
     @Override
@@ -64,23 +92,6 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     @Override
     public Component getMissile() {
         return getDrawable(MISSILE);
-    }
-
-    @Override
-    public DrawableComponent getProjectile() {
-        return getDrawable(PROJECTILE);
-    }
-
-    @Override
-    public DrawableComponent getObstacle() {
-        return getDrawable(OBSTACLE);
-    }
-
-    @Override
-    public DrawableComponent getPowerup(IEffect effect) {
-        DrawableComponent component = engine.createComponent(DrawableComponent.class);
-        component.texture = effect.getPowerupTexture();
-        return component;
     }
 
     private DrawableComponent getDrawable(String asset) {

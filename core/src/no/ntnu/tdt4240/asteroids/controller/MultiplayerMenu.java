@@ -52,7 +52,7 @@ public class MultiplayerMenu extends BaseController {
         }
 
         public void onInvitePlayers() {
-            ServiceLocator.getAppComponent().getNetworkService().startSelectOpponents();
+            ServiceLocator.getAppComponent().getNetworkService().startSelectOpponents(false);
         }
 
     }

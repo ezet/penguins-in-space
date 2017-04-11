@@ -11,9 +11,11 @@ import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 public class AppModule {
 
     private INetworkService networkService;
+    private ISettingsService settingsService;
 
-    public AppModule(INetworkService networkService) {
+    public AppModule(INetworkService networkService, ISettingsService settingsService) {
         this.networkService = networkService;
+        this.settingsService = settingsService;
     }
 
     @Provides
@@ -24,10 +26,9 @@ public class AppModule {
 
     @Provides
     @Singleton
-    IAppSettings provideAppSettings() {
-        return new AppSettings();
+    ISettingsService provideSettingsService() {
+        return settingsService;
     }
-
 
     @Provides
     @Singleton
@@ -37,8 +38,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(no.ntnu.tdt4240.asteroids.service.Assets assets) {
-        return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assets);
+    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(no.ntnu.tdt4240.asteroids.service.Assets assets, ISettingsService settingsService) {
+        return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assets, settingsService);
     }
 
     @Provides

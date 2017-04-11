@@ -13,18 +13,20 @@ import no.ntnu.tdt4240.asteroids.controller.TutorialController;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
+import static com.badlogic.gdx.utils.Align.bottom;
+
 public class TutorialView extends BaseView implements TutorialController.IView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
     private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
-    private final TextButton back = new TextButton("QUIT", uiSkin);
+    private final TextButton back = new TextButton("BACK", uiSkin);
     private final Table table = new Table();
 
-    private final Label label1 = new Label("Use the analog stick to the left to move around. " +
+    private final Label textLabel1 = new Label("Use the analog stick to the left to move around. " +
             "Use the right button to shoot.", uiSkin);
-    private final Label label2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", uiSkin);
-    private final Label label3 = new Label("When you shoot the snowballs, they might drop new abilities...", uiSkin);
+    private final Label textLabel2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", uiSkin);
+    private final Label textLabel3 = new Label("When you shoot the snowballs, they might drop new abilities...", uiSkin);
 
     private final TutorialController.ViewHandler controller;
 
@@ -32,30 +34,24 @@ public class TutorialView extends BaseView implements TutorialController.IView {
     public TutorialView(Batch batch, TutorialController.ViewHandler controller) {
         super(batch);
         this.controller = controller;
-        setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
         init();
-        table.addAction(Actions.fadeIn(1));
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        table.addAction(getDefaultShowAnimation());
     }
 
     private void init() {
-        back.getLabel().setFontScale(3);
-        label1.setFontScale(3);
-        label2.setFontScale(3);
-        label3.setFontScale(3);
         table.setFillParent(true);
-        //Labels
         table.row();
-        table.add(label1).pad(30);
-        table.row();
-        table.add(label2).pad(30);
-        table.row();
-        table.add(label3).pad(30);
-
-        //BACK button
-        table.row();
-        table.add(back).pad(30);
+        table.add(textLabel1).space(30).row();
+        table.add(textLabel2).space(30).row();
+        table.add(textLabel3).space(30).row();
+        table.add(back).align(bottom);
 
         back.addListener(new ClickListener() {
             @Override

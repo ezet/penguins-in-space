@@ -2,29 +2,36 @@ package no.ntnu.tdt4240.asteroids.controller;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Array;
+
 import no.ntnu.tdt4240.asteroids.Asteroids;
+import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 import no.ntnu.tdt4240.asteroids.view.IView;
 import no.ntnu.tdt4240.asteroids.view.SettingsView;
 
 
-
 public class SettingsController extends BaseController {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainMenu.class.getSimpleName();
+    private static final int MAX_VOLUME = 100;
+    private static final int VOLUME_STEP = 10;
+    private static final int MIN_VOLUME = 0;
     private final Asteroids game;
     private final ISettingsView view;
+    private final ISettingsService settingsService;
     private Screen parent;
-    private int soundVolume = 100;
+    private int musicVolume;
     private AudioManager audioManager;
 
-    public SettingsController(final Asteroids game, final Screen parent){
+    SettingsController(final Asteroids game, final Screen parent) {
         this.parent = parent;
         this.game = game;
         this.view = new SettingsView(game.getBatch(), new ViewHandler());
         this.audioManager = ServiceLocator.getAppComponent().getAudioManager();
+        this.settingsService = ServiceLocator.appComponent.getSettingsService();
+        musicVolume = settingsService.getInt(ISettingsService.MUSIC_VOLUME);
     }
 
     @Override
@@ -45,36 +52,39 @@ public class SettingsController extends BaseController {
 
         public void previousCharacter() {
             Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-            int index = characters.indexOf(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance(), false);
+            int index = characters.indexOf(settingsService.getString(ISettingsService.PLAYER_APPEARANCE), false);
             if (index == 0) return;
-            ServiceLocator.getAppComponent().getSettings().setPlayerAppearance(characters.get(index-1));
-            view.setCurrentCharacter(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
+            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, characters.get(index - 1));
+            view.setCurrentCharacter(settingsService.getString(ISettingsService.PLAYER_APPEARANCE));
         }
 
         public void nextCharacter() {
             Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-            int index = characters.indexOf(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance(), false);
-            if (index == characters.size-1) return;
-            ServiceLocator.getAppComponent().getSettings().setPlayerAppearance(characters.get(index+1));
-            view.setCurrentCharacter(ServiceLocator.getAppComponent().getSettings().getPlayerAppearance());
+            int index = characters.indexOf(settingsService.getString(ISettingsService.PLAYER_APPEARANCE), false);
+            if (index == characters.size - 1) return;
+            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, characters.get(index + 1));
+            view.setCurrentCharacter(settingsService.getString(ISettingsService.PLAYER_APPEARANCE));
         }
 
-        public void toggleMute() {
-            soundVolume = (soundVolume == 100) ? 0: 100;
-            audioManager.update(soundVolume);
+        public void toggleMute(boolean muteToggled) {
+            if (muteToggled) audioManager.stopMusic();
+            else audioManager.playBackgroundMusic();
+            settingsService.setBoolean(ISettingsService.MUSIC_ENABLED, !muteToggled);
         }
 
         public void increaseVolume() {
-            if (soundVolume < 100){
-                soundVolume += 10;
-                audioManager.update(soundVolume);
+            if (musicVolume < MAX_VOLUME) {
+                musicVolume += VOLUME_STEP;
+                audioManager.setMusicVolume(musicVolume);
+                settingsService.setInt(ISettingsService.MUSIC_VOLUME, musicVolume);
             }
         }
 
         public void decreaseVolume() {
-            if (soundVolume > 0){
-                soundVolume -= 10;
-                audioManager.update(soundVolume);
+            if (musicVolume > MIN_VOLUME) {
+                musicVolume -= VOLUME_STEP;
+                audioManager.setMusicVolume(musicVolume);
+                settingsService.setInt(ISettingsService.MUSIC_VOLUME, musicVolume);
             }
         }
     }

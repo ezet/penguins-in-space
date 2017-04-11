@@ -5,15 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesStatusCodes;
-import com.google.android.gms.games.achievement.Achievements;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
@@ -25,6 +25,7 @@ import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
+import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 
 import java.util.ArrayList;
@@ -37,12 +38,14 @@ import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_INVALID_ROOM;
 import static com.google.android.gms.games.GamesActivityResultCodes.RESULT_LEFT_ROOM;
+import static com.google.android.gms.games.GamesStatusCodes.STATUS_CLIENT_RECONNECT_REQUIRED;
+import static com.google.android.gms.games.GamesStatusCodes.STATUS_OK;
 import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_ALL_TIME;
 import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_DAILY;
 import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_WEEKLY;
 
 
-class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener {
+class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener, GameHelper.GameHelperListener {
 
     private static final int RC_ACHIEVEMENTS = 1;
     private static final int RC_SELECT_PLAYERS = 10000;
@@ -52,12 +55,12 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     private static final String TAG = "PlayService";
     private static final int MIN_PLAYERS = 1;
     private static final int MAX_PLAYERS = 1;
-    private final AndroidLauncher activity;
+    private final Activity activity;
     private final GameHelper gameHelper;
     private String incomingInvitationId;
     private IGameListener gameListener;
     private INetworkListener networkListener;
-    private String roomId = null;
+    private String currentRoomId = null;
 
     public PlayService(AndroidLauncher activity) {
         this.activity = activity;
@@ -66,11 +69,11 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         gameHelper.setShowErrorDialogs(true);
     }
 
-    public void setup(GameHelper.GameHelperListener listener) {
-        gameHelper.setup(listener);
+    public void setup() {
+        gameHelper.setup(this);
     }
 
-    public GameHelper getGameHelper() {
+    GameHelper getGameHelper() {
         return gameHelper;
     }
 
@@ -161,9 +164,9 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     @Override
     public void sendUnreliableMessageToOthers(byte[] messageData) {
         // TODO: 03-Apr-17 do this properly
-        if (roomId == null) return;
+        if (currentRoomId == null) return;
         if (!getGameHelper().isSignedIn()) return;
-        Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, roomId);
+        Games.RealTimeMultiplayer.sendUnreliableMessageToOthers(gameHelper.getApiClient(), messageData, currentRoomId);
     }
 
     @Override
@@ -181,43 +184,75 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         rtmConfigBuilder.setMessageReceivedListener(this);
         rtmConfigBuilder.setRoomStatusUpdateListener(this);
         rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
-//        switchToScreen(R.id.screen_wait);
-//        keepScreenOn();
-//        resetGameVars();
+        keepScreenOn();
         Games.RealTimeMultiplayer.create(gameHelper.getApiClient(), rtmConfigBuilder.build());
     }
 
     @Override
-    public void startSelectOpponents() {
-        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS);
+    public void startSelectOpponents(boolean autoMatch) {
+        Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(gameHelper.getApiClient(), MIN_PLAYERS, MAX_PLAYERS, autoMatch);
         activity.startActivityForResult(intent, RC_SELECT_PLAYERS);
+    }
+
+    @Override
+    public void setGameListener(IGameListener gameListener) {
+        this.gameListener = gameListener;
+    }
+
+    @Override
+    public void setNetworkListener(INetworkListener networkListener) {
+        this.networkListener = networkListener;
+    }
+
+    @Override
+    public void quitGame() {
+        if (!isSignedIn()) return;
+        if (currentRoomId == null) return;
+        Games.RealTimeMultiplayer.leave(gameHelper.getApiClient(), this, currentRoomId);
     }
 
     @Override
     public void onRoomCreated(int statusCode, Room room) {
         Log.d(TAG, "onRoomCreated: ");
-        roomId = room.getRoomId();
-        showWaitingRoom(room);
+        switch (statusCode) {
+            case STATUS_OK:
+                currentRoomId = room.getRoomId();
+                showWaitingRoom(room);
+                break;
+            case STATUS_CLIENT_RECONNECT_REQUIRED:
+                signIn();
+                break;
+            default:
+        }
     }
 
     @Override
     public void onJoinedRoom(int statusCode, Room room) {
         Log.d(TAG, "onJoinedRoom: ");
-        showWaitingRoom(room);
+        switch (statusCode) {
+            case STATUS_OK:
+                currentRoomId = room.getRoomId();
+                showWaitingRoom(room);
+                break;
+            case STATUS_CLIENT_RECONNECT_REQUIRED:
+                signIn();
+                break;
+            default:
+        }
     }
 
     @Override
-    public void onLeftRoom(int statusCode, String s) {
+    public void onLeftRoom(int statusCode, String roomId) {
         Log.d(TAG, "onLeftRoom: ");
     }
 
     @Override
     public void onRoomConnected(int statusCode, Room room) {
-        Log.d(TAG, "onRoomConnected: statusCode: " + statusCode);
         Log.d(TAG, "onRoomConnected(" + statusCode + ", " + room + ")");
-        if (statusCode != GamesStatusCodes.STATUS_OK) {
+
+        if (statusCode != STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
-            activity.showGameError();
+            showGameError();
             return;
         }
     }
@@ -285,8 +320,8 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
                 // TODO: 02-Apr-17 leave room
                 break;
             case RESULT_LEFT_ROOM:
-                // TODO: 02-Apr-17 leave room
-                Log.d(TAG, "handleWaitingRoomResult: LEFT");
+                Log.d(TAG, "handleWaitingRoomResult: RESULT_LEFT_ROOM");
+                Games.RealTimeMultiplayer.leave(getGameHelper().getApiClient(), this, room.getRoomId());
                 break;
             case RESULT_INVALID_ROOM:
                 // TODO: 02-Apr-17 handle invalid room
@@ -321,7 +356,6 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
                     minAutoMatchPlayers, maxAutoMatchPlayers, 0);
             Log.d(TAG, "Automatch criteria: " + autoMatchCriteria);
         }
-
         // create the room
         Log.d(TAG, "Creating room...");
         RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
@@ -331,9 +365,7 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         if (autoMatchCriteria != null) {
             rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
         }
-//        switchToScreen(R.id.screen_wait);
-        activity.keepScreenOn();
-//        resetGameVars();
+        keepScreenOn();
         Games.RealTimeMultiplayer.create(getGameHelper().getApiClient(), rtmConfigBuilder.build());
         Log.d(TAG, "Room created, waiting for it to be ready...");
     }
@@ -372,13 +404,14 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     @Override
     public void onConnectedToRoom(Room room) {
         Log.d(TAG, "onConnectedToRoom: ");
-        if (roomId == null) roomId = room.getRoomId();
+        stopKeepingScreenOn();
+        if (currentRoomId == null) currentRoomId = room.getRoomId();
     }
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
         Log.d(TAG, "onDisconnectedFromRoom: ");
-        roomId = null;
+        currentRoomId = null;
     }
 
     @Override
@@ -408,25 +441,12 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         // and show the popup on the screen.
         Log.d(TAG, "onInvitationReceived: ");
         incomingInvitationId = invitation.getInvitationId();
-//        ((TextView) findViewById(R.id.incoming_invitation_text)).setText(
-//                invitation.getInviter().getDisplayName() + " " +
-//                        getString(R.string.is_inviting_you));
-//        switchToScreen(mCurScreen); // This will show the invitation popup
-
+        Toast.makeText(activity, invitation.getInviter().getDisplayName() + " has invited you. ", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onInvitationRemoved(String s) {
         Log.d(TAG, "onInvitationRemoved: ");
-    }
-
-    public void setGameListener(IGameListener gameListener) {
-        this.gameListener = gameListener;
-    }
-
-    @Override
-    public void setNetworkListener(INetworkListener networkListener) {
-        this.networkListener = networkListener;
     }
 
     // Show the waiting room UI to track the progress of other players as they enter the
@@ -452,7 +472,7 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         roomConfigBuilder.setInvitationIdToAccept(invId)
                 .setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this);
-        activity.keepScreenOn();
+        keepScreenOn();
         Games.RealTimeMultiplayer.join(getGameHelper().getApiClient(), roomConfigBuilder.build());
     }
 
@@ -470,6 +490,28 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
 //        }
     }
 
+    @Override
+    public void onSignInFailed() {
+        Log.d(TAG, "onSignInFailed: ");
+//        playService.getGameHelper().beginUserInitiatedSignIn();
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+        Log.d(TAG, "onSignInSucceeded: ");
+        if (getGameHelper().hasInvitation()) {
+            acceptInviteToRoom(getGameHelper().getInvitationId());
+        }
+    }
+
+    public void onStart(Activity activity) {
+        gameHelper.onStart(activity);
+    }
+
+    public void onStop() {
+        gameHelper.onStop();
+    }
+
     private class ScoreCallback implements ResultCallback<Leaderboards.SubmitScoreResult> {
         private IScoreCallback callback;
 
@@ -484,5 +526,26 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
             final boolean dailyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_DAILY).newBest;
             callback.onScoreResult(alltimeBest, weeklyBest, dailyBest);
         }
+    }
+
+
+
+    // Sets the flag to keep this screen on. It's recommended to do that during
+    // the
+    // handshake when setting up a game, because if the screen turns off, the
+    // game will be
+    // cancelled.
+    void keepScreenOn() {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    // Clears the flag that keeps the screen on.
+    void stopKeepingScreenOn() {
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    public void showGameError() {
+        // TODO: 03-Apr-17 improve error message
+        BaseGameUtils.makeSimpleDialog(activity, "ERROR");
     }
 }

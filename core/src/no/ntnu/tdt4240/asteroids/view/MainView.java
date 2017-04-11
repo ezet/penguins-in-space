@@ -22,9 +22,10 @@ public class MainView extends BaseMenuView implements MainMenu.IView {
     private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
     private final TextButton play = new TextButton("PLAY", uiSkin);
     private final TextButton multiplayer = new TextButton("MULTIPLAYER", uiSkin);
-    private final TextButton quit = new TextButton("QUIT", uiSkin);
+    private final TextButton settings = new TextButton("SETTINGS", uiSkin);
     private final TextButton tutorial = new TextButton("TUTORIAL", uiSkin);
     private final TextButton highscore = new TextButton("HIGHSCORE", uiSkin);
+    private final TextButton quit = new TextButton("QUIT", uiSkin);
 
     private final TextButton achievements = new TextButton("ACHIEVEMENTS", uiSkin);
     private final MainMenu.ViewHandler controller;
@@ -35,6 +36,7 @@ public class MainView extends BaseMenuView implements MainMenu.IView {
         this.controller = controller;
         buttons.add(play);
         buttons.add(multiplayer);
+        buttons.add(settings);
         buttons.add(achievements);
         buttons.add(highscore);
         buttons.add(tutorial);
@@ -69,10 +71,15 @@ public class MainView extends BaseMenuView implements MainMenu.IView {
                 });
             }
         });
-        quit.addListener(new ChangeListener() {
+        settings.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.onQuit();
+                startAction(new RunnableAction() {
+                    @Override
+                    public void run() {
+                        controller.onSettings();
+                    }
+                });
             }
         });
         tutorial.addListener(new ChangeListener() {
@@ -90,13 +97,18 @@ public class MainView extends BaseMenuView implements MainMenu.IView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 controller.onShowLeaderboard();
-
             }
         });
         achievements.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 controller.onShowAchievements();
+            }
+        });
+        quit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                controller.onQuit();
             }
         });
     }

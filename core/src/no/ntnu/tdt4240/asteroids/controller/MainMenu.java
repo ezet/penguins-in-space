@@ -44,6 +44,10 @@ public class MainMenu extends BaseController {
             game.setScreen(new TutorialController(game, MainMenu.this));
         }
 
+        public void onSettings() {
+            game.setScreen(new SettingsController(game, MainMenu.this));
+        }
+
         public void onShowAchievements() {
             ServiceLocator.getAppComponent().getNetworkService().showAchievement();
         }
