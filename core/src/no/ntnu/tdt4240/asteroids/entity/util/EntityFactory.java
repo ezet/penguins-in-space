@@ -29,19 +29,21 @@ import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
+import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
 import no.ntnu.tdt4240.asteroids.game.collisionhandler.BulletCollisionHandler;
 import no.ntnu.tdt4240.asteroids.game.collisionhandler.PowerupCollisionHandler;
+import no.ntnu.tdt4240.asteroids.game.damagehandler.ObstacleDamageHandler;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
-import no.ntnu.tdt4240.asteroids.game.shothandler.BombShotHandler;
-import no.ntnu.tdt4240.asteroids.game.shothandler.MissileShotHandler;
-import no.ntnu.tdt4240.asteroids.game.shothandler.StandardShotHandler;
+import no.ntnu.tdt4240.asteroids.game.shothandler.MultiShotHandler;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
 
 public class EntityFactory {
 
+    public static final DamageSystem.IDamageHandler OBSTACLE_DAMAGE_HANDLER = new ObstacleDamageHandler();
     private static final Family POWERUP_COLLISION_IGNORE = Family.one(ObstacleClass.class, BulletClass.class).get();
     private static final Family BULLET_COLLISION_IGNORE = Family.one(BulletClass.class).get();
     private static final Family OBSTACLE_COLLISION_IGNORE = Family.one(ObstacleClass.class).get();
@@ -50,14 +52,17 @@ public class EntityFactory {
     private final PooledEngine engine;
     private final IDrawableComponentFactory drawableComponentFactory;
     private final IGameSettings gameSettings;
+    private final Assets assets;
     private AnimationFactory animationFactory;
 
     @Inject
-    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory) {
+    public EntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory,
+                         IGameSettings gameSettings, AnimationFactory animationFactory, Assets assets) {
         this.engine = engine;
         this.drawableComponentFactory = drawableComponentFactory;
         this.gameSettings = gameSettings;
         this.animationFactory = animationFactory;
+        this.assets = assets;
     }
 
     public Entity createPlayer(String id, String displayName, boolean multiplayer) {
@@ -83,8 +88,8 @@ public class EntityFactory {
         entity.add(movementComponent);
         entity.add(new GravityComponent(gameSettings.getPlayerGravity()));
         entity.add(new CircularBoundsComponent());
-        entity.add(new ShootComponent(new StandardShotHandler()));
-        entity.add(new HealthComponent(3));
+        entity.add(new ShootComponent(new MultiShotHandler()));
+        entity.add(new HealthComponent(999999));
         entity.add(new ScoreComponent());
         entity.add(new AchievementComponent());
         entity.add(new BoundaryComponent(BoundaryComponent.MODE_WRAP));
@@ -106,7 +111,7 @@ public class EntityFactory {
         entity.add(new MovementComponent());
         entity.add(new BoundaryComponent());
         entity.add(new CircularBoundsComponent());
-        entity.add(new HealthComponent(3));
+        entity.add(new HealthComponent(999999));
         entity.add(new ScoreComponent());
         entity.add(drawableComponentFactory.getMultiPlayer());
         entity.add(new GravityComponent(gameSettings.getPlayerGravity()));
@@ -151,6 +156,7 @@ public class EntityFactory {
         animation.scale.set(1.5f, 1.5f);
         animation.removeDuringAnimation.add(MovementComponent.class);
         animation.removeEntityAfterAnimation = true;
+        animation.soundOnStart = assets.getSound(Assets.SoundAsset.SOUND_EXPLOSION_WAV);
         animation.frames.addAll(animationFactory.getShortExplosion());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         collisionComponent.collisionHandler = bulletCollisionHandler;
@@ -172,6 +178,7 @@ public class EntityFactory {
         entity.add(drawableComponentFactory.getBomb());
         AnimationComponent animation = engine.createComponent(AnimationComponent.class);
         entity.add(animation);
+        animation.soundOnStart = assets.getSound(Assets.SoundAsset.SOUND_EXPLOSION_WAV);
         animation.delay = gameSettings.getBombDelay();
         animation.scale.set(2.5f, 2.5f);
         animation.removeEntityAfterAnimation = true;
@@ -190,7 +197,10 @@ public class EntityFactory {
         entity.add(engine.createComponent(MovementComponent.class));
         entity.add(engine.createComponent(CircularBoundsComponent.class));
         entity.add(engine.createComponent(HealthComponent.class));
+        HealthComponent healthComponent = healthMapper.get(entity);
+        healthComponent.damageHandler = OBSTACLE_DAMAGE_HANDLER;
         entity.add(engine.createComponent(DamageComponent.class));
+        entity.add(engine.createComponent(NetworkAddComponent.class));
         entity.add(drawableComponentFactory.getObstacle());
         CollisionComponent collisionComponent = engine.createComponent(CollisionComponent.class);
         collisionComponent.ignoredEntities = OBSTACLE_COLLISION_IGNORE;
@@ -213,6 +223,4 @@ public class EntityFactory {
         entity.add(engine.createComponent(TransformComponent.class));
         return entity;
     }
-
-
 }

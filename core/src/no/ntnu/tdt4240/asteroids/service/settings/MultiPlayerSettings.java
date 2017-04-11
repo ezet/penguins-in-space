@@ -4,8 +4,8 @@ package no.ntnu.tdt4240.asteroids.service.settings;
 public class MultiPlayerSettings implements IGameSettings {
 
     private static double obstacleSpawnChance = 0.3;
-    private static int maxObstacles = 0;
-    private static int minObstacles = 0;
+    private static int maxObstacles = 4;
+    private static int minObstacles = 1;
     private static double powerupSpawnChance = 0.2;
     private static float playerGravity = 0.005f;
     private static int obstacleMaxSpeed = 200;

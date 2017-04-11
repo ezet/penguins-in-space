@@ -25,7 +25,7 @@ public abstract class BaseShotEffect extends BaseEffect {
     protected float getDuration() {
         return DEFAULT_DURATION;
     }
-
+    
     @Override
     protected TextureRegion getEffectTexture() {
         return null;

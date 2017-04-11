@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import no.ntnu.tdt4240.asteroids.entity.component.BulletClass;
 import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.NetworkAddComponent;
@@ -25,7 +24,7 @@ import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.bulletMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
+import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.obstacleMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 
@@ -56,21 +55,6 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
 
     }
 
-    public void processPackage(String playerId, byte[] messageData) {
-        ByteBuffer wrap = ByteBuffer.wrap(messageData);
-        byte b = wrap.get();
-        switch (b) {
-            case MOVE:
-                updateEntity(playerId, wrap);
-                break;
-            case BULLET:
-                receiveBullet(playerId, wrap);
-                break;
-            default:
-                Gdx.app.debug(TAG, "processPackage: DEFAULT");
-        }
-    }
-
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         TransformComponent transform = transformMapper.get(entity);
@@ -86,6 +70,23 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
         buffer.putFloat(movement.acceleration.x);
         buffer.putFloat(movement.acceleration.y);
         networkService.sendUnreliableMessageToOthers(buffer.array());
+    }
+
+    public void processPackage(String playerId, byte[] messageData) {
+        ByteBuffer buffer = ByteBuffer.wrap(messageData);
+        byte packetType = buffer.get();
+        switch (packetType) {
+            case MOVE:
+                updateEntity(playerId, buffer);
+                break;
+            case BULLET:
+                receiveBullet(playerId, buffer);
+                break;
+            case OBSTACLE:
+                receiveObstacle(buffer);
+            default:
+                Gdx.app.debug(TAG, "processPackage: DEFAULT");
+        }
     }
 
     private void updateEntity(String participantId, ByteBuffer wrap) {
@@ -114,30 +115,52 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
     }
 
 
-    private void receiveBullet(String playerId, ByteBuffer wrap) {
-//        Gdx.app.debug(TAG, "receiveBullet: ");
-        Entity entity = entityFactory.createBullet(playerId);
+    @Override
+    public void entityAdded(Entity entity) {
+        if (bulletMapper.has(entity)) {
+            sendBullet(entity);
+        } else if (obstacleMapper.has(entity)) {
+            sendObstacle(entity);
+        }
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+
+    }
+
+    private void sendObstacle(Entity entity) {
         TransformComponent transform = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
-        transform.position.x = wrap.getFloat();
-        transform.position.y = wrap.getFloat();
-        movement.velocity.x = wrap.getFloat();
-        movement.velocity.y = wrap.getFloat();
+        ByteBuffer buffer = ByteBuffer.allocate(4 * 4 + 1);
+        buffer.put(OBSTACLE);
+        buffer.putFloat(transform.position.x);
+        buffer.putFloat(transform.position.y);
+        buffer.putFloat(movement.velocity.x);
+        buffer.putFloat(movement.velocity.y);
+        networkService.sendUnreliableMessageToOthers(buffer.array());
+    }
+
+    private void receiveObstacle(ByteBuffer buffer) {
+        Entity entity = entityFactory.createObstacle();
+        entity.remove(NetworkAddComponent.class);
+        TransformComponent transform = transformMapper.get(entity);
+        MovementComponent movement = movementMapper.get(entity);
+        transform.position.x = buffer.getFloat();
+        transform.position.y = buffer.getFloat();
+        movement.velocity.x = buffer.getFloat();
+        movement.velocity.y = buffer.getFloat();
         getEngine().addEntity(entity);
     }
 
 
-    @Override
-    public void entityAdded(Entity entity) {
-        IdComponent bulletId = idMapper.get(entity);
-        IdComponent playerId = idMapper.get(player.first());
-        if (Objects.equals(bulletId.participantId, playerId.participantId)) {
-            sendBullet(entity);
-        }
-    }
-
     private void sendBullet(Entity entity) {
 //        Gdx.app.debug(TAG, "sendBullet: ");
+        IdComponent bulletId = idMapper.get(entity);
+        IdComponent playerId = idMapper.get(player.first());
+        if (!Objects.equals(bulletId.participantId, playerId.participantId)) {
+            return;
+        }
         TransformComponent transform = transformMapper.get(entity);
         MovementComponent movement = movementMapper.get(entity);
         ByteBuffer buffer = ByteBuffer.allocate(4 * 4 + 1);
@@ -149,9 +172,17 @@ public class NetworkSystem extends IteratingSystem implements EntityListener {
         networkService.sendUnreliableMessageToOthers(buffer.array());
     }
 
-    @Override
-    public void entityRemoved(Entity entity) {
-
+    private void receiveBullet(String playerId, ByteBuffer buffer) {
+//        Gdx.app.debug(TAG, "receiveBullet: ");
+        Entity entity = entityFactory.createBullet(playerId);
+        entity.remove(NetworkAddComponent.class);
+        TransformComponent transform = transformMapper.get(entity);
+        MovementComponent movement = movementMapper.get(entity);
+        transform.position.x = buffer.getFloat();
+        transform.position.y = buffer.getFloat();
+        movement.velocity.x = buffer.getFloat();
+        movement.velocity.y = buffer.getFloat();
+        getEngine().addEntity(entity);
     }
 
 }

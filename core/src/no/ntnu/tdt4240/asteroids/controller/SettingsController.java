@@ -31,7 +31,7 @@ public class SettingsController extends BaseController {
         this.view = new SettingsView(game.getBatch(), new ViewHandler());
         this.audioManager = ServiceLocator.getAppComponent().getAudioManager();
         this.settingsService = ServiceLocator.appComponent.getSettingsService();
-        musicVolume = settingsService.getInt(ISettingsService.MUSIC_VOLUME);
+        musicVolume = settingsService.getInt(ISettingsService.MUSIC_VOLUME, 100);
     }
 
     @Override

@@ -8,21 +8,29 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 
-public class MissileShotHandler implements IShotHandler {
+public class MissileShotHandler extends BaseShotHandler {
 
-    public int BULLET_SPEED = 300;
+    private static final int FIRE_DELAY = 300;
+    private static final int BULLET_SPEED = 300;
 
     private EntityFactory factory = ServiceLocator.getEntityComponent().getEntityFactory();
-    private AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
+
+    public MissileShotHandler() {
+        super(FIRE_DELAY);
+    }
 
     @Override
-    public void fire(PooledEngine engine, Entity controlledEntity) {
-        audioManager.playShoot();
+    protected String getSound() {
+        return Assets.SoundAsset.FIRE_MISSILE;
+    }
+
+    @Override
+    public void handle(PooledEngine engine, Entity controlledEntity) {
         IdComponent idComponent = idMapper.get(controlledEntity);
         Entity bullet = factory.createMissile(idComponent.participantId);
         TransformComponent playerTransform = ComponentMappers.transformMapper.get(controlledEntity);

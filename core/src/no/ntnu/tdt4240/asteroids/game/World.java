@@ -31,8 +31,8 @@ import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.game.damagehandler.ObstacleDamageHandler;
 import no.ntnu.tdt4240.asteroids.game.effect.BombShotEffect;
-import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MissileShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
@@ -42,9 +42,7 @@ import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
 
 @SuppressWarnings("WeakerAccess")
 public class World {
@@ -53,6 +51,7 @@ public class World {
     public static final int STATE_RUNNING = 1;
     public static final int STATE_PAUSED = 2;
     public static final int EVENT_WORLD_RESET = 0;
+
     @SuppressWarnings("unused")
     private static final String TAG = World.class.getSimpleName();
     private static final int SPAWN_LEFT = 0;
@@ -65,7 +64,6 @@ public class World {
     public final PlayerListener playerListener;
     public final Array<IGameListener> listeners = new Array<>();
     final PooledEngine engine;
-    private final DamageSystem.IDamageHandler obstacleDamageHandler = new ObstacleDamageHandler(this);
     private final PlayerDamageHandler playerDamageHandler = new PlayerDamageHandler(this);
     private final EntityListener resetListener = new EntityListener() {
         @Override
@@ -166,26 +164,10 @@ public class World {
         }
     }
 
-    private Entity createPowerup(Entity source) {
-        MovementComponent sourceMovement = movementMapper.get(source);
-        TransformComponent sourceTransform = transformMapper.get(source);
-        if (sourceMovement == null || sourceTransform == null) return null;
-        Entity entity = entityFactory.createPowerup(getRandomEffect());
-        MovementComponent movementComponent = movementMapper.get(entity);
-        movementComponent.velocity.set(sourceMovement.velocity);
-        TransformComponent transformComponent = transformMapper.get(entity);
-        transformComponent.position.set(sourceTransform.position);
-        return entity;
-    }
-
-    private IEffect getRandomEffect() {
-        return ServiceLocator.getEntityComponent().getEffectFactory().getRandomEffect();
-    }
 
     private Entity createObstacle() {
         Entity entity = entityFactory.createObstacle();
-        HealthComponent healthComponent = healthMapper.get(entity);
-        healthComponent.damageHandler = obstacleDamageHandler;
+
         do {
             positionObstacle(entity);
         } while (!isValidPosition(entity));
@@ -283,12 +265,6 @@ public class World {
         return level;
     }
 
-    private void spawnPowerup(Entity entity) {
-        if (MathUtils.random() > 1 - gameSettings.getPowerupSpawnChance()) {
-            Entity powerup = createPowerup(entity);
-            if (powerup != null) engine.addEntity(powerup);
-        }
-    }
 
     public interface IGameListener {
 
@@ -348,33 +324,6 @@ public class World {
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
             entity.add(animation);
             world.audioManager.playExplosion();
-            entity.remove(CollisionComponent.class);
-            entity.remove(MovementComponent.class);
-        }
-    }
-
-    private static class ObstacleDamageHandler implements DamageSystem.IDamageHandler {
-
-        private World world;
-
-        public ObstacleDamageHandler(World world) {
-            this.world = world;
-        }
-
-        @Override
-        public void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken) {
-
-        }
-
-        @Override
-        public void onEntityDestroyed(Engine engine, Entity entity, Entity source) {
-            world.spawnPowerup(entity);
-            AnimationComponent animation = new AnimationComponent();
-            animation.removeEntityAfterAnimation = true;
-            animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
-            entity.add(animation);
-            world.audioManager.playExplosion();
-            // TODO: 31-Mar-17 Figure out why this line sometime causes a null reference
             entity.remove(CollisionComponent.class);
             entity.remove(MovementComponent.class);
         }

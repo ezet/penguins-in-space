@@ -32,7 +32,7 @@ public class AudioManager {
             backgroundMusic = assets.getMusic(Assets.MusicAsset.SOUND_MUSIC_MP3);
             backgroundMusic.setLooping(true);
         }
-        setMusicVolume(settingsService.getInt(ISettingsService.MUSIC_VOLUME));
+        setMusicVolume(settingsService.getInt(ISettingsService.MUSIC_VOLUME, 100));
         if (!backgroundMusic.isPlaying())
             this.backgroundMusic.play();
     }
@@ -56,4 +56,12 @@ public class AudioManager {
         backgroundMusic.stop();
     }
 
+    public void playSound(String sound) {
+//        assets.getSound(sound).play(settingsService.getInt(ISettingsService.SOUND_VOLUME, 100));
+        assets.getSound(sound).play(1);
+    }
+
+    public void playSound(Sound soundOnStart) {
+        soundOnStart.play();
+    }
 }

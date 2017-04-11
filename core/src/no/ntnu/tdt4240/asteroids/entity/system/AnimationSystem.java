@@ -8,6 +8,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.animationMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
@@ -17,9 +19,11 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMa
 public class AnimationSystem extends IteratingSystem {
 
     private final static Family FAMILY = Family.all(AnimationComponent.class).get();
+    private final AudioManager audioManager;
 
     public AnimationSystem() {
         super(FAMILY);
+        audioManager = ServiceLocator.getAppComponent().getAudioManager();
     }
 
     @Override
@@ -38,6 +42,9 @@ public class AnimationSystem extends IteratingSystem {
                 animationComponent.originalScale.set(transformComponent.scale);
                 transformComponent.scale.set(animationComponent.scale);
             }
+            if (animationComponent.soundOnStart != null)
+                audioManager.playSound(animationComponent.soundOnStart);
+
         } else if (animationComponent.currentFrame == animationComponent.frames.size) {
             if (animationComponent.removeEntityAfterAnimation) {
                 getEngine().removeEntity(entity);
@@ -52,6 +59,9 @@ public class AnimationSystem extends IteratingSystem {
                     entity.remove(component);
                 }
             }
+            if (animationComponent.soundOnComplete != null)
+                audioManager.playSound(animationComponent.soundOnComplete);
+
             entity.remove(AnimationComponent.class);
             return;
         }

@@ -59,7 +59,7 @@ public class EntityModule {
 
     @Provides
     @EntityComponent.GameScope
-    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory) {
-        return new EntityFactory(engine, drawableComponentFactory, gameSettings, animationFactory);
+    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory, Assets assets) {
+        return new EntityFactory(engine, drawableComponentFactory, gameSettings, animationFactory, assets);
     }
 }

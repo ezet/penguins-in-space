@@ -45,6 +45,7 @@ class SingleplayerGame extends BaseGameController implements World.IGameListener
         String displayName = ServiceLocator.getAppComponent().getNetworkService().getDisplayName();
         PlayerData data = new PlayerData("", displayName, true);
         addPlayers(Collections.singletonList(data), false);
+        world.initialize();
     }
 
     @Override

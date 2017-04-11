@@ -20,7 +20,7 @@ public class ShootComponent implements Component, Pool.Poolable {
     }
 
     public void fire(PooledEngine engine, Entity controlledEntity) {
-        if (handler == null) handler = new StandardShotHandler();
+        if (handler == null) return;
         handler.fire(engine, controlledEntity);
     }
 

@@ -35,7 +35,7 @@ public class SettingsService implements ISettingsService {
     }
 
     @Override
-    public int getInt(String id) {
+    public int getInt(String id, int defaultValue) {
         return preferences.getInt(id, 0);
     }
 

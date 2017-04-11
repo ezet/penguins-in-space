@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.PooledEngine;
 
 import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;

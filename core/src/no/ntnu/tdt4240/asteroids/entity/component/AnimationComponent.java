@@ -1,6 +1,7 @@
 package no.ntnu.tdt4240.asteroids.entity.component;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +20,8 @@ public class AnimationComponent implements Component, Pool.Poolable {
     public float delay = 0;
     public final Array<Class<? extends Component>> removeAfterAnimation = new Array<>();
     public final Array<Class<? extends Component>> removeDuringAnimation = new Array<>();
+    public Sound soundOnStart = null;
+    public Sound soundOnComplete = null;
 
     @Override
     public void reset() {
@@ -32,5 +35,7 @@ public class AnimationComponent implements Component, Pool.Poolable {
         originalScale.set(1, 1);
         removeAfterAnimation.clear();
         removeDuringAnimation.clear();
+        soundOnStart = null;
+        soundOnComplete = null;
     }
 }

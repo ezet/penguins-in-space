@@ -29,7 +29,7 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     private final TextButton toggleMuteButton = new TextButton("Toggle mute", uiSkin);
 
     private final Table table = new Table();
-    private boolean muteToggled = true;
+    private boolean musicMuted = true;
 
     private final Label headlineLabel = new Label("Settings", uiSkin);
     private final Label changeCharacterLabel = new Label("Change the appearance of your character:", uiSkin);
@@ -42,11 +42,10 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     public SettingsView(Batch batch, SettingsController.ViewHandler controller) {
         super(batch);
         this.controller = controller;
-        setDebugAll(true);
         table.addAction(Actions.alpha(0));
         addActor(table);
         init();
-        muteToggled = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+        musicMuted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
     }
 
     @Override
@@ -118,8 +117,8 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
         toggleMuteButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                muteToggled = !muteToggled;
-                controller.toggleMute(muteToggled);
+                musicMuted = !musicMuted;
+                controller.toggleMute(musicMuted);
             }
         });
 

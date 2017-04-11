@@ -37,7 +37,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     @Override
     protected void setupEngine(PooledEngine engine, SpriteBatch batch) {
         super.setupEngine(engine, batch);
-        engine.addSystem(new NetworkSystem(networkService));
+        engine.addSystem(new NetworkSystem(ServiceLocator.getAppComponent().getNetworkService()));
     }
 
     @Override
@@ -89,6 +89,7 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     public void onRoomReady(List<PlayerData> players) {
         Gdx.app.debug(TAG, "onRoomReady: ");
         addPlayers(players, true);
+        world.initialize();
     }
 
     @Override

@@ -50,6 +50,8 @@ public class Assets {
         assetManager.load(SoundAsset.SOUND_EXPLOSION_WAV, Sound.class);
         assetManager.load(SoundAsset.SOUND_SHOOT_WAV, Sound.class);
         assetManager.load(SoundAsset.SOUND_POWERUP_WAV, Sound.class);
+        assetManager.load(SoundAsset.BOMB_DROP, Sound.class);
+        assetManager.load(SoundAsset.FIRE_MISSILE, Sound.class);
         assetManager.update();
     }
 
@@ -119,6 +121,8 @@ public class Assets {
         public static final String SOUND_EXPLOSION_WAV = "sound/explosion.wav";
         public static final String SOUND_SHOOT_WAV = "sound/shoot.wav";
         public static final String SOUND_POWERUP_WAV = "sound/powerup.wav";
+        public static final String BOMB_DROP = "sound/bomb_drop.wav";
+        public static final String FIRE_MISSILE = "sound/fire_missile.wav";
     }
 
     public static abstract class MusicAsset {

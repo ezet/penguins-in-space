@@ -32,15 +32,14 @@ import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
 
 abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
 
     @SuppressWarnings("unused")
     protected static final String TAG = BaseGameController.class.getSimpleName();
-    private final boolean DEBUG = false;
     protected final Asteroids game;
     protected final PooledEngine engine;
+    private final boolean DEBUG = false;
     private final ControllerInputHandler controllerInputHandler;
     protected IGameView view;
     String playerParticipantId;
@@ -65,6 +64,23 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     protected abstract void initializeEntityComponent(PooledEngine engine);
 
+    private void setupView() {
+        view = new GameView(game.getBatch(), this);
+        view.setInputController(new GamepadController(controllerInputHandler));
+        view.setDebug(DEBUG);
+    }
+
+    protected void setupWorld() {
+        world = new World(engine);
+        world.listeners.add(this);
+    }
+
+    @Override
+    public final void render(float delta) {
+        update(delta);
+        draw();
+    }
+
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
@@ -72,31 +88,11 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         view.resize(width, height);
     }
 
-    private void setupView() {
-        view = new GameView(game.getBatch(), this);
-        view.setInputController(new GamepadController(controllerInputHandler));
-        view.setDebug(DEBUG);
-    }
-
     @Override
     public final void show() {
 //        Gdx.app.debug(TAG, "show: ");
         Gdx.input.setInputProcessor(view.getInputProcessor());
         super.show();
-    }
-
-    @Override
-    public void resume() {
-//        Gdx.app.debug(TAG, "resume: ");
-        super.resume();
-//        view.resume();
-    }
-
-    @Override
-    public void pause() {
-//        Gdx.app.debug(TAG, "pause: ");
-        super.pause();
-//        view.hide();
     }
 
     @Override
@@ -108,21 +104,23 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     }
 
     @Override
-    public void dispose() {
-//        Gdx.app.debug(TAG, "dispose: ");
-        super.dispose();
-    }
-
-    protected void setupWorld() {
-        world = new World(engine);
-        world.listeners.add(this);
-        world.initialize();
+    public void pause() {
+//        Gdx.app.debug(TAG, "pause: ");
+        super.pause();
+//        view.hide();
     }
 
     @Override
-    public final void render(float delta) {
-        update(delta);
-        draw();
+    public void resume() {
+//        Gdx.app.debug(TAG, "resume: ");
+        super.resume();
+//        view.resume();
+    }
+
+    @Override
+    public void dispose() {
+//        Gdx.app.debug(TAG, "dispose: ");
+        super.dispose();
     }
 
     private void update(float delta) {
@@ -153,14 +151,28 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
         }
     }
 
-    private void setControlledEntity(Entity entity) {
-        controllerInputHandler.setControlledEntity(entity);
+    @Override
+    public void notifyScoreChanged(Entity entity, int oldScore, int newScore) {
+        view.updateScore(newScore);
     }
 
     @Override
     public void notifyPlayerRemoved(Entity entity) {
         IdComponent id = idMapper.get(entity);
         remainingPlayers.remove(id.participantId);
+    }
+
+    @Override
+    public void notifyDamageTaken(Entity entity, int damageTaken) {
+        IdComponent id = idMapper.get(entity);
+        HealthComponent healthComponent = ComponentMappers.healthMapper.get(entity);
+        if (Objects.equals(id.participantId, playerParticipantId)) {
+            view.updateHitpoints(healthComponent.hitPoints);
+        }
+    }
+
+    private void setControlledEntity(Entity entity) {
+        controllerInputHandler.setControlledEntity(entity);
     }
 
     void addPlayers(Collection<PlayerData> data, boolean multiplayer) {
@@ -180,20 +192,6 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
             }
             world.addPlayer(entity);
         }
-    }
-
-    @Override
-    public void notifyDamageTaken(Entity entity, int damageTaken) {
-        IdComponent id = idMapper.get(entity);
-        HealthComponent healthComponent = ComponentMappers.healthMapper.get(entity);
-        if (Objects.equals(id.participantId, playerParticipantId)) {
-            view.updateHitpoints(healthComponent.hitPoints);
-        }
-    }
-
-    @Override
-    public void notifyScoreChanged(Entity entity, int oldScore, int newScore) {
-        view.updateScore(newScore);
     }
 
     void onGameEnd() {
