@@ -12,7 +12,7 @@ public interface ISettingsService {
 
     void setBoolean(String id, boolean value);
 
-    String getString(String id);
+    String getString(String id, String defaultValue);
 
     void setString(String id, String value);
 

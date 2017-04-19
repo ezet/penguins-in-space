@@ -47,8 +47,8 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
 
     @Override
     public DrawableComponent getPlayer() {
-        String playerAppearance = ServiceLocator.getAppComponent().getSettingsService().getString(ISettingsService.PLAYER_APPEARANCE);
-        if (Objects.equals(playerAppearance, "")) playerAppearance = PLAYER_DEFAULT;
+        String playerAppearance = ServiceLocator.getAppComponent().getSettingsService().getString(ISettingsService.PLAYER_APPEARANCE, null);
+        if (Objects.equals(playerAppearance, null)) playerAppearance = PLAYER_DEFAULT;
         return getDrawable(playerAppearance);
     }
 

@@ -25,8 +25,8 @@ public class SettingsService implements ISettingsService {
     }
 
     @Override
-    public String getString(String id) {
-        return preferences.getString(id, "");
+    public String getString(String id, String defaultValue) {
+        return preferences.getString(id, defaultValue);
     }
 
     @Override
@@ -43,4 +43,8 @@ public class SettingsService implements ISettingsService {
     public void setInt(String id, int value) {
         preferences.edit().putInt(id, value).apply();
     }
+
+//    public void setDefaultPreferences() {
+//        PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
+//    }
 }

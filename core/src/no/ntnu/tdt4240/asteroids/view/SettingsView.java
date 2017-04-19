@@ -1,6 +1,5 @@
 package no.ntnu.tdt4240.asteroids.view;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -13,8 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 
-import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.controller.SettingsController;
 import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -25,9 +25,9 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     @SuppressWarnings("unused")
     private static final String TAG = SettingsView.class.getSimpleName();
     private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
-    private final TextButton backButton = new TextButton("Save Settings", uiSkin);
-    private final TextButton leftButton = new TextButton("Previous", uiSkin);
-    private final TextButton rightButton = new TextButton("Next", uiSkin);
+    private final TextButton backButton = new TextButton("Save", uiSkin);
+    private final TextButton previousButton = new TextButton("Previous", uiSkin);
+    private final TextButton nextButton = new TextButton("Next", uiSkin);
     private final TextButton decreaseVolumeButton = new TextButton("  -  ", uiSkin);
     private final TextButton increaseVolumeButton = new TextButton("  +  ", uiSkin);
     private final TextButton toggleMuteButton = new TextButton("Toggle mute", uiSkin);
@@ -36,20 +36,19 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     private boolean musicMuted = true;
 
     private final Label headlineLabel = new Label("Settings", uiSkin);
-    private final Label changeCharacterLabel = new Label("Change the appearance of your character:", uiSkin);
+    private final Label changeCharacterLabel = new Label("Appearance:", uiSkin);
     private final SettingsController.ViewHandler controller;
-    private ISettingsService settingsService = ServiceLocator.appComponent.getSettingsService();
-    private Assets assetsLoader = ServiceLocator.getAppComponent().getAssetLoader();
-    private Image currentCharacterImage = new Image(assetsLoader.getTexture(settingsService.getString(ISettingsService.PLAYER_APPEARANCE)));
+    private final Assets assetsLoader = ServiceLocator.getAppComponent().getAssetLoader();
+    private final Image currentCharacterImage = new Image(null, Scaling.fit, Align.center);
 
 
     public SettingsView(Batch batch, SettingsController.ViewHandler controller) {
         super(batch);
         this.controller = controller;
-        table.addAction(Actions.alpha(0));
-        addActor(table);
+        table.getColor().a = 0;
         init();
-        musicMuted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+        addActor(table);
+        currentCharacterImage.setScale(0.5f);
     }
 
     @Override
@@ -64,26 +63,32 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
 
     @Override
     public void show() {
-        table.addAction(Actions.fadeIn(0.5f));
+        table.addAction(getDefaultShowAnimation());
     }
 
     @Override
     public void hide() {
-        table.addAction(Actions.alpha(0.5f));
+        table.addAction(getDefaultHideAnimation());
     }
 
     @Override
     public void setCurrentCharacter(String textureString) {
-        currentCharacterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(assetsLoader.getTexture(textureString))));
+        TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(assetsLoader.getTexture(textureString)));
+        currentCharacterImage.setDrawable(drawable);
+    }
+
+    @Override
+    public void setMusicMuted(boolean muted) {
+        musicMuted = muted;
     }
 
     private void init() {
         table.setFillParent(true);
         table.center();
+//        table.row();
+//        table.add(headlineLabel).space(10);
         table.row();
-        table.add(headlineLabel).pad(10);
-        table.row();
-        table.add(new Label("Volume:", uiSkin)).pad(10);
+        table.add(new Label("Volume:", uiSkin)).space(10);
         table.row();
         HorizontalGroup h = new HorizontalGroup();
         h.space(10);
@@ -92,16 +97,15 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
         h.addActor(increaseVolumeButton);
         table.add(h);
         table.row();
-        table.add(changeCharacterLabel).pad(10);
+        table.add(changeCharacterLabel).space(10).align(Align.center);
         table.row();
         HorizontalGroup h2 = new HorizontalGroup();
         h2.space(10);
-        h2.addActor(leftButton);
+        h2.addActor(previousButton);
         h2.addActor(currentCharacterImage);
-        h2.addActor(rightButton);
+        h2.addActor(nextButton);
         table.add(h2);
         table.row();
-
 
         table.add(backButton).pad(10);
 
@@ -134,14 +138,14 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
             }
         });
 
-        leftButton.addListener(new ClickListener() {
+        previousButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.previousCharacter();
             }
         });
 
-        rightButton.addListener(new ClickListener() {
+        nextButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.nextCharacter();

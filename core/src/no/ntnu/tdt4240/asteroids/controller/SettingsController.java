@@ -39,9 +39,24 @@ public class SettingsController extends BaseController {
         return view;
     }
 
+    @Override
+    public void show() {
+        super.show();
+        String appearanceKey = settingsService.getString(ISettingsService.PLAYER_APPEARANCE, null);
+        if (appearanceKey == null) {
+            Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
+            appearanceKey = characters.get(0);
+            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, appearanceKey);
+        }
+        view.setCurrentCharacter(appearanceKey);
+        boolean musicMuted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+        view.setMusicMuted(musicMuted);
+    }
 
     public interface ISettingsView extends IView {
         void setCurrentCharacter(String playerAppearance);
+
+        void setMusicMuted(boolean muted);
     }
 
     public class ViewHandler {
@@ -52,18 +67,22 @@ public class SettingsController extends BaseController {
 
         public void previousCharacter() {
             Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-            int index = characters.indexOf(settingsService.getString(ISettingsService.PLAYER_APPEARANCE), false);
-            if (index == 0) return;
-            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, characters.get(index - 1));
-            view.setCurrentCharacter(settingsService.getString(ISettingsService.PLAYER_APPEARANCE));
+            String currentAppearance = settingsService.getString(ISettingsService.PLAYER_APPEARANCE, null);
+            int index = characters.indexOf(currentAppearance, false);
+            if (index <= 0) return;
+            String newAppearance = characters.get(index - 1);
+            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, newAppearance);
+            view.setCurrentCharacter(newAppearance);
         }
 
         public void nextCharacter() {
             Array<String> characters = ServiceLocator.getAppComponent().getAssetLoader().getCharacters();
-            int index = characters.indexOf(settingsService.getString(ISettingsService.PLAYER_APPEARANCE), false);
-            if (index == characters.size - 1) return;
-            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, characters.get(index + 1));
-            view.setCurrentCharacter(settingsService.getString(ISettingsService.PLAYER_APPEARANCE));
+            String currentAppearance = settingsService.getString(ISettingsService.PLAYER_APPEARANCE, null);
+            int index = characters.indexOf(currentAppearance, false);
+            if (index == characters.size - 1 || index == -1) return;
+            String newAppearance = characters.get(index + 1);
+            settingsService.setString(ISettingsService.PLAYER_APPEARANCE, newAppearance);
+            view.setCurrentCharacter(newAppearance);
         }
 
         public void toggleMute(boolean muteToggled) {
