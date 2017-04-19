@@ -1,14 +1,18 @@
 package no.ntnu.tdt4240.asteroids.view;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.controller.SettingsController;
@@ -34,9 +38,9 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     private final Label headlineLabel = new Label("Settings", uiSkin);
     private final Label changeCharacterLabel = new Label("Change the appearance of your character:", uiSkin);
     private final SettingsController.ViewHandler controller;
-    private Label currentCharacterTextField = new Label(ServiceLocator.getAppComponent().getSettingsService().getString(ISettingsService.PLAYER_APPEARANCE).replace(".png", ""), uiSkin);
     private ISettingsService settingsService = ServiceLocator.appComponent.getSettingsService();
-
+    private Assets assetsLoader = ServiceLocator.getAppComponent().getAssetLoader();
+    private Image currentCharacterImage = new Image(assetsLoader.getTexture(settingsService.getString(ISettingsService.PLAYER_APPEARANCE)));
 
 
     public SettingsView(Batch batch, SettingsController.ViewHandler controller) {
@@ -69,8 +73,8 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     }
 
     @Override
-    public void setCurrentCharacter(String string) {
-        currentCharacterTextField.setText(string.replace(".png", ""));
+    public void setCurrentCharacter(String textureString) {
+        currentCharacterImage.setDrawable(new TextureRegionDrawable(new TextureRegion(assetsLoader.getTexture(textureString))));
     }
 
     private void init() {
@@ -90,11 +94,12 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
         table.row();
         table.add(changeCharacterLabel).pad(10);
         table.row();
-        table.add(leftButton);
-        table.row();
-        table.add(currentCharacterTextField);
-        table.row();
-        table.add(rightButton);
+        HorizontalGroup h2 = new HorizontalGroup();
+        h2.space(10);
+        h2.addActor(leftButton);
+        h2.addActor(currentCharacterImage);
+        h2.addActor(rightButton);
+        table.add(h2);
         table.row();
 
 
