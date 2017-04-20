@@ -10,7 +10,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
@@ -53,7 +53,7 @@ public class ObstacleDamageHandler implements DamageSystem.IDamageHandler {
         AnimationComponent animation = new AnimationComponent();
         animation.removeEntityAfterAnimation = true;
         animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
-        animation.soundOnStart = ServiceLocator.getAppComponent().getAssetLoader().getSound(Assets.SoundAsset.SOUND_EXPLOSION_WAV);
+        animation.soundOnStart = AssetService.SoundAsset.SOUND_EXPLOSION_WAV;
         animation.removeDuringAnimation.add(CollisionComponent.class);
         animation.removeDuringAnimation.add(MovementComponent.class);
         entity.add(animation);

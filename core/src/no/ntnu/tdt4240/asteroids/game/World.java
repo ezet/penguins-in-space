@@ -31,14 +31,14 @@ import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
 import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
 import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
-import no.ntnu.tdt4240.asteroids.game.damagehandler.ObstacleDamageHandler;
 import no.ntnu.tdt4240.asteroids.game.effect.BombShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MissileShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
-import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
+import no.ntnu.tdt4240.asteroids.service.settings.IGameConfig;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
@@ -82,11 +82,11 @@ public class World {
     };
     private final ImmutableArray<Entity> players;
     @Inject
-    IGameSettings gameSettings;
+    IGameConfig gameSettings;
     @Inject
     EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
     @Inject
-    AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
+    AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
     private int state = STATE_READY;
     private int level = 0;
 
@@ -323,7 +323,7 @@ public class World {
             animation.removeEntityAfterAnimation = true;
             animation.frames.addAll(ServiceLocator.getAppComponent().getAnimationFactory().getMediumExplosion());
             entity.add(animation);
-            world.audioManager.playExplosion();
+            world.audioService.playSound(AssetService.SoundAsset.SOUND_EXPLOSION_WAV);
             entity.remove(CollisionComponent.class);
             entity.remove(MovementComponent.class);
         }

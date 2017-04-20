@@ -10,25 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.ntnu.tdt4240.asteroids.controller.MultiplayerMenu;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.MpMenuPresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class MultiplayerMenuView extends BaseMenuView implements MultiplayerMenu.IView {
+public class MultiplayerMenuView extends BaseMenuView implements MpMenuPresenter.IView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MultiplayerMenuView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetService().getSkin(AssetService.SkinAsset.UISKIN);
     private final TextButton quickGame = new TextButton("QUICK GAME", uiSkin);
     private final TextButton invitePlayers = new TextButton("INVITE FRIENDS", uiSkin);
     private final TextButton hostGame = new TextButton("HOST GAME", uiSkin);
     private final TextButton back = new TextButton("BACK", uiSkin);
-    private final MultiplayerMenu.ViewHandler controller;
+    private final MpMenuPresenter.ViewHandler controller;
     private final List<TextButton> buttons = new ArrayList<>();
     // TODO: implement main screen gui
 
-    public MultiplayerMenuView(Batch batch, MultiplayerMenu.ViewHandler controller) {
+    public MultiplayerMenuView(Batch batch, MpMenuPresenter.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         buttons.add(quickGame);

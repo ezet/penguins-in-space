@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import no.ntnu.tdt4240.asteroids.game.shothandler.MissileShotHandler;
-import no.ntnu.tdt4240.asteroids.game.shothandler.MultiShotHandler;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 public class MissileShotEffect extends BaseShotEffect {
@@ -29,7 +28,7 @@ public class MissileShotEffect extends BaseShotEffect {
 
     @Override
     public TextureRegion getPowerupTexture() {
-        Texture texture = ServiceLocator.getAppComponent().getAssetLoader().getTexture(Assets.TextureAsset.POWERUP_MISSILE);
+        Texture texture = ServiceLocator.getAppComponent().getAssetService().getTexture(AssetService.TextureAsset.POWERUP_MISSILE);
         return new TextureRegion(texture);
     }
 }

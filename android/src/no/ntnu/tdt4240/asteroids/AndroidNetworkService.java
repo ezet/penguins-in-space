@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -45,16 +44,16 @@ import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_S
 import static com.google.android.gms.games.leaderboard.LeaderboardVariant.TIME_SPAN_WEEKLY;
 
 
-class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener, GameHelper.GameHelperListener {
+class AndroidNetworkService implements INetworkService, RoomUpdateListener, RealTimeMessageReceivedListener, RoomStatusUpdateListener, OnInvitationReceivedListener, GameHelper.GameHelperListener {
 
     private static final int RC_ACHIEVEMENTS = 1;
     private static final int RC_SELECT_PLAYERS = 10000;
     private static final int RC_LEADERBOARD = 2;
     private static final int RC_INVITATION_INBOX = 10001;
     private final static int RC_WAITING_ROOM = 10002;
-    private static final String TAG = "PlayService";
+    private static final String TAG = "AndroidNetworkService";
     private static final int MIN_PLAYERS = 1;
-    private static final int MAX_PLAYERS = 1;
+    private static final int MAX_PLAYERS = 7;
     private final Activity activity;
     private final GameHelper gameHelper;
     private String incomingInvitationId;
@@ -62,7 +61,7 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     private INetworkListener networkListener;
     private String currentRoomId = null;
 
-    public PlayService(AndroidLauncher activity) {
+    public AndroidNetworkService(AndroidLauncher activity) {
         this.activity = activity;
         gameHelper = new GameHelper(activity, GameHelper.CLIENT_GAMES);
         gameHelper.enableDebugLog(true);
@@ -512,24 +511,6 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
         gameHelper.onStop();
     }
 
-    private class ScoreCallback implements ResultCallback<Leaderboards.SubmitScoreResult> {
-        private IScoreCallback callback;
-
-        public ScoreCallback(IScoreCallback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        public void onResult(@NonNull Leaderboards.SubmitScoreResult submitScoreResult) {
-            final boolean alltimeBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_ALL_TIME).newBest;
-            final boolean weeklyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_WEEKLY).newBest;
-            final boolean dailyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_DAILY).newBest;
-            callback.onScoreResult(alltimeBest, weeklyBest, dailyBest);
-        }
-    }
-
-
-
     // Sets the flag to keep this screen on. It's recommended to do that during
     // the
     // handshake when setting up a game, because if the screen turns off, the
@@ -547,5 +528,21 @@ class PlayService implements INetworkService, RoomUpdateListener, RealTimeMessag
     public void showGameError() {
         // TODO: 03-Apr-17 improve error message
         BaseGameUtils.makeSimpleDialog(activity, "ERROR");
+    }
+
+    private class ScoreCallback implements ResultCallback<Leaderboards.SubmitScoreResult> {
+        private IScoreCallback callback;
+
+        public ScoreCallback(IScoreCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onResult(@NonNull Leaderboards.SubmitScoreResult submitScoreResult) {
+            final boolean alltimeBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_ALL_TIME).newBest;
+            final boolean weeklyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_WEEKLY).newBest;
+            final boolean dailyBest = submitScoreResult.getScoreData().getScoreResult(TIME_SPAN_DAILY).newBest;
+            callback.onScoreResult(alltimeBest, weeklyBest, dailyBest);
+        }
     }
 }

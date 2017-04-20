@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -15,15 +15,15 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-public class MultiplayerGame extends BaseGameController implements World.IGameListener, INetworkService.INetworkListener {
+public class MpGamePresenter extends BaseGamePresenter implements World.IGameListener, INetworkService.INetworkListener {
 
     @SuppressWarnings("unused")
-    private static final String TAG = MultiplayerGame.class.getSimpleName();
+    private static final String TAG = MpGamePresenter.class.getSimpleName();
     private static final int ROUNDS = 3;
     private final INetworkService networkService;
     private int roundsPlayed = 0;
 
-    public MultiplayerGame(Asteroids game, Screen parent) {
+    public MpGamePresenter(Asteroids game, Screen parent) {
         super(game, parent);
         networkService = ServiceLocator.getAppComponent().getNetworkService();
         networkService.setNetworkListener(this);
@@ -41,17 +41,22 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     }
 
     @Override
+    public void handle(World model, int event) {
+        switch (event) {
+            case World.EVENT_WORLD_RESET: {
+                addPlayers(players.values(), true);
+                break;
+            }
+        }
+    }
+
+    @Override
     public void notifyScoreChanged(Entity entity, int oldScore, int score) {
         return;
         //        if (Objects.equals(id, playerId)) {
 //            view.updateScore(score);
 //        }
         // TODO: 05-Apr-17 handle opponent scores
-    }
-
-    @Override
-    public void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
-        Gdx.app.debug(TAG, "onReliableMessageReceived: " + senderParticipantId + "," + describeContents);
     }
 
     @Override
@@ -71,13 +76,20 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
     }
 
     @Override
-    public void handle(World model, int event) {
-        switch (event) {
-            case World.EVENT_WORLD_RESET: {
-                addPlayers(players.values(), true);
-                break;
-            }
-        }
+    public void onQuitLevel() {
+        super.onQuitLevel();
+        networkService.quitGame();
+    }
+
+    @Override
+    public void onQuit() {
+        networkService.quitGame();
+        super.onQuit();
+    }
+
+    @Override
+    public void onReliableMessageReceived(String senderParticipantId, int describeContents, byte[] messageData) {
+        Gdx.app.debug(TAG, "onReliableMessageReceived: " + senderParticipantId + "," + describeContents);
     }
 
     @Override
@@ -90,17 +102,5 @@ public class MultiplayerGame extends BaseGameController implements World.IGameLi
         Gdx.app.debug(TAG, "onRoomReady: ");
         addPlayers(players, true);
         world.initialize();
-    }
-
-    @Override
-    public void onQuitLevel() {
-        super.onQuitLevel();
-        networkService.quitGame();
-    }
-
-    @Override
-    public void onQuit() {
-        networkService.quitGame();
-        super.onQuit();
     }
 }

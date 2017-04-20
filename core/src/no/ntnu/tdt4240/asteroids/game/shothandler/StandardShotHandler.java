@@ -8,8 +8,9 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 
@@ -18,11 +19,11 @@ public class StandardShotHandler implements IShotHandler {
     public int BULLET_SPEED = 800;
 
     private EntityFactory factory = ServiceLocator.getEntityComponent().getEntityFactory();
-    private AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
+    private AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
 
     @Override
     public void fire(PooledEngine engine, Entity controlledEntity) {
-        audioManager.playShoot();
+        audioService.playSound(AssetService.SoundAsset.SOUND_SHOOT_WAV);
         IdComponent idComponent = idMapper.get(controlledEntity);
         Entity bullet = factory.createBullet(idComponent.participantId);
         TransformComponent playerPosition = ComponentMappers.transformMapper.get(controlledEntity);

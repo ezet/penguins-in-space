@@ -1,6 +1,6 @@
 package no.ntnu.tdt4240.asteroids.service.settings;
 
-public interface IGameSettings {
+public interface IGameConfig {
 
     double getObstacleSpawnChance();
 

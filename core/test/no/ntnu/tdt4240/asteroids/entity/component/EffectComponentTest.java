@@ -15,7 +15,7 @@ import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.game.effect.BaseEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyFloat;
@@ -39,7 +39,7 @@ public class EffectComponentTest {
         when(engine.createComponent(HealthComponent.class)).thenReturn(new HealthComponent());
         when(engine.createComponent(DamageComponent.class)).thenReturn(new DamageComponent());
         ServiceLocator.appComponent = mock(AppComponent.class);
-        when(ServiceLocator.getAppComponent().getAudioManager()).thenReturn(mock(AudioManager.class));
+        when(ServiceLocator.getAppComponent().getAudioService()).thenReturn(mock(AudioService.class));
         ServiceLocator.entityComponent = mock(EntityComponent.class);
         when(ServiceLocator.getEntityComponent().getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
         entity = mock(Entity.class);

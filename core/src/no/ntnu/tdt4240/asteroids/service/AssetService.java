@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 
-public class Assets {
+public class AssetService {
 
     private AssetManager assetManager;
 
-    public Assets() {
+    public AssetService() {
         assetManager = new AssetManager();
     }
 

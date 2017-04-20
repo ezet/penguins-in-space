@@ -9,7 +9,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.animationMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
@@ -19,11 +19,11 @@ import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMa
 public class AnimationSystem extends IteratingSystem {
 
     private final static Family FAMILY = Family.all(AnimationComponent.class).get();
-    private final AudioManager audioManager;
+    private final AudioService audioService;
 
     public AnimationSystem() {
         super(FAMILY);
-        audioManager = ServiceLocator.getAppComponent().getAudioManager();
+        audioService = ServiceLocator.getAppComponent().getAudioService();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AnimationSystem extends IteratingSystem {
                 transformComponent.scale.set(animationComponent.scale);
             }
             if (animationComponent.soundOnStart != null)
-                audioManager.playSound(animationComponent.soundOnStart);
+                audioService.playSound(animationComponent.soundOnStart);
 
         } else if (animationComponent.currentFrame == animationComponent.frames.size) {
             if (animationComponent.removeEntityAfterAnimation) {
@@ -60,7 +60,7 @@ public class AnimationSystem extends IteratingSystem {
                 }
             }
             if (animationComponent.soundOnComplete != null)
-                audioManager.playSound(animationComponent.soundOnComplete);
+                audioService.playSound(animationComponent.soundOnComplete);
 
             entity.remove(AnimationComponent.class);
             return;

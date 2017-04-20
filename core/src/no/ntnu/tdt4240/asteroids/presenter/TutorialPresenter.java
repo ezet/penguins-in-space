@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -6,13 +6,13 @@ import com.badlogic.gdx.Screen;
 import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.view.TutorialView;
 
-public class TutorialController extends BaseController {
-    private static final String TAG = TutorialController.class.getSimpleName();
+public class TutorialPresenter extends BasePresenter {
+    private static final String TAG = TutorialPresenter.class.getSimpleName();
     private final Asteroids game;
     private final IView view;
     private Screen parent;
 
-    public TutorialController(final Asteroids game, final Screen parent) {
+    public TutorialPresenter(final Asteroids game, final Screen parent) {
         this.parent = parent;
         this.game = game;
         this.view = new TutorialView(game.getBatch(), new ViewHandler());
@@ -27,15 +27,15 @@ public class TutorialController extends BaseController {
     }
 
     @Override
+    public no.ntnu.tdt4240.asteroids.view.IView getView() {
+        return view;
+    }
+
+    @Override
     public void render(float delta) {
         super.render(delta);
         update(delta);
         draw();
-    }
-
-    @Override
-    public no.ntnu.tdt4240.asteroids.view.IView getView() {
-        return view;
     }
 
     @Override

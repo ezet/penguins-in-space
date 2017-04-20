@@ -2,13 +2,13 @@ package no.ntnu.tdt4240.asteroids.game.effect;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
 
@@ -16,7 +16,7 @@ public abstract class BaseEffect implements IEffect {
 
     private static final String TAG = BaseEffect.class.getSimpleName();
 
-    AudioManager audioManager = ServiceLocator.getAppComponent().getAudioManager();
+    AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
     private TextureRegion oldRegion;
     private boolean applied;
     private float remainingDuration;
@@ -39,7 +39,7 @@ public abstract class BaseEffect implements IEffect {
     public boolean tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
         if (!applied) {
             applyEffect(engine, entity, component);
-            audioManager.playPowerup();
+            audioService.playSound(AssetService.SoundAsset.SOUND_POWERUP_WAV);
             setTexture(entity);
             remainingDuration = getDuration();
             applied = true;

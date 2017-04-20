@@ -1,15 +1,26 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 
 import no.ntnu.tdt4240.asteroids.view.IView;
 
-abstract class BaseController extends ScreenAdapter {
+abstract class BasePresenter extends ScreenAdapter {
     @SuppressWarnings("unused")
-    private static final String TAG = BaseController.class.getSimpleName();
+    private static final String TAG = BasePresenter.class.getSimpleName();
 
     public abstract IView getView();
+
+    @Override
+    public void render(float delta) {
+        getView().update(delta);
+        getView().draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        getView().resize(width, height);
+    }
 
     @Override
     public void show() {
@@ -24,17 +35,6 @@ abstract class BaseController extends ScreenAdapter {
 //        Gdx.app.debug(TAG, "hide: ");
         Gdx.input.setInputProcessor(null);
         getView().hide();
-    }
-
-    @Override
-    public void render(float delta) {
-        getView().update(delta);
-        getView().draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        getView().resize(width, height);
     }
 
     @Override

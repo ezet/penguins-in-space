@@ -10,12 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.service.Assets;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.TOUCH_BACKGROUND;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.TOUCH_KNOB;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.TOUCH_BACKGROUND;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.TOUCH_KNOB;
 
 // TODO: should extend WidgetGroup
 public class GamepadController extends WidgetGroup {
@@ -29,10 +29,10 @@ public class GamepadController extends WidgetGroup {
     private static final String TAG = GamepadController.class.getSimpleName();
     private Touchpad touchPad;
     private GamepadButton button;
-    private Assets assets;
+    private AssetService assetService;
 
     public GamepadController(ControllerInputHandler controllerInputHandler) {
-        assets = ServiceLocator.getAppComponent().getAssetLoader();
+        assetService = ServiceLocator.getAppComponent().getAssetService();
         initTouchpad();
         touchPad.addListener(new GamepadJoystickListener(controllerInputHandler));
         button.addListener(new GamepadButtonListener(controllerInputHandler));
@@ -48,8 +48,8 @@ public class GamepadController extends WidgetGroup {
         // TODO: use uiskin.json
 //        Skin touchpadSkin = new Skin(Gdx.files.internal("data/uiskin.json"));
         Skin touchpadSkin = new Skin();
-        touchpadSkin.add("touchBackground", assets.getTexture(TOUCH_BACKGROUND));
-        touchpadSkin.add("touchKnob", assets.getTexture(TOUCH_KNOB));
+        touchpadSkin.add("touchBackground", assetService.getTexture(TOUCH_BACKGROUND));
+        touchpadSkin.add("touchKnob", assetService.getTexture(TOUCH_KNOB));
         Touchpad.TouchpadStyle style = new Touchpad.TouchpadStyle();
 
         style.background = touchpadSkin.getDrawable("touchBackground");
@@ -69,7 +69,7 @@ public class GamepadController extends WidgetGroup {
         NoClickZone padZone = new NoClickZone(touchPad, NO_CLICK_MARGIN);
         addActor(padZone);
 
-        touchpadSkin.add("touchButton", assets.getTexture(TOUCH_KNOB));
+        touchpadSkin.add("touchButton", assetService.getTexture(TOUCH_KNOB));
         button = new GamepadButton(touchpadSkin.getDrawable("touchButton"));
         button.setSize(BUTTON_SIZE, BUTTON_SIZE);
         NoClickZone buttonZone = new NoClickZone(button, NO_CLICK_MARGIN);

@@ -1,5 +1,6 @@
-package no.ntnu.tdt4240.asteroids.controller;
-public interface IGameController {
+package no.ntnu.tdt4240.asteroids.presenter;
+
+public interface IGamePresenter {
 
     void onPause();
 

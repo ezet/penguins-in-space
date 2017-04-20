@@ -10,16 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.ntnu.tdt4240.asteroids.controller.MainMenu;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.MainMenuPresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class MainView extends BaseMenuView implements MainMenu.IView {
+public class MainView extends BaseMenuView implements MainMenuPresenter.IView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetService().getSkin(AssetService.SkinAsset.UISKIN);
     private final TextButton play = new TextButton("PLAY", uiSkin);
     private final TextButton multiplayer = new TextButton("MULTIPLAYER", uiSkin);
     private final TextButton settings = new TextButton("SETTINGS", uiSkin);
@@ -28,10 +28,10 @@ public class MainView extends BaseMenuView implements MainMenu.IView {
     private final TextButton quit = new TextButton("QUIT", uiSkin);
 
     private final TextButton achievements = new TextButton("ACHIEVEMENTS", uiSkin);
-    private final MainMenu.ViewHandler controller;
+    private final MainMenuPresenter.ViewHandler controller;
     private final List<TextButton> buttons = new ArrayList<>();
 
-    public MainView(Batch batch, MainMenu.ViewHandler controller) {
+    public MainView(Batch batch, MainMenuPresenter.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         buttons.add(play);

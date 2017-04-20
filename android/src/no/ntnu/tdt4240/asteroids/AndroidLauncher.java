@@ -5,13 +5,14 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.squareup.leakcanary.LeakCanary;
 
 public class AndroidLauncher extends AndroidApplication {
 
 
     private static final String TAG = AndroidLauncher.class.getSimpleName();
     private static AndroidLauncher instance;
-    private PlayService playService;
+    private AndroidNetworkService playService;
 
     public AndroidLauncher() {
         instance = this;
@@ -24,8 +25,14 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        playService = new PlayService(this);
-        ISettingsService settingsService = new SettingsService(this.getApplicationContext());
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this.getApplication());
+        playService = new AndroidNetworkService(this);
+        ISettingsService settingsService = new AndroidSettingsService(this.getApplicationContext());
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useCompass = false;
         config.useAccelerometer = false;

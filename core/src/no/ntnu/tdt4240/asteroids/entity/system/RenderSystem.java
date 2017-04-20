@@ -20,7 +20,7 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.boundsMapper;
@@ -49,7 +49,7 @@ public class RenderSystem extends IteratingSystem {
         this.batch = batch;
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setColor(Color.RED);
-        font = ServiceLocator.getAppComponent().getAssetLoader().getSkin(Assets.SkinAsset.UISKIN).getFont("default-font");
+        font = ServiceLocator.getAppComponent().getAssetService().getSkin(AssetService.SkinAsset.UISKIN).getFont("default-font");
     }
 
     @Override
@@ -62,17 +62,6 @@ public class RenderSystem extends IteratingSystem {
         super.update(deltaTime);
         batch.end();
         if (debug) shapeRenderer.end();
-    }
-
-    private void drawBounds(Entity entity) {
-        Shape2D bounds = boundsMapper.get(entity).getBounds();
-        if (bounds instanceof Rectangle) {
-            Rectangle region = (Rectangle) bounds;
-            shapeRenderer.rect(region.x, region.y, region.width, region.height);
-        } else if (bounds instanceof Circle) {
-            Circle region = (Circle) bounds;
-            shapeRenderer.circle(region.x, region.y, region.radius);
-        }
     }
 
     @Override
@@ -92,6 +81,17 @@ public class RenderSystem extends IteratingSystem {
         PlayerClass playerClass = playerMapper.get(entity);
         if (playerClass != null && !playerClass.isSelf) {
             font.draw(batch, playerClass.displayName, x, y, width, -1, true);
+        }
+    }
+
+    private void drawBounds(Entity entity) {
+        Shape2D bounds = boundsMapper.get(entity).getBounds();
+        if (bounds instanceof Rectangle) {
+            Rectangle region = (Rectangle) bounds;
+            shapeRenderer.rect(region.x, region.y, region.width, region.height);
+        } else if (bounds instanceof Circle) {
+            Circle region = (Circle) bounds;
+            shapeRenderer.circle(region.x, region.y, region.radius);
         }
     }
 

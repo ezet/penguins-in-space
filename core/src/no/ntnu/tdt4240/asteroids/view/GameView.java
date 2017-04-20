@@ -12,9 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import no.ntnu.tdt4240.asteroids.controller.IGameController;
-import no.ntnu.tdt4240.asteroids.controller.IGameView;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.IGamePresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
@@ -22,8 +21,8 @@ public class GameView extends BaseView implements IGameView {
 
     private static final String TAG = GameView.class.getSimpleName();
     // TODO: define proper default GUI resources like font, label style etc.
-    private final IGameController inputHandler;
-    private final Assets assetLoader;
+    private final IGamePresenter inputHandler;
+    private final AssetService assetLoader;
     private Table table;
     private Label scoreLabel;
     private Label levelLabel;
@@ -36,31 +35,51 @@ public class GameView extends BaseView implements IGameView {
     private Cell mainMenuCell;
 
 
-    public GameView(Batch batch, IGameController inputHandler) {
+    public GameView(Batch batch, IGamePresenter inputHandler) {
         super(batch);
         getViewport().apply(true);
-        assetLoader = ServiceLocator.getAppComponent().getAssetLoader();
+        assetLoader = ServiceLocator.getAppComponent().getAssetService();
         this.inputHandler = inputHandler;
         loadAssets();
         initGui();
     }
 
     private void loadAssets() {
-        resume = new TextButton("RESUME", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        settings = new TextButton("SETTINGS", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        quitToMenu = new TextButton("QUIT TO MENU", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        quit = new TextButton("QUIT", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        pauseButton = new TextButton("Pause", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        resume = new TextButton("RESUME", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        settings = new TextButton("SETTINGS", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        quitToMenu = new TextButton("QUIT TO MENU", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        quit = new TextButton("QUIT", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        pauseButton = new TextButton("Pause", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
 
-        scoreLabel = new Label("SCORE: 0", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        levelLabel = new Label("LEVEL: 0", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
-        hitpointsLabel = new Label("", assetLoader.getSkin(Assets.SkinAsset.UISKIN));
+        scoreLabel = new Label("SCORE: 0", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        levelLabel = new Label("LEVEL: 0", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
+        hitpointsLabel = new Label("", assetLoader.getSkin(AssetService.SkinAsset.UISKIN));
     }
 
     @Override
     public void setInputController(Actor inputController) {
         getActors().removeValue(inputController, true);
         addActor(inputController);
+    }
+
+    @Override
+    public void updateScore(int score) {
+        scoreLabel.setText("SCORE: " + score);
+    }
+
+    @Override
+    public void updateLevel(int level) {
+        levelLabel.setText("LEVEL: " + level);
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        setDebugAll(debug);
+    }
+
+    @Override
+    public void updateHitpoints(int hitpoints) {
+        hitpointsLabel.setText("HP: " + hitpoints);
     }
 
     @Override
@@ -167,26 +186,6 @@ public class GameView extends BaseView implements IGameView {
             }
         }));
 
-    }
-
-    @Override
-    public void updateScore(int score) {
-        scoreLabel.setText("SCORE: " + score);
-    }
-
-    @Override
-    public void updateLevel(int level) {
-        levelLabel.setText("LEVEL: " + level);
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        setDebugAll(debug);
-    }
-
-    @Override
-    public void updateHitpoints(int hitpoints) {
-        hitpointsLabel.setText("HP: " + hitpoints);
     }
 
 

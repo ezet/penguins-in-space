@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.gdx.Gdx;
 
@@ -6,14 +6,14 @@ import no.ntnu.tdt4240.asteroids.Asteroids;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.MainView;
 
-public class MainMenu extends BaseController {
+public class MainMenuPresenter extends BasePresenter {
 
     @SuppressWarnings("unused")
-    private static final String TAG = MainMenu.class.getSimpleName();
+    private static final String TAG = MainMenuPresenter.class.getSimpleName();
     private final Asteroids game;
     private final IView view;
 
-    public MainMenu(final Asteroids game) {
+    public MainMenuPresenter(final Asteroids game) {
         this.game = game;
         this.view = new MainView(game.getBatch(), new ViewHandler());
     }
@@ -29,11 +29,11 @@ public class MainMenu extends BaseController {
     public class ViewHandler {
 
         public void onPlay() {
-            game.setScreen(new SingleplayerGame(game, MainMenu.this));
+            game.setScreen(new SpGamePresenter(game, MainMenuPresenter.this));
         }
 
         public void onMultiplayer() {
-            game.setScreen(new MultiplayerMenu(game));
+            game.setScreen(new MpMenuPresenter(game));
         }
 
         public void onQuit() {
@@ -41,11 +41,11 @@ public class MainMenu extends BaseController {
         }
 
         public void onTutorial() {
-            game.setScreen(new TutorialController(game, MainMenu.this));
+            game.setScreen(new TutorialPresenter(game, MainMenuPresenter.this));
         }
 
         public void onSettings() {
-            game.setScreen(new SettingsController(game, MainMenu.this));
+            game.setScreen(new SettingsPresenter(game, MainMenuPresenter.this));
         }
 
         public void onShowAchievements() {

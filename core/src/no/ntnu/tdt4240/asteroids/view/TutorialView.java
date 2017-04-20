@@ -9,17 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import no.ntnu.tdt4240.asteroids.controller.TutorialController;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.TutorialPresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static com.badlogic.gdx.utils.Align.bottom;
 
-public class TutorialView extends BaseView implements TutorialController.IView {
+public class TutorialView extends BaseView implements TutorialPresenter.IView {
 
     @SuppressWarnings("unused")
     private static final String TAG = MainView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetService().getSkin(AssetService.SkinAsset.UISKIN);
     private final TextButton back = new TextButton("BACK", uiSkin);
     private final Table table = new Table();
 
@@ -28,10 +28,10 @@ public class TutorialView extends BaseView implements TutorialController.IView {
     private final Label textLabel2 = new Label("Avoid running into the angry snowballs, they will hurt you! ", uiSkin);
     private final Label textLabel3 = new Label("When you shoot the snowballs, they might drop new abilities...", uiSkin);
 
-    private final TutorialController.ViewHandler controller;
+    private final TutorialPresenter.ViewHandler controller;
 
 
-    public TutorialView(Batch batch, TutorialController.ViewHandler controller) {
+    public TutorialView(Batch batch, TutorialPresenter.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         table.addAction(Actions.alpha(0));

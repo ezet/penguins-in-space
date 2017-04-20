@@ -12,8 +12,9 @@ import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -27,7 +28,7 @@ public class BaseEffectTest {
     private Entity entity;
     private BaseEffect fixture;
     private EffectComponent effectComponent;
-    private AudioManager audioManager;
+    private AudioService audioService;
 
     @Before
     public void setup() {
@@ -35,8 +36,8 @@ public class BaseEffectTest {
         when(engine.createComponent(HealthComponent.class)).thenReturn(new HealthComponent());
         when(engine.createComponent(DamageComponent.class)).thenReturn(new DamageComponent());
         ServiceLocator.appComponent = mock(AppComponent.class);
-        audioManager = mock(AudioManager.class);
-        when(ServiceLocator.getAppComponent().getAudioManager()).thenReturn(audioManager);
+        audioService = mock(AudioService.class);
+        when(ServiceLocator.getAppComponent().getAudioService()).thenReturn(audioService);
         ServiceLocator.entityComponent = mock(EntityComponent.class);
         when(ServiceLocator.getEntityComponent().getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
         entity = mock(Entity.class);
@@ -63,7 +64,7 @@ public class BaseEffectTest {
     @Test
     public void tick_validEffect_shouldPlaySound() {
         fixture.tick(engine, entity, effectComponent, 1);
-        verify(audioManager).playPowerup();
+        verify(audioService).playSound(AssetService.SoundAsset.SOUND_POWERUP_WAV);
     }
 
 }

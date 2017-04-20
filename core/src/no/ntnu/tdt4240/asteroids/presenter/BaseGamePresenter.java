@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -29,14 +29,15 @@ import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.GameView;
+import no.ntnu.tdt4240.asteroids.view.IGameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 
-abstract class BaseGameController extends ScreenAdapter implements World.IGameListener, IGameController {
+abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameListener, IGamePresenter {
 
     @SuppressWarnings("unused")
-    protected static final String TAG = BaseGameController.class.getSimpleName();
+    protected static final String TAG = BaseGamePresenter.class.getSimpleName();
     protected final Asteroids game;
     protected final PooledEngine engine;
     private final boolean DEBUG = false;
@@ -49,7 +50,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
     private Screen parent;
 
 
-    BaseGameController(Asteroids game, Screen parent) {
+    BaseGamePresenter(Asteroids game, Screen parent) {
         this.parent = parent;
         this.game = game;
         engine = new PooledEngine();
@@ -196,7 +197,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     void onGameEnd() {
         world.stop();
-        game.setScreen(new ScoreScreenController(game, parent, new ArrayList<>(players.values())));
+        game.setScreen(new ScorePresenter(game, parent, new ArrayList<>(players.values())));
     }
 
     @Override
@@ -229,7 +230,7 @@ abstract class BaseGameController extends ScreenAdapter implements World.IGameLi
 
     @Override
     public void onSettings() {
-        game.setScreen(new SettingsController(game, this));
+        game.setScreen(new SettingsPresenter(game, this));
     }
 
 }

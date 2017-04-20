@@ -4,12 +4,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
-import no.ntnu.tdt4240.asteroids.service.audio.AudioManager;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 public abstract class BaseShotHandler implements IShotHandler {
 
     private long lastShot;
-    private AudioManager audioManager = ServiceLocator.appComponent.getAudioManager();
+    private AudioService audioService = ServiceLocator.appComponent.getAudioService();
     private long fireDelay;
 
     protected BaseShotHandler(long fireDelay) {
@@ -26,7 +26,7 @@ public abstract class BaseShotHandler implements IShotHandler {
         if (currentTimeMillis < lastShot + fireDelay) {
             return;
         }
-        audioManager.playSound(getSound());
+        audioService.playSound(getSound());
         handle(engine, controlledEntity);
         lastShot = currentTimeMillis;
     }

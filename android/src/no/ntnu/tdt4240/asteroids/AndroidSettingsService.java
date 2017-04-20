@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class SettingsService implements ISettingsService {
+public class AndroidSettingsService implements ISettingsService {
 
     private final SharedPreferences preferences;
     private Context context;
 
-    SettingsService(Context context) {
+    AndroidSettingsService(Context context) {
         this.context = context;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }

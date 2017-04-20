@@ -1,8 +1,6 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.view;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import no.ntnu.tdt4240.asteroids.view.IView;
 
 public interface IGameView extends IView {
 

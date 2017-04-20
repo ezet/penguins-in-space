@@ -11,23 +11,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.List;
 
-import no.ntnu.tdt4240.asteroids.controller.ScoreScreenController;
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.ScorePresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class ScoreScreenView extends BaseView implements ScoreScreenController.IScoreScreenView {
+public class ScoreView extends BaseView implements ScorePresenter.IScoreScreenView {
 
     @SuppressWarnings("unused")
-    private static final String TAG = ScoreScreenView.class.getSimpleName();
+    private static final String TAG = ScoreView.class.getSimpleName();
     private final Table table = new Table();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetService().getSkin(AssetService.SkinAsset.UISKIN);
     private final TextButton menuButton = new TextButton("Quit to menu", uiSkin);
 
-    private final ScoreScreenController.ViewHandler controller;
+    private final ScorePresenter.ViewHandler controller;
 
-    public ScoreScreenView(Batch batch, ScoreScreenController.ViewHandler controller) {
+    public ScoreView(Batch batch, ScorePresenter.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         table.addAction(Actions.alpha(0));

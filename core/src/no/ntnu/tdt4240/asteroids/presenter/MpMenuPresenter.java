@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +8,15 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.view.MultiplayerMenuView;
 
-public class MultiplayerMenu extends BaseController {
+public class MpMenuPresenter extends BasePresenter {
 
     @SuppressWarnings("unused")
-    private static final String TAG = MultiplayerMenu.class.getSimpleName();
+    private static final String TAG = MpMenuPresenter.class.getSimpleName();
     private final Asteroids game;
     private final IView view;
 
 
-    public MultiplayerMenu(final Asteroids game) {
+    public MpMenuPresenter(final Asteroids game) {
         this.game = game;
         view = new MultiplayerMenuView(game.getBatch(), new ViewHandler());
     }
@@ -31,7 +31,7 @@ public class MultiplayerMenu extends BaseController {
 
     public class ViewHandler {
         public void onQuickgame() {
-            MultiplayerGame screen = new MultiplayerGame(game, MultiplayerMenu.this);
+            MpGamePresenter screen = new MpGamePresenter(game, MpMenuPresenter.this);
             game.setScreen(screen);
             List<PlayerData> players = new ArrayList<>();
             players.add(new PlayerData("player", "Player", true));
@@ -48,7 +48,7 @@ public class MultiplayerMenu extends BaseController {
 
 
         public void onBack() {
-            game.setScreen(new MainMenu(game));
+            game.setScreen(new MainMenuPresenter(game));
         }
 
         public void onInvitePlayers() {

@@ -8,7 +8,7 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
@@ -26,7 +26,7 @@ public class MissileShotHandler extends BaseShotHandler {
 
     @Override
     protected String getSound() {
-        return Assets.SoundAsset.FIRE_MISSILE;
+        return AssetService.SoundAsset.FIRE_MISSILE;
     }
 
     @Override

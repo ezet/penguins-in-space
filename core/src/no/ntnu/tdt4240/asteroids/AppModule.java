@@ -5,6 +5,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
+import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 @Module
@@ -32,20 +34,20 @@ public class AppModule {
 
     @Provides
     @Singleton
-    no.ntnu.tdt4240.asteroids.service.Assets provideAssetLoader() {
-        return new no.ntnu.tdt4240.asteroids.service.Assets();
+    AssetService provideAssetService() {
+        return new AssetService();
     }
 
     @Provides
     @Singleton
-    no.ntnu.tdt4240.asteroids.service.audio.AudioManager provideAudioManager(no.ntnu.tdt4240.asteroids.service.Assets assets, ISettingsService settingsService) {
-        return new no.ntnu.tdt4240.asteroids.service.audio.AudioManager(assets, settingsService);
+    AudioService provideAudioManager(AssetService assetService, ISettingsService settingsService) {
+        return new AudioService(assetService, settingsService);
     }
 
     @Provides
     @Singleton
-    AnimationFactory provideAnimationFactory(no.ntnu.tdt4240.asteroids.service.Assets assets) {
-        return new AnimationFactory(assets);
+    AnimationFactory provideAnimationFactory(AssetService assetService) {
+        return new AnimationFactory(assetService);
     }
 
 }

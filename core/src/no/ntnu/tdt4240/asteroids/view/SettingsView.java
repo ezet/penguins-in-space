@@ -3,7 +3,6 @@ package no.ntnu.tdt4240.asteroids.view;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -15,16 +14,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
-import no.ntnu.tdt4240.asteroids.controller.SettingsController;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.presenter.SettingsPresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 
-public class SettingsView extends BaseView implements SettingsController.ISettingsView {
+public class SettingsView extends BaseView implements SettingsPresenter.ISettingsView {
 
     @SuppressWarnings("unused")
     private static final String TAG = SettingsView.class.getSimpleName();
-    private final Skin uiSkin = ServiceLocator.appComponent.getAssetLoader().getSkin(Assets.SkinAsset.UISKIN);
+    private final Skin uiSkin = ServiceLocator.appComponent.getAssetService().getSkin(AssetService.SkinAsset.UISKIN);
     private final TextButton backButton = new TextButton("Save", uiSkin);
     private final TextButton previousButton = new TextButton("Previous", uiSkin);
     private final TextButton nextButton = new TextButton("Next", uiSkin);
@@ -33,16 +32,15 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     private final TextButton toggleMuteButton = new TextButton("Toggle mute", uiSkin);
 
     private final Table table = new Table();
-    private boolean musicMuted = true;
-
     private final Label headlineLabel = new Label("Settings", uiSkin);
     private final Label changeCharacterLabel = new Label("Appearance:", uiSkin);
-    private final SettingsController.ViewHandler controller;
-    private final Assets assetsLoader = ServiceLocator.getAppComponent().getAssetLoader();
+    private final SettingsPresenter.ViewHandler controller;
+    private final AssetService assetService = ServiceLocator.getAppComponent().getAssetService();
     private final Image currentCharacterImage = new Image(null, Scaling.fit, Align.center);
+    private boolean musicMuted = true;
 
 
-    public SettingsView(Batch batch, SettingsController.ViewHandler controller) {
+    public SettingsView(Batch batch, SettingsPresenter.ViewHandler controller) {
         super(batch);
         this.controller = controller;
         table.getColor().a = 0;
@@ -52,18 +50,13 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     }
 
     @Override
-    public void resume() {
-        show();
-    }
-
-    @Override
-    public void pause() {
-        hide();
-    }
-
-    @Override
     public void show() {
         table.addAction(getDefaultShowAnimation());
+    }
+
+    @Override
+    public void resume() {
+        show();
     }
 
     @Override
@@ -72,8 +65,13 @@ public class SettingsView extends BaseView implements SettingsController.ISettin
     }
 
     @Override
+    public void pause() {
+        hide();
+    }
+
+    @Override
     public void setCurrentCharacter(String textureString) {
-        TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(assetsLoader.getTexture(textureString)));
+        TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(assetService.getTexture(textureString)));
         currentCharacterImage.setDrawable(drawable);
     }
 

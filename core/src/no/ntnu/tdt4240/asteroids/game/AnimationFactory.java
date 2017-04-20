@@ -4,14 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.BOMB_EXPLOSION;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.OBSTACLE_EXPLOSION;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_BLUE;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_GREEN;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_RED;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_YELLOW;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_BLUE;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_GREEN;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_RED;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_YELLOW;
 
 public class AnimationFactory {
 
@@ -19,6 +17,15 @@ public class AnimationFactory {
     private final Array<TextureRegion> powerupPickup;
     private final Array<TextureRegion> longExplosion;
     private final Array<TextureRegion> shortExplosion;
+    private AssetService assetService;
+
+    public AnimationFactory(AssetService assetService) {
+        this.assetService = assetService;
+        mediumExplosion = createObstacleDestroyedAnimation();
+        powerupPickup = createPowerupPickupAnimation();
+        longExplosion = createLongExplosion();
+        shortExplosion = createShortExplosion();
+    }
 
     public Array<TextureRegion> getMediumExplosion() {
         return mediumExplosion;
@@ -28,19 +35,9 @@ public class AnimationFactory {
         return powerupPickup;
     }
 
-    private Assets assets;
-
-    public AnimationFactory(Assets assets) {
-        this.assets = assets;
-        mediumExplosion = createObstacleDestroyedAnimation();
-        powerupPickup = createPowerupPickupAnimation();
-        longExplosion = createLongExplosion();
-        shortExplosion = createShortExplosion();
-    }
-
     private Array<TextureRegion> createObstacleDestroyedAnimation() {
         Array<TextureRegion> explosions = new Array<>();
-        Texture texture = assets.getTexture(Assets.TextureAsset.OBSTACLE_EXPLOSION);
+        Texture texture = assetService.getTexture(AssetService.TextureAsset.OBSTACLE_EXPLOSION);
         TextureRegion[][] split = TextureRegion.split(texture, 64, 64);
         for (TextureRegion[] row : split) {
             for (TextureRegion region : row) {
@@ -55,13 +52,13 @@ public class AnimationFactory {
         for (int i = 0; i < 8; i++) {
             Texture texture;
             if (i < 2){
-                texture = assets.getTexture(PLAYER_RED);
+                texture = assetService.getTexture(PLAYER_RED);
             } else if (i < 4){
-                texture = assets.getTexture(PLAYER_GREEN);
+                texture = assetService.getTexture(PLAYER_GREEN);
             } else if (i < 6){
-                texture = assets.getTexture(PLAYER_BLUE);
+                texture = assetService.getTexture(PLAYER_BLUE);
             } else {
-                texture = assets.getTexture(PLAYER_YELLOW);
+                texture = assetService.getTexture(PLAYER_YELLOW);
             }
             animationSequence.add(new TextureRegion(texture));
         }
@@ -70,7 +67,7 @@ public class AnimationFactory {
 
     private Array<TextureRegion> createShortExplosion() {
         Array<TextureRegion> explosions = new Array<>();
-        Texture texture = assets.getTexture(Assets.TextureAsset.BOMB_EXPLOSION);
+        Texture texture = assetService.getTexture(AssetService.TextureAsset.BOMB_EXPLOSION);
         TextureRegion[][] split = TextureRegion.split(texture, 128, 128);
         for (TextureRegion[] row : split) {
             for (TextureRegion region : row) {
@@ -83,7 +80,7 @@ public class AnimationFactory {
 
     private Array<TextureRegion> createLongExplosion() {
         Array<TextureRegion> explosions = new Array<>();
-        Texture texture = assets.getTexture(Assets.TextureAsset.EXPLOSION);
+        Texture texture = assetService.getTexture(AssetService.TextureAsset.EXPLOSION);
         TextureRegion[][] split = TextureRegion.split(texture, 100, 100);
         for (TextureRegion[] row : split) {
             for (TextureRegion region : row) {

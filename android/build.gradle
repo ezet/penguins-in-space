@@ -141,4 +141,7 @@ dependencies {
     compile "com.android.support:support-v4:${support_library_version}"
     compile "com.google.android.gms:play-services-games:${gms_library_version}"
     compile "com.google.android.gms:play-services-plus:${gms_library_version}"
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }

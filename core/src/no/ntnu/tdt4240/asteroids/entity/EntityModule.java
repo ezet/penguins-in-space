@@ -10,10 +10,10 @@ import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.entity.util.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.game.AnimationFactory;
-import no.ntnu.tdt4240.asteroids.service.Assets;
-import no.ntnu.tdt4240.asteroids.service.settings.IGameSettings;
-import no.ntnu.tdt4240.asteroids.service.settings.MultiPlayerSettings;
-import no.ntnu.tdt4240.asteroids.service.settings.SinglePlayerSettings;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
+import no.ntnu.tdt4240.asteroids.service.settings.IGameConfig;
+import no.ntnu.tdt4240.asteroids.service.settings.MultiPlayerConfig;
+import no.ntnu.tdt4240.asteroids.service.settings.SinglePlayerConfig;
 
 @Module
 public class EntityModule {
@@ -28,9 +28,9 @@ public class EntityModule {
 
     @Provides
     @EntityComponent.GameScope
-    IGameSettings provideGameSettings() {
-        if (multiplayer) return new MultiPlayerSettings();
-        return new SinglePlayerSettings();
+    IGameConfig provideGameSettings() {
+        if (multiplayer) return new MultiPlayerConfig();
+        return new SinglePlayerConfig();
     }
 
     @Provides
@@ -41,8 +41,8 @@ public class EntityModule {
 
     @Provides
     @EntityComponent.GameScope
-    public IDrawableComponentFactory provideDrawableComponentFactory(PooledEngine engine, Assets assets) {
-        return new DefaultDrawableComponentFactory(engine, assets);
+    public IDrawableComponentFactory provideDrawableComponentFactory(PooledEngine engine, AssetService assetService) {
+        return new DefaultDrawableComponentFactory(engine, assetService);
     }
 
     @Provides
@@ -59,7 +59,7 @@ public class EntityModule {
 
     @Provides
     @EntityComponent.GameScope
-    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameSettings gameSettings, AnimationFactory animationFactory, Assets assets) {
-        return new EntityFactory(engine, drawableComponentFactory, gameSettings, animationFactory, assets);
+    public EntityFactory provideEntityFactory(PooledEngine engine, IDrawableComponentFactory drawableComponentFactory, IGameConfig gameSettings, AnimationFactory animationFactory) {
+        return new EntityFactory(engine, drawableComponentFactory, gameSettings, animationFactory);
     }
 }

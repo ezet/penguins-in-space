@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.controller;
+package no.ntnu.tdt4240.asteroids.presenter;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -15,17 +15,26 @@ import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
 
-class SingleplayerGame extends BaseGameController implements World.IGameListener, INetworkService.IScoreCallback {
+class SpGamePresenter extends BaseGamePresenter implements World.IGameListener, INetworkService.IScoreCallback {
 
     @SuppressWarnings("unused")
-    protected static final String TAG = SingleplayerGame.class.getSimpleName();
+    protected static final String TAG = SpGamePresenter.class.getSimpleName();
 
-    SingleplayerGame(Asteroids game, Screen parent) {
+    SpGamePresenter(Asteroids game, Screen parent) {
         super(game, parent);
     }
 
     protected void initializeEntityComponent(PooledEngine engine) {
         ServiceLocator.initializeSinglePlayerEntityComponent(engine);
+    }
+
+    @Override
+    protected void setupWorld() {
+        super.setupWorld();
+        String displayName = ServiceLocator.getAppComponent().getNetworkService().getDisplayName();
+        PlayerData data = new PlayerData("", displayName, true);
+        addPlayers(Collections.singletonList(data), false);
+        world.initialize();
     }
 
     @Override
@@ -37,15 +46,6 @@ class SingleplayerGame extends BaseGameController implements World.IGameListener
         ServiceLocator.getAppComponent().getNetworkService().submitScoreWithResult(score, this);
 //        ServiceLocator.getAppComponent().getNetworkService().submitScore(score);
 //        onGameEnd();
-    }
-
-    @Override
-    protected void setupWorld() {
-        super.setupWorld();
-        String displayName = ServiceLocator.getAppComponent().getNetworkService().getDisplayName();
-        PlayerData data = new PlayerData("", displayName, true);
-        addPlayers(Collections.singletonList(data), false);
-        world.initialize();
     }
 
     @Override

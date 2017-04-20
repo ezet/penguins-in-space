@@ -6,8 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import no.ntnu.tdt4240.asteroids.controller.MainMenu;
-import no.ntnu.tdt4240.asteroids.controller.MultiplayerGame;
+import no.ntnu.tdt4240.asteroids.presenter.MainMenuPresenter;
+import no.ntnu.tdt4240.asteroids.presenter.MpGamePresenter;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
@@ -19,7 +20,7 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     public static final int GUI_VIRTUAL_HEIGHT = 360;
     private static final String TAG = Asteroids.class.getSimpleName();
     private SpriteBatch batch;
-    private no.ntnu.tdt4240.asteroids.service.Assets assets;
+    private AssetService assetService;
     private INetworkService networkService;
     private ISettingsService settingsService;
     private boolean loaded = false;
@@ -34,12 +35,12 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
         ServiceLocator.initializeAppComponent(networkService, settingsService);
         ServiceLocator.getAppComponent().getNetworkService().setGameListener(this);
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        assets = ServiceLocator.getAppComponent().getAssetLoader();
+        assetService = ServiceLocator.getAppComponent().getAssetService();
 
-        assets.loadAudio();
-        assets.loadTextures();
+        assetService.loadAudio();
+        assetService.loadTextures();
 
-//        assets.getAssetManager().finishLoading();
+//        assetService.getAssetManager().finishLoading();
 
         batch = new SpriteBatch();
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -52,17 +53,17 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     @Override
     public void dispose() {
         super.dispose();
-        assets.dispose();
+        assetService.dispose();
     }
 
     @Override
     public void render() {
         if (!this.loaded) {
-            if (assets.update()) {
+            if (assetService.update()) {
                 if (settingsService.getBoolean(ISettingsService.MUSIC_ENABLED)) {
-                    ServiceLocator.getAppComponent().getAudioManager().playBackgroundMusic();
+                    ServiceLocator.getAppComponent().getAudioService().startMusic();
                 }
-                setScreen(new MainMenu(this));
+                setScreen(new MainMenuPresenter(this));
                 this.loaded = true;
             }
         }
@@ -78,7 +79,7 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     @Override
     public void onMultiplayerGameStarting() {
         Gdx.app.debug(TAG, "onMultiplayerGameStarting: ");
-        ServiceLocator.getAppComponent().getAssetLoader().getAssetManager().finishLoading();
-        setScreen(new MultiplayerGame(this, new MainMenu(this)));
+        ServiceLocator.getAppComponent().getAssetService().getAssetManager().finishLoading();
+        setScreen(new MpGamePresenter(this, new MainMenuPresenter(this)));
     }
 }

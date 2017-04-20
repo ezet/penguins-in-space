@@ -13,17 +13,17 @@ import javax.inject.Inject;
 import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.MISSILE;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.OBSTACLE;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_BLUE;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_DEFAULT;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_GREEN;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_RED;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PLAYER_YELLOW;
-import static no.ntnu.tdt4240.asteroids.service.Assets.TextureAsset.PROJECTILE;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.MISSILE;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.OBSTACLE;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_BLUE;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_DEFAULT;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_GREEN;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_RED;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PLAYER_YELLOW;
+import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.PROJECTILE;
 
 
 public class DefaultDrawableComponentFactory implements IDrawableComponentFactory {
@@ -32,13 +32,13 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     private static final String TAG = DefaultDrawableComponentFactory.class.getSimpleName();
     private final PooledEngine engine;
     private int playerCounter = 0;
-    private Assets assets;
+    private AssetService assetService;
     private Array<String> playerTextures = new Array<>();
 
     @Inject
-    public DefaultDrawableComponentFactory(PooledEngine engine, Assets assets) {
+    public DefaultDrawableComponentFactory(PooledEngine engine, AssetService assetService) {
         this.engine = engine;
-        this.assets = assets;
+        this.assetService = assetService;
         playerTextures.add(PLAYER_BLUE);
         playerTextures.add(PLAYER_RED);
         playerTextures.add(PLAYER_GREEN);
@@ -86,7 +86,7 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
 
     @Override
     public Component getBomb() {
-        return getDrawable(Assets.TextureAsset.BOMB);
+        return getDrawable(AssetService.TextureAsset.BOMB);
     }
 
     @Override
@@ -101,6 +101,6 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     }
 
     private TextureRegion getTextureRegion(String asset) {
-        return new TextureRegion(assets.getTexture(asset));
+        return new TextureRegion(assetService.getTexture(asset));
     }
 }

@@ -10,17 +10,17 @@ import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
 import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
 import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
-import no.ntnu.tdt4240.asteroids.service.Assets;
+import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
 
 public class MultiShotHandler extends BaseShotHandler {
 
-    private final static int DEFAULT_NUM_BULLETS = 1;
-    private static final int DELAY_PER_BULLET = 200;
     public static final int DEFAULT_BULLET_SPEED = 800;
     public static final int DEFAULT_BULLET_SPREAD = 5;
+    private final static int DEFAULT_NUM_BULLETS = 1;
+    private static final int DELAY_PER_BULLET = 200;
     private final int numBullets;
     @Inject
     EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
@@ -41,7 +41,7 @@ public class MultiShotHandler extends BaseShotHandler {
 
     @Override
     protected String getSound() {
-        return Assets.SoundAsset.SOUND_SHOOT_WAV;
+        return AssetService.SoundAsset.SOUND_SHOOT_WAV;
     }
 
     @Override
