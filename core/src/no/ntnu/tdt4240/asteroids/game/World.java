@@ -8,7 +8,6 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 
 import javax.inject.Inject;
 
@@ -62,9 +61,16 @@ public class World {
     private static final Family FAMILY_OBSTACLES = Family.all(ObstacleClass.class).get();
     public final ObstacleListener obstacleListener;
     public final PlayerListener playerListener;
-    public final Array<IGameListener> listeners = new Array<>();
     final PooledEngine engine;
     private final PlayerDamageHandler playerDamageHandler = new PlayerDamageHandler(this);
+    private final ImmutableArray<Entity> players;
+    @Inject
+    IGameConfig gameSettings;
+    @Inject
+    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
+    @Inject
+    AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
+    private IWorldListener worldListener;
     private final EntityListener resetListener = new EntityListener() {
         @Override
         public void entityAdded(Entity entity) {
@@ -80,13 +86,6 @@ public class World {
             }
         }
     };
-    private final ImmutableArray<Entity> players;
-    @Inject
-    IGameConfig gameSettings;
-    @Inject
-    EntityFactory entityFactory = ServiceLocator.getEntityComponent().getEntityFactory();
-    @Inject
-    AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
     private int state = STATE_READY;
     private int level = 0;
 
@@ -144,9 +143,7 @@ public class World {
         HealthComponent healthComponent = healthMapper.get(entity);
         if (healthComponent != null) {
             healthComponent.damageHandler = playerDamageHandler;
-            for (IGameListener listener : listeners) {
-                listener.notifyHealthChanged(entity, healthComponent.hitPoints, 0);
-            }
+            worldListener.notifyHealthChanged(entity, healthComponent.hitPoints, 0);
         }
 
         engine.addEntity(entity);
@@ -255,9 +252,7 @@ public class World {
     }
 
     void notifyListeners(int event) {
-        for (IGameListener listener : listeners) {
-            listener.handle(this, event);
-        }
+        worldListener.handle(this, event);
     }
 
     public void update(float delta) {
@@ -269,8 +264,12 @@ public class World {
         return level;
     }
 
+    public void addWorldListener(IWorldListener worldListener) {
+        this.worldListener = worldListener;
+    }
 
-    public interface IGameListener {
+
+    public interface IWorldListener {
 
         void handle(World model, int event);
 
@@ -316,9 +315,7 @@ public class World {
         public void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken) {
 //            Gdx.app.debug(TAG, "onDamageTaken: ");
             int hitPoints = healthMapper.get(entity).hitPoints;
-            for (IGameListener listener : world.listeners) {
-                listener.notifyHealthChanged(entity, hitPoints, damageTaken);
-            }
+            world.worldListener.notifyHealthChanged(entity, hitPoints, damageTaken);
         }
 
         @Override
@@ -345,9 +342,7 @@ public class World {
         @Override
         public void onScoreChanged(Engine engine, Entity entity, int oldScore) {
             ScoreComponent scoreComponent = scoreMapper.get(entity);
-            for (IGameListener listener : world.listeners) {
-                listener.notifyScoreChanged(entity, oldScore, scoreComponent.score);
-            }
+            world.worldListener.notifyScoreChanged(entity, oldScore, scoreComponent.score);
         }
     }
 
@@ -366,9 +361,7 @@ public class World {
         @Override
         public void entityRemoved(Entity entity) {
 //            Gdx.app.debug(TAG, "entityRemoved: " + entity);
-            for (IGameListener listener : world.listeners) {
-                listener.notifyPlayerRemoved(entity);
-            }
+            world.worldListener.notifyPlayerRemoved(entity);
         }
     }
 }

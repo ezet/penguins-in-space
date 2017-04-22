@@ -32,7 +32,7 @@ import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
 import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapper;
 
-abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameListener, IGamePresenter {
+abstract class BaseGamePresenter extends ScreenAdapter implements World.IWorldListener, IGamePresenter {
 
     @SuppressWarnings("unused")
     protected static final String TAG = BaseGamePresenter.class.getSimpleName();
@@ -55,7 +55,6 @@ abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameLis
         initializeEntityComponent(engine);
         controllerInputHandler = new ControllerInputHandler(engine);
         setupView();
-        world = new World(engine);
         setupWorld();
         setupEngine(engine, game.getBatch());
         world.run();
@@ -71,7 +70,7 @@ abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameLis
 
     protected void setupWorld() {
         world = new World(engine);
-        world.listeners.add(this);
+        world.addWorldListener(this);
     }
 
     @Override

@@ -35,6 +35,9 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
+        release {
+            signingConfig signingConfigs.debug
+        }
     }
 }
 // called every time gradle gets executed, takes the native dependencies of

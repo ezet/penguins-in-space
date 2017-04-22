@@ -15,7 +15,7 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-public class MpGamePresenter extends BaseGamePresenter implements World.IGameListener, INetworkService.INetworkListener {
+public class MpGamePresenter extends BaseGamePresenter implements World.IWorldListener, INetworkService.INetworkListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = MpGamePresenter.class.getSimpleName();
