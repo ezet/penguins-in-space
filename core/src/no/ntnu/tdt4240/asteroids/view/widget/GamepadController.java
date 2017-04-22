@@ -23,7 +23,7 @@ public class GamepadController extends WidgetGroup {
     private static final int NO_CLICK_MARGIN = 50;
     private static final int TOUCHPAD_MARGIN = 30;
     private static final int TOUCHPAD_SIZE = 100;
-    private static final int BUTTON_SIZE = 60;
+    private static final int BUTTON_SIZE = 80;
     private static final int BUTTON_MARGIN = TOUCHPAD_MARGIN + TOUCHPAD_SIZE / 2 - BUTTON_SIZE / 2;
     @SuppressWarnings("unused")
     private static final String TAG = GamepadController.class.getSimpleName();
