@@ -144,7 +144,11 @@ public class World {
         HealthComponent healthComponent = healthMapper.get(entity);
         if (healthComponent != null) {
             healthComponent.damageHandler = playerDamageHandler;
+            for (IGameListener listener : listeners) {
+                listener.notifyHealthChanged(entity, healthComponent.hitPoints, 0);
+            }
         }
+
         engine.addEntity(entity);
     }
 
@@ -274,7 +278,7 @@ public class World {
 
         void notifyPlayerRemoved(Entity entity);
 
-        void notifyDamageTaken(Entity entity, int damageTaken);
+        void notifyHealthChanged(Entity entity, int hitPoints, int damageTaken);
     }
 
     private static class ObstacleListener implements EntityListener {
@@ -311,8 +315,9 @@ public class World {
         @Override
         public void onDamageTaken(Engine engine, Entity entity, Entity source, int damageTaken) {
 //            Gdx.app.debug(TAG, "onDamageTaken: ");
+            int hitPoints = healthMapper.get(entity).hitPoints;
             for (IGameListener listener : world.listeners) {
-                listener.notifyDamageTaken(entity, damageTaken);
+                listener.notifyHealthChanged(entity, hitPoints, damageTaken);
             }
         }
 
