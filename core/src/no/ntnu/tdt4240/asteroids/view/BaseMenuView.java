@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.view;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -30,17 +31,8 @@ abstract class BaseMenuView extends BaseView {
     }
 
     @Override
-    public void resume() {
-//        show();
-    }
-
-    @Override
-    public void pause() {
-//        hide();
-    }
-
-    @Override
     public void show() {
+        Gdx.app.debug(TAG, "show: ");
         if (table == null) {
             createMenuTable();
             table.getColor().a = 0;
@@ -50,8 +42,21 @@ abstract class BaseMenuView extends BaseView {
     }
 
     @Override
+    public void resume() {
+        Gdx.app.debug(TAG, "resume: ");
+        show();
+    }
+
+    @Override
     public void hide() {
+        Gdx.app.debug(TAG, "hide: ");
         table.getColor().a = 0;
+    }
+
+    @Override
+    public void pause() {
+        Gdx.app.debug(TAG, "pause: ");
+//        hide();
     }
 
     private void createMenuTable() {
