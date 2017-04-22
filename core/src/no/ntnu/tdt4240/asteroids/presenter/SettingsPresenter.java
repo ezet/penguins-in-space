@@ -55,7 +55,6 @@ public class SettingsPresenter extends BasePresenter {
 
     public interface ISettingsView extends IView {
         void setCurrentCharacter(String playerAppearance);
-
         void setMusicMuted(boolean muted);
     }
 
@@ -85,20 +84,22 @@ public class SettingsPresenter extends BasePresenter {
             view.setCurrentCharacter(newAppearance);
         }
 
-        public void toggleMute(boolean muteToggled) {
-            if (muteToggled) audioService.stopMusic();
+        public void toggleMute(boolean isMuted) {
+            if (isMuted) audioService.stopMusic();
             else audioService.startMusic();
-            settingsService.setBoolean(ISettingsService.MUSIC_ENABLED, !muteToggled);
+            audioService.setMuted(isMuted);
+            settingsService.setBoolean(ISettingsService.MUSIC_ENABLED, !isMuted);
         }
 
         public void onMuteSoundClick(boolean muted) {
             if (muted) {
                 audioService.setSoundVolume(0);
             }
-
         }
 
         public void increaseVolume() {
+            audioService.setMuted(false);
+            view.setMusicMuted(false);
             if (musicVolume < MAX_VOLUME) {
                 musicVolume += VOLUME_STEP;
                 audioService.setMusicVolume(musicVolume);
@@ -107,6 +108,8 @@ public class SettingsPresenter extends BasePresenter {
         }
 
         public void decreaseVolume() {
+            audioService.setMuted(false);
+            view.setMusicMuted(false);
             if (musicVolume > MIN_VOLUME) {
                 musicVolume -= VOLUME_STEP;
                 audioService.setMusicVolume(musicVolume);

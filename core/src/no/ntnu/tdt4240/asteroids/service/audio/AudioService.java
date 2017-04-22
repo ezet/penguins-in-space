@@ -11,12 +11,15 @@ public class AudioService {
     private Music backgroundMusic;
     private float soundVolume = 1;
     private float volume;
+    private boolean muted = false;
 
 
     public AudioService(AssetService assetService, ISettingsService settingsService) {
         this.assetService = assetService;
         setSoundVolume(settingsService.getInt(ISettingsService.SOUND_VOLUME, 100));
         setMusicVolume(settingsService.getInt(ISettingsService.MUSIC_VOLUME, 100));
+        muted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+
         // TODO: 19-Apr-17 implement sound volume
     }
 
@@ -34,11 +37,16 @@ public class AudioService {
             this.backgroundMusic.play();
     }
 
+    public void setMuted(boolean muted) {
+        this.muted = muted;
+    }
+
     public void stopMusic() {
         backgroundMusic.stop();
     }
 
     public void playSound(String sound) {
+        if (muted) return;
         assetService.getSound(sound).play(volume);
     }
 
