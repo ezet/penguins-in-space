@@ -52,7 +52,6 @@ public class MpGamePresenter extends BaseGamePresenter implements World.IGameLis
 
     @Override
     public void notifyScoreChanged(Entity entity, int oldScore, int score) {
-        return;
         //        if (Objects.equals(id, playerId)) {
 //            view.updateScore(score);
 //        }
@@ -63,7 +62,9 @@ public class MpGamePresenter extends BaseGamePresenter implements World.IGameLis
     public void notifyPlayerRemoved(Entity entity) {
         super.notifyPlayerRemoved(entity);
         if (remainingPlayers.size() == 1) {
-            players.get(remainingPlayers.iterator().next()).totalScore += 1;
+            PlayerData playerData = players.get(remainingPlayers.iterator().next());
+            playerData.totalScore += 1;
+            view.updateScore(playerData.totalScore);
         }
         if (remainingPlayers.size() <= 1) {
             roundsPlayed++;
@@ -73,6 +74,16 @@ public class MpGamePresenter extends BaseGamePresenter implements World.IGameLis
                 onGameEnd();
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        // disable default pause behaviour
+    }
+
+    @Override
+    public void onResume() {
+        // disable default resume behaviour
     }
 
     @Override

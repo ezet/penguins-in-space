@@ -7,7 +7,7 @@ import no.ntnu.tdt4240.asteroids.game.entity.component.DrawableComponent;
 
 public interface IDrawableComponentFactory {
 
-    DrawableComponent getPlayer();
+    DrawableComponent getPlayer(boolean allowCustomAppearance);
 
     DrawableComponent getProjectile();
 

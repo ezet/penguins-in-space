@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Objects;
-
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.ISettingsService;
@@ -46,9 +44,12 @@ public class DefaultDrawableComponentFactory implements IDrawableComponentFactor
     }
 
     @Override
-    public DrawableComponent getPlayer() {
-        String playerAppearance = ServiceLocator.getAppComponent().getSettingsService().getString(ISettingsService.PLAYER_APPEARANCE, null);
-        if (Objects.equals(playerAppearance, null)) playerAppearance = PLAYER_DEFAULT;
+    public DrawableComponent getPlayer(boolean allowCustomAppearance) {
+        String playerAppearance = PLAYER_DEFAULT;
+        if (allowCustomAppearance) {
+            playerAppearance = ServiceLocator.getAppComponent().getSettingsService()
+                    .getString(ISettingsService.PLAYER_APPEARANCE, PLAYER_DEFAULT);
+        }
         return getDrawable(playerAppearance);
     }
 

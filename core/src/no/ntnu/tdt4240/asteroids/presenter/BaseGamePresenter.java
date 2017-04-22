@@ -209,7 +209,7 @@ abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameLis
         ImmutableArray<Entity> players = engine.getEntitiesFor(Family.all(PlayerClass.class, IdComponent.class).get());
         for (Entity entity : players) {
             if (Objects.equals(idMapper.get(entity).participantId, playerParticipantId)) {
-                entity.add(ServiceLocator.entityComponent.getDrawableComponentFactory().getPlayer());
+                entity.add(ServiceLocator.entityComponent.getDrawableComponentFactory().getPlayer(true));
             }
         }
         world.run();

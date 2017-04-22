@@ -78,9 +78,11 @@ public class EntityFactory {
             positionY = (int) (Asteroids.VIRTUAL_HEIGHT * MathUtils.random());
             entity.add(new NetworkSyncComponent());
             entity.add(new HealthComponent(3));
+            entity.add(drawableComponentFactory.getPlayer(false));
         } else {
             entity.add(new HealthComponent(1));
             entity.add(new EffectComponent());
+            entity.add(drawableComponentFactory.getPlayer(true));
         }
         entity.add(new TransformComponent(positionX, positionY, rotationX, rotationY));
         MovementComponent movementComponent = new MovementComponent();
@@ -92,7 +94,6 @@ public class EntityFactory {
         entity.add(new ScoreComponent());
         entity.add(new AchievementComponent());
         entity.add(new BoundaryComponent(BoundaryComponent.MODE_WRAP));
-        entity.add(drawableComponentFactory.getPlayer());
         CollisionComponent collisionComponent = new CollisionComponent();
         entity.add(collisionComponent);
         return entity;
