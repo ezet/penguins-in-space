@@ -5,15 +5,15 @@ import com.badlogic.ashley.core.PooledEngine;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
-import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
-import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
+import no.ntnu.tdt4240.asteroids.game.entity.component.IdComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers;
+import no.ntnu.tdt4240.asteroids.game.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapper;
 
 public class MultiShotHandler extends BaseShotHandler {
 

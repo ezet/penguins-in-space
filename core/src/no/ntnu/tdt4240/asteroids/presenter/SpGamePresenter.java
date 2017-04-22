@@ -12,8 +12,8 @@ import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.scoreMapper;
 
 class SpGamePresenter extends BaseGamePresenter implements World.IGameListener, INetworkService.IScoreCallback {
 

@@ -16,15 +16,15 @@ import java.util.HashSet;
 import java.util.Objects;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
-import no.ntnu.tdt4240.asteroids.entity.system.AchievementSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.AnimationSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.BoundarySystem;
-import no.ntnu.tdt4240.asteroids.entity.system.RenderSystem;
-import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.game.World;
+import no.ntnu.tdt4240.asteroids.game.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.IdComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.PlayerClass;
+import no.ntnu.tdt4240.asteroids.game.entity.system.AchievementSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.AnimationSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.BoundarySystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.RenderSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers;
 import no.ntnu.tdt4240.asteroids.input.ControllerInputHandler;
 import no.ntnu.tdt4240.asteroids.model.PlayerData;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
@@ -32,7 +32,7 @@ import no.ntnu.tdt4240.asteroids.view.GameView;
 import no.ntnu.tdt4240.asteroids.view.IGameView;
 import no.ntnu.tdt4240.asteroids.view.widget.GamepadController;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapper;
 
 abstract class BaseGamePresenter extends ScreenAdapter implements World.IGameListener, IGamePresenter {
 

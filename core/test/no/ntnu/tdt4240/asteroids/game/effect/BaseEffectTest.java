@@ -7,11 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import no.ntnu.tdt4240.asteroids.AppComponent;
-import no.ntnu.tdt4240.asteroids.entity.EntityComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.DamageComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
-import no.ntnu.tdt4240.asteroids.entity.util.EffectTextureFactory;
+import no.ntnu.tdt4240.asteroids.game.entity.EntityComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.DamageComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.EffectComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;

@@ -13,36 +13,36 @@ import com.badlogic.gdx.utils.Array;
 import javax.inject.Inject;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.CircularBoundsComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.HealthComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.ObstacleClass;
-import no.ntnu.tdt4240.asteroids.entity.component.PlayerClass;
-import no.ntnu.tdt4240.asteroids.entity.component.ScoreComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
-import no.ntnu.tdt4240.asteroids.entity.system.BoundsSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.EffectSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.GravitySystem;
-import no.ntnu.tdt4240.asteroids.entity.system.MovementSystem;
-import no.ntnu.tdt4240.asteroids.entity.system.ScoreSystem;
-import no.ntnu.tdt4240.asteroids.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.game.effect.BombShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.InvulnerabilityEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MissileShotEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.MultishotEffect;
+import no.ntnu.tdt4240.asteroids.game.entity.component.AnimationComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.CircularBoundsComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.CollisionComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.HealthComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.ObstacleClass;
+import no.ntnu.tdt4240.asteroids.game.entity.component.PlayerClass;
+import no.ntnu.tdt4240.asteroids.game.entity.component.ScoreComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.system.BoundsSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.CollisionSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.DamageSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.EffectSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.GravitySystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.MovementSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.system.ScoreSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 import no.ntnu.tdt4240.asteroids.service.settings.IGameConfig;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.healthMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.scoreMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.drawableMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.healthMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.scoreMapper;
 
 @SuppressWarnings("WeakerAccess")
 public class World {

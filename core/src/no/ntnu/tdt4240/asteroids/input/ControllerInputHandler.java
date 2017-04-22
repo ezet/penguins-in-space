@@ -2,25 +2,19 @@ package no.ntnu.tdt4240.asteroids.input;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
 
-import java.util.ArrayList;
-import java.util.List;
+import no.ntnu.tdt4240.asteroids.game.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.ShootComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers;
 
-import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
-import no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers;
-
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.shootMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.shootMapper;
 
 public class ControllerInputHandler {
 
-    private final PooledEngine engine;
-
-
-    private Entity controlledEntity;
     private static final String TAG = ControllerInputHandler.class.getSimpleName();
+    private final PooledEngine engine;
+    private Entity controlledEntity;
 
 
     public ControllerInputHandler(PooledEngine engine) {

@@ -7,9 +7,9 @@ import no.ntnu.tdt4240.asteroids.AppComponent;
 import no.ntnu.tdt4240.asteroids.AppModule;
 import no.ntnu.tdt4240.asteroids.DaggerAppComponent;
 import no.ntnu.tdt4240.asteroids.ISettingsService;
-import no.ntnu.tdt4240.asteroids.entity.DaggerEntityComponent;
-import no.ntnu.tdt4240.asteroids.entity.EntityComponent;
-import no.ntnu.tdt4240.asteroids.entity.EntityModule;
+import no.ntnu.tdt4240.asteroids.game.entity.DaggerEntityComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.EntityComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.EntityModule;
 import no.ntnu.tdt4240.asteroids.service.network.INetworkService;
 
 public abstract class ServiceLocator {

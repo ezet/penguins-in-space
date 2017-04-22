@@ -4,13 +4,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import no.ntnu.tdt4240.asteroids.entity.component.DrawableComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.DrawableComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.EffectComponent;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.drawableMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.drawableMapper;
 
 public abstract class BaseEffect implements IEffect {
 

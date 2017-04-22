@@ -4,16 +4,14 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
-import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.IdComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.system.CollisionSystem;
+import no.ntnu.tdt4240.asteroids.game.entity.component.AnimationComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.IdComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.system.CollisionSystem;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.animationMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.idMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.obstacleMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.playerMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.animationMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.obstacleMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.playerMapper;
 
 public class BulletCollisionHandler implements CollisionSystem.ICollisionHandler {
     @Override

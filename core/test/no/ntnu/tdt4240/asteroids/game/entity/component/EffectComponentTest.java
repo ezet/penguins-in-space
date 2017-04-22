@@ -1,6 +1,5 @@
-package no.ntnu.tdt4240.asteroids.game.effect;
+package no.ntnu.tdt4240.asteroids.game.entity.component;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Application;
@@ -8,28 +7,30 @@ import com.badlogic.gdx.Gdx;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 import no.ntnu.tdt4240.asteroids.AppComponent;
+import no.ntnu.tdt4240.asteroids.game.effect.BaseEffect;
+import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.entity.EntityComponent;
-import no.ntnu.tdt4240.asteroids.game.entity.component.DamageComponent;
-import no.ntnu.tdt4240.asteroids.game.entity.component.EffectComponent;
-import no.ntnu.tdt4240.asteroids.game.entity.component.HealthComponent;
 import no.ntnu.tdt4240.asteroids.game.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
-public class InvulnerabilityEffectTest {
+
+public class EffectComponentTest {
 
     private PooledEngine engine;
     private Entity entity;
-    private InvulnerabilityEffect fixture;
-    private EffectComponent effectComponent;
+    private EffectComponent fixture;
+    private BaseEffect effect1;
+    private BaseEffect effect2;
 
     @Before
     public void setup() {
@@ -42,22 +43,28 @@ public class InvulnerabilityEffectTest {
         ServiceLocator.entityComponent = mock(EntityComponent.class);
         when(ServiceLocator.getEntityComponent().getEffectTextureFactory()).thenReturn(mock(EffectTextureFactory.class));
         entity = mock(Entity.class);
-        fixture = new InvulnerabilityEffect();
-        effectComponent = mock(EffectComponent.class);
+        fixture = new EffectComponent();
+        effect1 = Mockito.spy(BaseEffect.class);
+        when(effect1.tick(any(PooledEngine.class), any(Entity.class), any(EffectComponent.class), anyFloat())).thenReturn(false, false, false, true);
+        effect2 = Mockito.spy(BaseEffect.class);
     }
 
     @Test
-    public void applyEffect_validEffect_shouldApplyEffect() {
-        fixture.applyEffect(engine, entity, effectComponent);
-        verify(entity).add(any(DamageComponent.class));
-        verify(entity).add(any(HealthComponent.class));
-    }
+    public void applyTest() {
+        fixture.addEffect(effect1);
+        fixture.tick(engine, entity, 1);
 
-    @Test
-    public void removeEffect_validEffect_shouldRemoveEffect() {
-        fixture.applyEffect(engine, entity, effectComponent);
-        fixture.removeEffect(engine, entity, effectComponent);
-        verify(entity).remove(ArgumentMatchers.<Class<? extends Component>>any());
-        verify(entity).add(any(HealthComponent.class));
+
+        Mockito.verify(effect1).tick(engine, entity, fixture, 1);
+
+        fixture.addEffect(effect2);
+        Mockito.verify(effect1).refresh(effect2);
+
+        fixture.tick(engine, entity, 10);
+
+        Mockito.verify(effect1).tick(engine, entity, fixture, 10);
+
+        Mockito.verify(effect2, never()).tick(any(PooledEngine.class), any(Entity.class), any(EffectComponent.class), any(Float.class));
+        Mockito.verify(effect2, never()).refresh(any(IEffect.class));
     }
 }

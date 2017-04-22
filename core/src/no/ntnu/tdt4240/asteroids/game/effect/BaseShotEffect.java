@@ -4,11 +4,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import no.ntnu.tdt4240.asteroids.entity.component.EffectComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.ShootComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.EffectComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.ShootComponent;
 import no.ntnu.tdt4240.asteroids.game.shothandler.IShotHandler;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.shootMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.shootMapper;
 
 public abstract class BaseShotEffect extends BaseEffect {
     public static final int DEFAULT_DURATION = 10;

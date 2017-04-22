@@ -4,17 +4,17 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
 
-import no.ntnu.tdt4240.asteroids.entity.component.AnimationComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.CollisionComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.MovementComponent;
-import no.ntnu.tdt4240.asteroids.entity.component.TransformComponent;
-import no.ntnu.tdt4240.asteroids.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
+import no.ntnu.tdt4240.asteroids.game.entity.component.AnimationComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.CollisionComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.MovementComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.component.TransformComponent;
+import no.ntnu.tdt4240.asteroids.game.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.movementMapper;
-import static no.ntnu.tdt4240.asteroids.entity.util.ComponentMappers.transformMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.movementMapper;
+import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.transformMapper;
 
 public class ObstacleDamageHandler implements DamageSystem.IDamageHandler {
 
