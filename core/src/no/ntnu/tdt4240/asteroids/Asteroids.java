@@ -60,9 +60,7 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     public void render() {
         if (!this.loaded) {
             if (assetService.update()) {
-                if (settingsService.getBoolean(no.ntnu.tdt4240.asteroids.service.ISettingsService.MUSIC_ENABLED)) {
-                    ServiceLocator.getAppComponent().getAudioService().startMusic();
-                }
+                ServiceLocator.getAppComponent().getAudioService().startMusic();
                 setScreen(new MainMenuPresenter(this));
                 this.loaded = true;
             }

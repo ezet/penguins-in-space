@@ -12,7 +12,7 @@ public class MultishotEffect extends BaseShotEffect {
     public static final int DEFAULT_DURATION = 10;
 
     public MultishotEffect() {
-        super(new MultiShotHandler(MultiShotHandler.DEFAULT_BULLET_SPEED, 3, MultiShotHandler.DEFAULT_BULLET_SPREAD));
+        super(new MultiShotHandler(500, 3, MultiShotHandler.DEFAULT_BULLET_SPREAD));
     }
 
     @Override

@@ -17,7 +17,7 @@ import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.idMapp
 
 public class MultiShotHandler extends BaseShotHandler {
 
-    public static final int DEFAULT_BULLET_SPEED = 800;
+    public static final int DEFAULT_BULLET_SPEED = 650;
     public static final int DEFAULT_BULLET_SPREAD = 5;
     private final static int DEFAULT_NUM_BULLETS = 1;
     private static final int DELAY_PER_BULLET = 200;
@@ -56,7 +56,6 @@ public class MultiShotHandler extends BaseShotHandler {
             float rotation = spreadDegrees * numBullets / 2 - i * spreadDegrees;
             bulletMovement.velocity.set(playerPosition.rotation).rotate(rotation).setLength(bulletSpeed);
             engine.addEntity(bullet);
-
         }
     }
 }

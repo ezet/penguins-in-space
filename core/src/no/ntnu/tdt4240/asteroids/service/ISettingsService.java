@@ -8,7 +8,7 @@ public interface ISettingsService {
     String PLAYER_APPEARANCE = "key_player_appearance";
     String SOUND_VOLUME = "key_sound_volume";
 
-    boolean getBoolean(String id);
+    boolean getBoolean(String id, boolean defaultValue);
 
     void setBoolean(String id, boolean value);
 

@@ -15,7 +15,7 @@ import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.transf
 public class MovementSystem extends IteratingSystem {
 
     private static final Family FAMILY = Family.all(TransformComponent.class, MovementComponent.class).get();
-    private static final int MAX_VELOCITY = 400;
+    //    private static final int MAX_VELOCITY = 400;
     @SuppressWarnings("unused")
     private static final String TAG = MovementSystem.class.getSimpleName();
     private Vector2 temp = new Vector2();
@@ -30,7 +30,8 @@ public class MovementSystem extends IteratingSystem {
         MovementComponent movement = movementMapper.get(entity);
 
         temp.set(movement.acceleration).scl(deltaTime);
-        movement.velocity.add(temp).clamp(0, MAX_VELOCITY);
+        movement.velocity.add(temp);
+//        movement.velocity.add(temp).clamp(0, MAX_VELOCITY);
 
         temp.set(movement.velocity).scl(deltaTime);
         position.position.add(temp);

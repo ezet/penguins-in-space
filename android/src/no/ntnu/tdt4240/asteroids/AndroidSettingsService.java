@@ -15,8 +15,8 @@ public class AndroidSettingsService implements no.ntnu.tdt4240.asteroids.service
     }
 
     @Override
-    public boolean getBoolean(String id) {
-        return preferences.getBoolean(id, false);
+    public boolean getBoolean(String id, boolean defaultValue) {
+        return preferences.getBoolean(id, defaultValue);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class AndroidSettingsService implements no.ntnu.tdt4240.asteroids.service
 
     @Override
     public int getInt(String id, int defaultValue) {
-        return preferences.getInt(id, 0);
+        return preferences.getInt(id, defaultValue);
     }
 
     @Override

@@ -7,7 +7,7 @@ public class MultiPlayerConfig implements IGameConfig {
     private static int maxObstacles = 0;
     private static int minObstacles = 0;
     private static double powerupSpawnChance = 0.2;
-    private static float playerGravity = 0.005f;
+    private static float playerGravity = 0.01f;
     private static int obstacleMaxSpeed = 200;
     private static float accelerationScalar = 500;
     private static int playerNoSpawnRadius = 50;

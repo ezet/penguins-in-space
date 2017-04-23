@@ -18,7 +18,7 @@ public class AudioService {
         this.assetService = assetService;
         setSoundVolume(settingsService.getInt(ISettingsService.SOUND_VOLUME, 100));
         setMusicVolume(settingsService.getInt(ISettingsService.MUSIC_VOLUME, 100));
-        muted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+        muted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED, true);
 
         // TODO: 19-Apr-17 implement sound volume
     }
@@ -29,6 +29,7 @@ public class AudioService {
     }
 
     public void startMusic() {
+        if (muted) return;
         if (backgroundMusic == null) {
             backgroundMusic = assetService.getMusic(AssetService.MusicAsset.SOUND_MUSIC_MP3);
             backgroundMusic.setLooping(true);

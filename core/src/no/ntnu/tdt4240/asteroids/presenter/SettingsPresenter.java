@@ -49,7 +49,7 @@ public class SettingsPresenter extends BasePresenter {
             settingsService.setString(ISettingsService.PLAYER_APPEARANCE, appearanceKey);
         }
         view.setCurrentCharacter(appearanceKey);
-        boolean musicMuted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED);
+        boolean musicMuted = !settingsService.getBoolean(ISettingsService.MUSIC_ENABLED, true);
         view.setMusicMuted(musicMuted);
     }
 
