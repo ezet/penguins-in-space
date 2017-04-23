@@ -1,5 +1,6 @@
 package no.ntnu.tdt4240.asteroids.game.effect;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,14 +11,14 @@ import no.ntnu.tdt4240.asteroids.game.shothandler.IShotHandler;
 
 import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.shootMapper;
 
-public abstract class BaseShotEffect extends BaseEffect {
-    public static final int DEFAULT_DURATION = 10;
+abstract class BaseShotEffect extends BaseEffect {
+    private static final int DEFAULT_DURATION = 10;
 
-    private IShotHandler oldHandler;
+    private static IShotHandler oldHandler;
     private ShootComponent shootComponent;
     private IShotHandler shotHandler;
 
-    public BaseShotEffect(IShotHandler shotHandler) {
+    BaseShotEffect(IShotHandler shotHandler) {
         this.shotHandler = shotHandler;
     }
 
@@ -41,5 +42,10 @@ public abstract class BaseShotEffect extends BaseEffect {
     @Override
     protected void removeEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent) {
         shootComponent.handler = oldHandler;
+    }
+
+    @Override
+    public Class<? extends Component> getEffectClass() {
+        return ShootComponent.class;
     }
 }

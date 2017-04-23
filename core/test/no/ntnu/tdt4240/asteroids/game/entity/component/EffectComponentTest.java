@@ -51,20 +51,20 @@ public class EffectComponentTest {
 
     @Test
     public void applyTest() {
-        fixture.addEffect(effect1);
+        fixture.addEffect(engine, entity, effect1);
         fixture.tick(engine, entity, 1);
 
 
         Mockito.verify(effect1).tick(engine, entity, fixture, 1);
 
-        fixture.addEffect(effect2);
-        Mockito.verify(effect1).refresh(effect2);
+        fixture.addEffect(engine, entity, effect2);
+        Mockito.verify(effect1).refresh(engine, entity, fixture, effect2);
 
         fixture.tick(engine, entity, 10);
 
         Mockito.verify(effect1).tick(engine, entity, fixture, 10);
 
         Mockito.verify(effect2, never()).tick(any(PooledEngine.class), any(Entity.class), any(EffectComponent.class), any(Float.class));
-        Mockito.verify(effect2, never()).refresh(any(IEffect.class));
+        Mockito.verify(effect2, never()).refresh(engine, entity, fixture, any(IEffect.class));
     }
 }

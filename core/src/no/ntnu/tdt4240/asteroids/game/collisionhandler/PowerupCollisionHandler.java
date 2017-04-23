@@ -22,7 +22,7 @@ public class PowerupCollisionHandler implements CollisionSystem.ICollisionHandle
             return false;
         }
         PowerupClass powerup = powerupMapper.get(source);
-        effectComponent.addEffect(powerup.effect);
+        effectComponent.addEffect(engine, target, powerup.effect);
         target.add(effectComponent);
         AnimationComponent pickupAnimation = createAnimationComponent();
         target.add(pickupAnimation);

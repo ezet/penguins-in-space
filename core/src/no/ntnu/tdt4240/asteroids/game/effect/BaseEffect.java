@@ -14,9 +14,10 @@ import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.drawab
 
 public abstract class BaseEffect implements IEffect {
 
+    @SuppressWarnings("unused")
     private static final String TAG = BaseEffect.class.getSimpleName();
 
-    AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
+    private AudioService audioService = ServiceLocator.getAppComponent().getAudioService();
     private TextureRegion oldRegion;
     private boolean applied;
     private float remainingDuration;
@@ -30,7 +31,7 @@ public abstract class BaseEffect implements IEffect {
     protected abstract void removeEffect(PooledEngine engine, Entity entity, EffectComponent effectComponent);
 
     @Override
-    public void refresh(IEffect effect) {
+    public void refresh(PooledEngine engine, Entity target, EffectComponent effectComponent, IEffect effect) {
         BaseEffect baseEffect = (BaseEffect) effect;
         this.remainingDuration += baseEffect.getDuration();
     }
@@ -38,23 +39,35 @@ public abstract class BaseEffect implements IEffect {
     @Override
     public boolean tick(PooledEngine engine, Entity entity, EffectComponent component, float deltaTime) {
         if (!applied) {
-            applyEffect(engine, entity, component);
-            audioService.playSound(AssetService.SoundAsset.SOUND_POWERUP_WAV);
-            setTexture(entity);
-            remainingDuration = getDuration();
-            applied = true;
+            applyEffectInternal(engine, entity, component);
             return false;
         } else if (remainingDuration > 0) {
             remainingDuration -= deltaTime;
             return false;
         } else {
-            removeEffect(engine, entity, component);
-            restoreTexture(entity);
-            applied = false;
-            remainingDuration = 0;
+            removeEffectInternal(engine, entity, component);
             return true;
         }
-//        return false;
+    }
+
+    @Override
+    public void replace(PooledEngine engine, Entity target, EffectComponent effectComponent, IEffect newEffect) {
+        removeEffectInternal(engine, target, effectComponent);
+    }
+
+    private void applyEffectInternal(PooledEngine engine, Entity entity, EffectComponent effectComponent) {
+        applyEffect(engine, entity, effectComponent);
+        audioService.playSound(AssetService.SoundAsset.SOUND_POWERUP_WAV);
+        setTexture(entity);
+        remainingDuration = getDuration();
+        applied = true;
+    }
+
+    private void removeEffectInternal(PooledEngine engine, Entity entity, EffectComponent component) {
+        removeEffect(engine, entity, component);
+        restoreTexture(entity);
+        applied = false;
+        remainingDuration = 0;
     }
 
     private void setTexture(Entity entity) {

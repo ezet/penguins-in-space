@@ -11,14 +11,22 @@ import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 
 public class EffectComponent extends BaseComponent {
 
+    @SuppressWarnings("unused")
     private static final String TAG = EffectComponent.class.getSimpleName();
     private final HashMap<Class, IEffect> effects = new HashMap<>();
 
-    public void addEffect(IEffect effect) {
-        if (effects.containsKey(effect.getClass())) {
-            effects.get(effect.getClass()).refresh(effect);
+    public void addEffect(PooledEngine engine, Entity target, IEffect newEffect) {
+        if (effects.containsKey(newEffect.getEffectClass())) {
+            IEffect currentEffect = effects.get(newEffect.getEffectClass());
+
+            if (newEffect.getClass().equals(currentEffect.getClass())) {
+                currentEffect.refresh(engine, target, this, newEffect);
+            } else {
+                currentEffect.replace(engine, target, this, newEffect);
+                effects.put(newEffect.getEffectClass(), newEffect);
+            }
         } else {
-            effects.put(effect.getClass(), effect);
+            effects.put(newEffect.getEffectClass(), newEffect);
         }
     }
 
@@ -26,8 +34,8 @@ public class EffectComponent extends BaseComponent {
         Iterator<Map.Entry<Class, IEffect>> iterator = effects.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<Class, IEffect> next = iterator.next();
-            boolean remove = next.getValue().tick(engine, entity, this, delta);
-            if (remove) iterator.remove();
+            boolean expired = next.getValue().tick(engine, entity, this, delta);
+            if (expired) iterator.remove();
         }
     }
 
