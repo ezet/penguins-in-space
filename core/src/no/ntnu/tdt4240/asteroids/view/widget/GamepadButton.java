@@ -31,4 +31,6 @@ class GamepadButton extends Widget {
 //        shapeRenderer.circle(getX() + radius, getY() + radius, radius);
 //        shapeRenderer.end();
     }
+
+
 }

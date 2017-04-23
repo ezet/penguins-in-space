@@ -30,6 +30,9 @@ android {
         applicationId "no.ntnu.tdt4240.asteroids"
         minSdkVersion android_min_version
         targetSdkVersion android_compile_version
+        versionCode 2
+        versionName "1.0"
+        versionNameSuffix "-alpha2"
     }
     buildTypes {
         debug {
