@@ -2,8 +2,8 @@ package no.ntnu.tdt4240.asteroids.service.audio;
 
 import com.badlogic.gdx.audio.Music;
 
-import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
+import no.ntnu.tdt4240.asteroids.service.ISettingsService;
 
 public class AudioService {
 

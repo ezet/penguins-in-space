@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class AndroidSettingsService implements ISettingsService {
+public class AndroidSettingsService implements no.ntnu.tdt4240.asteroids.service.ISettingsService {
 
     private final SharedPreferences preferences;
     private Context context;

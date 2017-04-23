@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids;
+package no.ntnu.tdt4240.asteroids.service;
 
 public interface ISettingsService {
 

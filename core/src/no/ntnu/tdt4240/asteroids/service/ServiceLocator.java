@@ -3,10 +3,6 @@ package no.ntnu.tdt4240.asteroids.service;
 
 import com.badlogic.ashley.core.PooledEngine;
 
-import no.ntnu.tdt4240.asteroids.AppComponent;
-import no.ntnu.tdt4240.asteroids.AppModule;
-import no.ntnu.tdt4240.asteroids.DaggerAppComponent;
-import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.game.entity.DaggerEntityComponent;
 import no.ntnu.tdt4240.asteroids.game.entity.EntityComponent;
 import no.ntnu.tdt4240.asteroids.game.entity.EntityModule;

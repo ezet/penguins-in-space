@@ -8,10 +8,10 @@ import com.badlogic.gdx.utils.Array;
 
 import javax.inject.Inject;
 
-import no.ntnu.tdt4240.asteroids.ISettingsService;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.entity.component.DrawableComponent;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
+import no.ntnu.tdt4240.asteroids.service.ISettingsService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 
 import static no.ntnu.tdt4240.asteroids.service.AssetService.TextureAsset.MISSILE;

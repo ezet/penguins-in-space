@@ -11,9 +11,9 @@ import no.ntnu.tdt4240.asteroids.game.entity.util.EffectTextureFactory;
 import no.ntnu.tdt4240.asteroids.game.entity.util.EntityFactory;
 import no.ntnu.tdt4240.asteroids.game.entity.util.IDrawableComponentFactory;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
-import no.ntnu.tdt4240.asteroids.service.settings.IGameConfig;
-import no.ntnu.tdt4240.asteroids.service.settings.MultiPlayerConfig;
-import no.ntnu.tdt4240.asteroids.service.settings.SinglePlayerConfig;
+import no.ntnu.tdt4240.asteroids.service.config.IGameConfig;
+import no.ntnu.tdt4240.asteroids.service.config.MultiPlayerConfig;
+import no.ntnu.tdt4240.asteroids.service.config.SinglePlayerConfig;
 
 @Module
 public class EntityModule {

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Array;
 
 import no.ntnu.tdt4240.asteroids.Asteroids;
-import no.ntnu.tdt4240.asteroids.ISettingsService;
+import no.ntnu.tdt4240.asteroids.service.ISettingsService;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 import no.ntnu.tdt4240.asteroids.view.IView;

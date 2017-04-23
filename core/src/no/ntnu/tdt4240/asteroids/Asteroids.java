@@ -22,10 +22,10 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     private SpriteBatch batch;
     private AssetService assetService;
     private INetworkService networkService;
-    private ISettingsService settingsService;
+    private no.ntnu.tdt4240.asteroids.service.ISettingsService settingsService;
     private boolean loaded = false;
 
-    Asteroids(INetworkService networkService, ISettingsService settingsService) {
+    Asteroids(INetworkService networkService, no.ntnu.tdt4240.asteroids.service.ISettingsService settingsService) {
         this.networkService = networkService;
         this.settingsService = settingsService;
     }
@@ -60,7 +60,7 @@ public class Asteroids extends Game implements INetworkService.IGameListener {
     public void render() {
         if (!this.loaded) {
             if (assetService.update()) {
-                if (settingsService.getBoolean(ISettingsService.MUSIC_ENABLED)) {
+                if (settingsService.getBoolean(no.ntnu.tdt4240.asteroids.service.ISettingsService.MUSIC_ENABLED)) {
                     ServiceLocator.getAppComponent().getAudioService().startMusic();
                 }
                 setScreen(new MainMenuPresenter(this));

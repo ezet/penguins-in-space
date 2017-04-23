@@ -1,4 +1,4 @@
-package no.ntnu.tdt4240.asteroids.service.settings;
+package no.ntnu.tdt4240.asteroids.service.config;
 
 public interface IGameConfig {
 

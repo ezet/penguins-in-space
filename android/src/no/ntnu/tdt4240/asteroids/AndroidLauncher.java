@@ -32,7 +32,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
         LeakCanary.install(this.getApplication());
         playService = new AndroidNetworkService(this);
-        ISettingsService settingsService = new AndroidSettingsService(this.getApplicationContext());
+        no.ntnu.tdt4240.asteroids.service.ISettingsService settingsService = new AndroidSettingsService(this.getApplicationContext());
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useCompass = false;
         config.useAccelerometer = false;

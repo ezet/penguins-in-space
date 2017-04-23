@@ -37,6 +37,10 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled false
+            debuggable false
+            proguardFile 'proguard-project.txt'
+            zipAlignEnabled true
         }
     }
 }

@@ -37,7 +37,7 @@ import no.ntnu.tdt4240.asteroids.game.entity.system.CollisionSystem;
 import no.ntnu.tdt4240.asteroids.game.entity.system.DamageSystem;
 import no.ntnu.tdt4240.asteroids.game.shothandler.MultiShotHandler;
 import no.ntnu.tdt4240.asteroids.service.AssetService;
-import no.ntnu.tdt4240.asteroids.service.settings.IGameConfig;
+import no.ntnu.tdt4240.asteroids.service.config.IGameConfig;
 
 import static no.ntnu.tdt4240.asteroids.game.entity.util.ComponentMappers.healthMapper;
 

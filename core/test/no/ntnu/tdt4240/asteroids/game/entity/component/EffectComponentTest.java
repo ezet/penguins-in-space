@@ -9,11 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import no.ntnu.tdt4240.asteroids.AppComponent;
 import no.ntnu.tdt4240.asteroids.game.effect.BaseEffect;
 import no.ntnu.tdt4240.asteroids.game.effect.IEffect;
 import no.ntnu.tdt4240.asteroids.game.entity.EntityComponent;
 import no.ntnu.tdt4240.asteroids.game.entity.util.EffectTextureFactory;
+import no.ntnu.tdt4240.asteroids.service.AppComponent;
 import no.ntnu.tdt4240.asteroids.service.ServiceLocator;
 import no.ntnu.tdt4240.asteroids.service.audio.AudioService;
 
